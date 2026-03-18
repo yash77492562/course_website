@@ -1,0 +1,26 @@
+[
+  {
+    "icon": "📊",
+    "title": "Data Analytics Program",
+    "body": "Transform raw data into actionable insights. Master SQL, Python, Power BI, and Tableau while developing the analytical thinking that drives business decisions.",
+    "tags": ["SQL", "Python", "Power BI", "Tableau"],
+    "ctaText": "Learn more",
+    "ctaHref": "/data-analytics"
+  },
+  {
+    "icon": "⚙️",
+    "title": "Data Engineering Program",
+    "body": "Build and maintain the infrastructure that powers data products. Design scalable pipelines, orchestrate workflows, and work with cloud-native data platforms.",
+    "tags": ["Pipelines", "Cloud", "ETL", "Orchestration"],
+    "ctaText": "Learn more",
+    "ctaHref": "/data-engineering"
+  },
+  {
+    "icon": "🤖",
+    "title": "Data Science & AI Program",
+    "body": "Go beyond analysis into prediction and automation. Build machine learning models, deploy AI solutions, and work at the intersection of data and intelligence.",
+    "tags": ["ML", "AI", "Modeling", "Deployment"],
+    "ctaText": "Learn more",
+    "ctaHref": "/data-science-ai"
+  }
+]

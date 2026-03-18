@@ -21,6 +21,18 @@
 @theme inline {
   --font-sans: var(--font-dm-sans);
   --font-display: var(--font-syne);
+  --color-navy: #050d1f;
+  --color-navy-mid: #0b1a35;
+  --color-navy-light: #112247;
+  --color-electric: #0ea5e9;
+  --color-teal: #06b6d4;
+  --color-white: #ffffff;
+  --color-grey-50: #f7f8fa;
+  --color-grey-100: #eef0f5;
+  --color-grey-400: #94a3b8;
+  --color-grey-600: #64748b;
+  --color-text-primary: #0f172a;
+  --color-text-muted: #64748b;
 }
 
 * {

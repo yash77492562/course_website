@@ -1,0 +1,29 @@
+{
+  "columns": [
+    {
+      "title": "Programs",
+      "links": [
+        { "label": "Data Analytics", "href": "/data-analytics" },
+        { "label": "Data Engineering", "href": "/data-engineering" },
+        { "label": "Data Science & AI", "href": "/data-science-ai" }
+      ]
+    },
+    {
+      "title": "Services",
+      "links": [
+        { "label": "Data Pipelines", "href": "/consulting#pipelines" },
+        { "label": "BI & Reporting", "href": "/consulting#reporting" },
+        { "label": "AI & Analytics", "href": "/consulting#ai" },
+        { "label": "Cloud Architecture", "href": "/consulting#cloud" }
+      ]
+    },
+    {
+      "title": "Company",
+      "links": [
+        { "label": "About", "href": "/about" },
+        { "label": "Contact", "href": "/contact" },
+        { "label": "Careers", "href": "/careers" }
+      ]
+    }
+  ]
+}
