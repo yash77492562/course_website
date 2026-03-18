@@ -26,7 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${dmSans.variable} ${syne.variable} antialiased`}>
+      <body 
+        className={`${dmSans.variable} ${syne.variable} antialiased`}
+        suppressHydrationWarning={true}
+      >
         {children}
       </body>
     </html>

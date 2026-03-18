@@ -14,33 +14,82 @@ export function Button({
   href 
 }: ButtonProps) {
   const baseClasses = cn(
-    'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200',
+    'inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 no-underline',
     'focus:outline-none focus:ring-2 focus:ring-offset-2',
     {
-      // Variants
-      'bg-gradient-to-r from-sky-500 to-cyan-500 text-white hover:from-sky-600 hover:to-cyan-600 focus:ring-sky-500 shadow-lg hover:shadow-xl hover:-translate-y-0.5': 
-        variant === 'primary',
-      'bg-gray-100 text-gray-800 hover:bg-gray-200 focus:ring-gray-400': 
-        variant === 'secondary',
-      'bg-transparent text-white/80 border border-white/20 hover:border-sky-500/50 hover:text-white hover:bg-sky-500/6': 
-        variant === 'ghost',
-      'bg-transparent text-slate-900 border-2 border-gray-300 hover:border-sky-500 hover:text-sky-500': 
-        variant === 'outline-dark',
-      
-      // Sizes
-      'px-3 py-1.5 text-sm': size === 'sm',
-      'px-6 py-3 text-sm': size === 'md',
-      'px-8 py-4 text-base': size === 'lg',
-      
       // Disabled state
       'opacity-50 cursor-not-allowed pointer-events-none': disabled,
     },
     className
   );
 
+  const getVariantStyles = () => {
+    switch (variant) {
+      case 'primary':
+        return {
+          background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
+          color: '#ffffff',
+          padding: size === 'lg' ? '14px 30px' : size === 'sm' ? '8px 20px' : '12px 24px',
+          borderRadius: '8px',
+          fontWeight: 500,
+          fontSize: size === 'lg' ? '0.95rem' : size === 'sm' ? '0.85rem' : '0.9rem',
+          boxShadow: '0 4px 24px rgba(14,165,233,0.35)',
+        };
+      case 'ghost':
+        return {
+          background: 'transparent',
+          color: 'rgba(255,255,255,0.8)',
+          padding: size === 'lg' ? '13px 28px' : size === 'sm' ? '7px 18px' : '11px 22px',
+          borderRadius: '8px',
+          border: '1px solid rgba(255,255,255,0.2)',
+          fontWeight: 400,
+          fontSize: size === 'lg' ? '0.95rem' : size === 'sm' ? '0.85rem' : '0.9rem',
+        };
+      case 'secondary':
+        return {
+          background: '#f1f5f9',
+          color: '#334155',
+          padding: size === 'lg' ? '14px 30px' : size === 'sm' ? '8px 20px' : '12px 24px',
+          borderRadius: '8px',
+          fontWeight: 500,
+          fontSize: size === 'lg' ? '0.95rem' : size === 'sm' ? '0.85rem' : '0.9rem',
+        };
+      default:
+        return {};
+    }
+  };
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
+    if (variant === 'primary') {
+      e.currentTarget.style.transform = 'translateY(-2px)';
+      e.currentTarget.style.boxShadow = '0 8px 32px rgba(14,165,233,0.45)';
+    } else if (variant === 'ghost') {
+      e.currentTarget.style.borderColor = 'rgba(14,165,233,0.5)';
+      e.currentTarget.style.color = '#ffffff';
+      e.currentTarget.style.background = 'rgba(14,165,233,0.06)';
+    }
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLElement>) => {
+    if (variant === 'primary') {
+      e.currentTarget.style.transform = 'translateY(0)';
+      e.currentTarget.style.boxShadow = '0 4px 24px rgba(14,165,233,0.35)';
+    } else if (variant === 'ghost') {
+      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+      e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
+      e.currentTarget.style.background = 'transparent';
+    }
+  };
+
   if (href) {
     return (
-      <Link href={href} className={baseClasses}>
+      <Link 
+        href={href} 
+        className={baseClasses}
+        style={getVariantStyles()}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {children}
       </Link>
     );
@@ -51,6 +100,9 @@ export function Button({
       onClick={onClick}
       disabled={disabled}
       className={baseClasses}
+      style={getVariantStyles()}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {children}
     </button>

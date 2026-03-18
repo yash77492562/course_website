@@ -17,9 +17,16 @@ export function Reveal({
   direction = 'up'
 }: RevealProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -36,7 +43,7 @@ export function Reveal({
     }
 
     return () => observer.disconnect();
-  }, [delay]);
+  }, [delay, isMounted]);
 
   const getTransform = () => {
     switch (direction) {
@@ -47,6 +54,14 @@ export function Reveal({
       default: return 'translateY(28px)';
     }
   };
+
+  if (!isMounted) {
+    return (
+      <div className={className} style={{ opacity: 0 }}>
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -72,9 +87,16 @@ interface FadeInProps {
 
 export function FadeIn({ children, className, delay = 0 }: FadeInProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -91,7 +113,15 @@ export function FadeIn({ children, className, delay = 0 }: FadeInProps) {
     }
 
     return () => observer.disconnect();
-  }, [delay]);
+  }, [delay, isMounted]);
+
+  if (!isMounted) {
+    return (
+      <div className={className} style={{ opacity: 0 }}>
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div
