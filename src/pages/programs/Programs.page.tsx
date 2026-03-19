@@ -1,22 +1,20 @@
-// app/page.tsx - Route file (following kiro.md guidelines)
+// pages/programs/Programs.page.tsx - Page composition (following kiro.md guidelines)
+'use client';
+
 import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { Footer } from '@/components/layout/Footer/Footer';
-import { HeroSection } from '@/components/features/HeroSection/HeroSection';
-import { AboutSection } from '@/components/features/AboutSection/AboutSection';
-import { ProgramsPage } from '@/pages/programs/Programs.page';
+import { ProgramsSection } from '@/components/features/ProgramsSection/ProgramsSection';
 
 // Import data
 import footerLinksData from '@/data/footerLinks/data.json';
 import programsData from '@/data/programs/data.json';
 
-export default function HomeRoute() {
+export function ProgramsPage() {
   return (
     <div className="w-full min-h-screen">
       <Navbar />
       <main className="w-full">
-        <HeroSection />
-        <AboutSection />
-        <ProgramsPage/>
+        <ProgramsSection programs={programsData} />
       </main>
       <Footer footerData={footerLinksData} />
     </div>

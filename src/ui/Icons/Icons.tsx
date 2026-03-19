@@ -46,3 +46,10 @@ export function EmailIcon({ className, size = 16 }: IconProps) {
     </svg>
   );
 }
+
+// Export all icons as a single object
+export const Icons = {
+  ArrowRight: ArrowRightIcon,
+  LinkedIn: LinkedInIcon,
+  Email: EmailIcon,
+};

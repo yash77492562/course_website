@@ -7,26 +7,10 @@ export interface Program {
   ctaHref: string;
 }
 
-export interface ProgramDetail {
-  badge: string;
-  headline: string;
-  subheadline: string;
-  price: string;
-  spotsLeft: number;
-  nextCohort: string;
-  checkoutUrl: string;
-  highlights: string[];
-  outcomes: string[];
-  modules: ProgramModule[];
-  faqs: FAQ[];
+export interface ProgramCardProps {
+  program: Program;
 }
 
-export interface ProgramModule {
-  title: string;
-  items: string[];
-}
-
-export interface FAQ {
-  q: string;
-  a: string;
+export interface ProgramsSectionProps {
+  programs: Program[];
 }

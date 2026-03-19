@@ -17,12 +17,12 @@ export function Section({
 }: SectionProps) {
   return (
     <section className={cn(
+      'w-full',
       {
         'bg-white': background === 'white',
         'bg-slate-50': background === 'gray',
         'bg-navy': background === 'dark',
-        'py-25 px-[5vw]': padding === 'normal',
-        'py-30 px-[5vw]': padding === 'large',
+        // Remove padding classes since we're using global CSS
       },
       className
     )}>

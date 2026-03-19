@@ -25,9 +25,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="w-full h-full">
       <body 
-        className={`${dmSans.variable} ${syne.variable} antialiased`}
+        className={`${dmSans.variable} ${syne.variable} antialiased w-full min-h-screen`}
         suppressHydrationWarning={true}
       >
         {children}
