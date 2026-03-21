@@ -18,3 +18,6 @@ export function AboutPage() {
     </>
   );
 }
+
+// Add default export
+export default AboutPage;

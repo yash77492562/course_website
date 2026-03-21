@@ -237,3 +237,83 @@ section {
     grid-template-columns: 1fr; 
   }
 }
+/* Metric bar animation */
+@keyframes growBar {
+  from { width: 0; }
+}
+
+/* ─── PROGRAM SECTIONS ─── */
+.program-section{
+  padding:80px 5vw !important;
+  background:#fff !important;
+}
+
+.program-section-alt{
+  background:var(--grey-50) !important;
+}
+
+.program-two-col{
+  max-width:1200px !important;
+  margin:0 auto !important;
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:34px !important;
+}
+
+.bullets{
+  margin-top:14px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  gap:10px !important;
+}
+
+.bullets li{
+  color:var(--text-muted) !important;
+  line-height:1.6 !important;
+}
+
+.accordion{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:12px !important;
+  margin-top:14px !important;
+}
+
+.curriculum-item, .faq-item{
+  background:#fff !important;
+  border:1px solid #e2e8f0 !important;
+  border-radius:12px !important;
+  padding:12px 14px !important;
+}
+
+.curriculum-item summary, .faq-item summary{
+  cursor:pointer !important;
+  font-family:'Syne',sans-serif !important;
+  font-weight:700 !important;
+}
+
+.curriculum-list{
+  margin-top:10px !important;
+  padding-left:40px !important;
+  color:var(--text-muted) !important;
+  list-style-type:disc !important;
+}
+
+.curriculum-list li{
+  color:var(--text-muted) !important;
+  line-height:1.5 !important;
+  font-size:0.9rem !important;
+  margin-bottom:6px !important;
+}
+
+.faq-item p{
+  margin-top:10px !important;
+  color:var(--text-muted) !important;
+  line-height:1.6 !important;
+}
+
+@media(max-width:900px){
+  .program-two-col{
+    grid-template-columns:1fr !important;
+  }
+}

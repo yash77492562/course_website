@@ -3,9 +3,11 @@
 interface SectionTitleProps {
   children: React.ReactNode;
   className?: string;
+  color?: string;
+  style?: React.CSSProperties;
 }
 
-export function SectionTitle({ children, className }: SectionTitleProps) {
+export function SectionTitle({ children, className, color = '#0f172a', style }: SectionTitleProps) {
   return (
     <h2 style={{
       fontFamily: 'Syne, sans-serif',
@@ -13,8 +15,9 @@ export function SectionTitle({ children, className }: SectionTitleProps) {
       fontWeight: '700',
       lineHeight: '1.2',
       letterSpacing: '-0.3px',
-      color: '#0f172a',
-      marginBottom: '16px'
+      color,
+      marginBottom: '16px',
+      ...style
     }}>
       {children}
     </h2>

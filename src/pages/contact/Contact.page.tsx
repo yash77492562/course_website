@@ -1,23 +1,21 @@
-// pages/programs/Programs.page.tsx - Page composition (following kiro.md guidelines)
+// pages/contact/Contact.page.tsx - Page composition (following kiro.md guidelines)
 'use client';
 
 import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { Footer } from '@/components/layout/Footer/Footer';
-import { ProgramsSection } from '@/components/features/ProgramsSection/ProgramsSection';
+import { CTASection } from '@/components/features/CTASection/CTASection';
 
 // Import data
 import footerLinksData from '@/data/footerLinks/data.json';
 
-export function ProgramsPage() {
+export function ContactPage() {
   return (
     <div className="w-full min-h-screen">
       <Navbar />
       <main className="w-full">
-        <ProgramsSection />
+        <CTASection />
       </main>
       <Footer footerData={footerLinksData} />
     </div>
   );
-}
-
-export default ProgramsPage;
+}export default ContactPage;

@@ -1,0 +1,131 @@
+{
+  "courses": [
+    {
+      "id": "1",
+      "title": "Complete Data Analytics Bootcamp",
+      "description": "Master data analytics from beginner to advanced level with hands-on projects and real-world case studies.",
+      "price": 999,
+      "originalPrice": 1499,
+      "duration": "12 weeks",
+      "level": "beginner",
+      "category": "Data Analytics",
+      "thumbnail": "/images/courses/data-analytics.jpg",
+      "instructor": "Dr. Sarah Johnson",
+      "rating": 4.8,
+      "studentsCount": 2847,
+      "features": [
+        "Career support included",
+        "Portfolio projects",
+        "Interview prep",
+        "Lifetime access",
+        "Certificate of completion"
+      ],
+      "status": "published",
+      "modules": [
+        {
+          "id": "m1",
+          "title": "Foundations of Data Analytics",
+          "description": "Learn the fundamentals of data analytics and statistical thinking",
+          "duration": "2 weeks",
+          "order": 1,
+          "lessons": [
+            {
+              "id": "l1",
+              "title": "Introduction to Data Analytics",
+              "description": "Overview of data analytics and its applications in business",
+              "duration": "45 min",
+              "order": 1,
+              "resources": []
+            },
+            {
+              "id": "l2", 
+              "title": "Statistical Foundations",
+              "description": "Basic statistics concepts for data analysis",
+              "duration": "60 min",
+              "order": 2,
+              "resources": []
+            }
+          ]
+        },
+        {
+          "id": "m2",
+          "title": "Excel for Data Analysis",
+          "description": "Master Excel for advanced data analysis and visualization",
+          "duration": "2 weeks",
+          "order": 2,
+          "lessons": [
+            {
+              "id": "l3",
+              "title": "Advanced Excel Functions",
+              "description": "VLOOKUP, INDEX-MATCH, and advanced formulas",
+              "duration": "90 min",
+              "order": 1,
+              "resources": []
+            }
+          ]
+        },
+        {
+          "id": "m3",
+          "title": "SQL for Data Analytics",
+          "description": "Learn SQL for querying and analyzing databases",
+          "duration": "3 weeks",
+          "order": 3,
+          "lessons": [
+            {
+              "id": "l4",
+              "title": "SQL Fundamentals",
+              "description": "Basic SQL queries and database concepts",
+              "duration": "75 min",
+              "order": 1,
+              "resources": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Advanced SQL for Data Analysis",
+      "description": "Deep dive into SQL queries, optimization, and advanced analytics functions.",
+      "price": 599,
+      "originalPrice": 899,
+      "duration": "8 weeks",
+      "level": "intermediate",
+      "category": "SQL",
+      "thumbnail": "/images/courses/sql-advanced.jpg",
+      "instructor": "Mike Chen",
+      "rating": 4.9,
+      "studentsCount": 1523,
+      "features": [
+        "Hands-on practice",
+        "Real database projects",
+        "Query optimization",
+        "Performance tuning"
+      ],
+      "status": "published",
+      "modules": []
+    },
+    {
+      "id": "3",
+      "title": "Python for Data Science",
+      "description": "Learn Python programming specifically for data science applications.",
+      "price": 799,
+      "originalPrice": 1199,
+      "duration": "10 weeks",
+      "level": "beginner",
+      "category": "Python",
+      "thumbnail": "/images/courses/python-data-science.jpg",
+      "instructor": "Anna Rodriguez",
+      "rating": 4.7,
+      "studentsCount": 3241,
+      "features": [
+        "Jupyter notebooks",
+        "Data visualization",
+        "Machine learning basics",
+        "Pandas & NumPy"
+      ],
+      "status": "published",
+      "modules": []
+    }
+  ]
+}

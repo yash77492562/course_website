@@ -3,3 +3,7 @@ export interface ConsultingService {
   title: string;
   body: string;
 }
+
+export interface ConsultingData {
+  services: ConsultingService[];
+}
