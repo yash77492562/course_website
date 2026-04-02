@@ -2,9 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { courseApi, Course } from '@/lib/api/courseApi';
+import { courseApi } from '@/lib/api/course/courseApi';
+import { Course } from '@/types/course/types';
 import { ProgramOutcomeSection } from '@/components/features/ProgramOutcomeSection/ProgramOutcomeSection';
 import { CareerSupportSection } from '@/components/features/CareerSupportSection/CareerSupportSection';
+import { AuthNavbar } from '@/components/layout/Navbar/AuthNavbar';
+import { CourseAccessControl } from '@/components/features/CourseAccess/CourseAccessControl';
+import { useAuth } from '@/hooks/auth/useAuth';
+import { PayNowButton } from '@/components/features/CourseAccess/PayNowButton';
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -12,6 +17,7 @@ export default function CourseDetailPage() {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (courseId) {
@@ -189,8 +195,15 @@ export default function CourseDetailPage() {
 
   return (
     <>
-      {/* Program Hero Section */}
-      <section className="program-hero">
+      <AuthNavbar />
+      
+      <CourseAccessControl
+        courseId={courseId}
+        courseTitle={course.title}
+        coursePrice={course.price}
+      >
+        {/* Program Hero Section */}
+        <section className="program-hero">
         <div className="program-hero-inner">
           <div className="program-hero-left">
             <span className="section-label">{programData.badge}</span>
@@ -219,7 +232,7 @@ export default function CourseDetailPage() {
             </div>
 
             <div className="program-cta-row">
-              <a className="btn-primary" href="#" target="_blank" rel="noopener noreferrer">Pay Now</a>
+              <PayNowButton className="btn-primary" />
               <a className="btn-outline-dark" href="#talk">Talk to us first</a>
             </div>
 
@@ -233,7 +246,7 @@ export default function CourseDetailPage() {
                 <div className="pricing-price">{programData.price}</div>
                 <div className="pricing-small">Seats are limited to keep mentoring quality high.</div>
               </div>
-              <a className="btn-primary pricing-pay" href="#" target="_blank" rel="noopener noreferrer">Pay Now</a>
+              <PayNowButton className="btn-primary pricing-pay" />
               <div className="pricing-badges">
                 <div className="badge-pill">✅ Career support included</div>
                 <div className="badge-pill">✅ Portfolio projects</div>
@@ -260,7 +273,7 @@ export default function CourseDetailPage() {
             <div className="sticky-title">{programData.badge}</div>
             <div className="sticky-sub">Spots left: {programData.spotsLeft} • {programData.price}</div>
           </div>
-          <a className="btn-primary" href="#" target="_blank" rel="noopener noreferrer">Pay Now</a>
+          <PayNowButton className="btn-primary" />
         </div>
       </div>
 
@@ -289,7 +302,7 @@ export default function CourseDetailPage() {
         .sticky-title{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0;color:var(--text-primary)}
         .sticky-sub{font-family:'DM Sans',sans-serif;font-weight:400;font-size:.9rem;color:var(--text-muted)}
         .tag{font-size:.72rem;font-weight:500;letter-spacing:.4px;padding:3px 10px;background:var(--grey-100);color:var(--text-muted);border-radius:100px}
-        .btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--grad-blue);color:#fff;padding:14px 30px;border-radius:8px;font-weight:500;font-size:.95rem;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 24px rgba(14,165,233,.35)}
+        .btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--grad-blue);color:#fff;padding:14px 30px;border-radius:8px;font-weight:500;font-size:.95rem;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 24px rgba(14,165,233,.35);border:none;cursor:pointer}
         .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,165,233,.45)}
         .btn-outline-dark{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text-primary);padding:13px 28px;border-radius:8px;border:1.5px solid #d1d5db;font-weight:400;font-size:.95rem;text-decoration:none;transition:border-color .2s,color .2s}
         .btn-outline-dark:hover{border-color:var(--electric);color:var(--electric)}
@@ -304,6 +317,7 @@ export default function CourseDetailPage() {
           .pricing-card{position:relative;top:auto;margin-top:20px}
         }
       `}</style>
+      </CourseAccessControl>
     </>
   );
 }

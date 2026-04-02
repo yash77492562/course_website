@@ -80,15 +80,7 @@ export function CoursesPage() {
       </section>
 
       {/* Courses Section */}
-      <CoursesSection
-        courses={courses}
-        title="All Courses"
-        subtitle="Choose the perfect course to advance your data analytics career"
-        showFilters={true}
-        onEnroll={handleEnroll}
-        onViewDetails={handleViewDetails}
-        className="py-20"
-      />
+      <CoursesSection />
 
       {/* Stats Section */}
       <section className="bg-white py-16">

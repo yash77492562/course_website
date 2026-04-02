@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { SectionLabel } from '@/ui/SectionLabel/SectionLabel';
 import { SectionTitle } from '@/ui/SectionTitle/SectionTitle';
 import { ProgramCard } from '@/ui/ProgramCard/ProgramCard';
-import { courseApi, Course } from '@/lib/api/courseApi';
+import { courseApi } from '@/lib/api/course/courseApi';
+import { Course } from '@/types/course/types';
 import type { Program } from '@/types/program/types';
 
 export function ProgramsSection() {

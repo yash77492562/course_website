@@ -7,12 +7,17 @@
       "price": 999,
       "originalPrice": 1499,
       "duration": "12 weeks",
-      "level": "beginner",
+      "level": "BEGINNER",
       "category": "Data Analytics",
       "thumbnail": "/images/courses/data-analytics.jpg",
       "instructor": "Dr. Sarah Johnson",
       "rating": 4.8,
       "studentsCount": 2847,
+      "totalModules": 3,
+      "totalLessons": 4,
+      "certification": true,
+      "spotsLeft": 15,
+      "nextCohort": "Next batch starting March 15, 2026",
       "features": [
         "Career support included",
         "Portfolio projects",
@@ -20,7 +25,15 @@
         "Lifetime access",
         "Certificate of completion"
       ],
-      "status": "published",
+      "skills": ["SQL", "Excel", "Python", "Statistics"],
+      "tools": ["Excel", "SQL Server", "Python", "Jupyter"],
+      "outcomes": [
+        "Analyze complex datasets",
+        "Create compelling visualizations",
+        "Build predictive models",
+        "Present insights to stakeholders"
+      ],
+      "status": "PUBLISHED",
       "modules": [
         {
           "id": "m1",
@@ -28,6 +41,10 @@
           "description": "Learn the fundamentals of data analytics and statistical thinking",
           "duration": "2 weeks",
           "order": 1,
+          "courseId": "1",
+          "createdAt": "2024-01-01T00:00:00Z",
+          "updatedAt": "2024-01-01T00:00:00Z",
+          "objectives": ["Understand data types", "Learn statistical concepts", "Practice with real data"],
           "lessons": [
             {
               "id": "l1",
@@ -53,6 +70,10 @@
           "description": "Master Excel for advanced data analysis and visualization",
           "duration": "2 weeks",
           "order": 2,
+          "courseId": "1",
+          "createdAt": "2024-01-01T00:00:00Z",
+          "updatedAt": "2024-01-01T00:00:00Z",
+          "objectives": ["Master Excel functions", "Create pivot tables", "Build dashboards"],
           "lessons": [
             {
               "id": "l3",
@@ -70,6 +91,10 @@
           "description": "Learn SQL for querying and analyzing databases",
           "duration": "3 weeks",
           "order": 3,
+          "courseId": "1",
+          "createdAt": "2024-01-01T00:00:00Z",
+          "updatedAt": "2024-01-01T00:00:00Z",
+          "objectives": ["Write complex queries", "Join multiple tables", "Optimize performance"],
           "lessons": [
             {
               "id": "l4",
@@ -90,19 +115,31 @@
       "price": 599,
       "originalPrice": 899,
       "duration": "8 weeks",
-      "level": "intermediate",
+      "level": "INTERMEDIATE",
       "category": "SQL",
       "thumbnail": "/images/courses/sql-advanced.jpg",
       "instructor": "Mike Chen",
       "rating": 4.9,
       "studentsCount": 1523,
+      "totalModules": 0,
+      "totalLessons": 0,
+      "certification": true,
+      "spotsLeft": 8,
+      "nextCohort": "Next batch starting April 1, 2026",
       "features": [
         "Hands-on practice",
         "Real database projects",
         "Query optimization",
         "Performance tuning"
       ],
-      "status": "published",
+      "skills": ["Advanced SQL", "Query Optimization", "Database Design"],
+      "tools": ["SQL Server", "PostgreSQL", "MySQL"],
+      "outcomes": [
+        "Write complex SQL queries",
+        "Optimize database performance",
+        "Design efficient schemas"
+      ],
+      "status": "PUBLISHED",
       "modules": []
     },
     {
@@ -112,19 +149,31 @@
       "price": 799,
       "originalPrice": 1199,
       "duration": "10 weeks",
-      "level": "beginner",
+      "level": "BEGINNER",
       "category": "Python",
       "thumbnail": "/images/courses/python-data-science.jpg",
       "instructor": "Anna Rodriguez",
       "rating": 4.7,
       "studentsCount": 3241,
+      "totalModules": 0,
+      "totalLessons": 0,
+      "certification": true,
+      "spotsLeft": 12,
+      "nextCohort": "Next batch starting March 22, 2026",
       "features": [
         "Jupyter notebooks",
         "Data visualization",
         "Machine learning basics",
         "Pandas & NumPy"
       ],
-      "status": "published",
+      "skills": ["Python", "Pandas", "NumPy", "Matplotlib"],
+      "tools": ["Python", "Jupyter", "Pandas", "Scikit-learn"],
+      "outcomes": [
+        "Write Python for data analysis",
+        "Create data visualizations",
+        "Build machine learning models"
+      ],
+      "status": "PUBLISHED",
       "modules": []
     }
   ]
