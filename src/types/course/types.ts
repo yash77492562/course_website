@@ -75,6 +75,7 @@ export interface Lesson {
   resources: LessonResource[];
   order: number;
   isCompleted?: boolean;
+  contentType?: 'VIDEO' | 'PDF';
 }
 
 export interface LessonResource {

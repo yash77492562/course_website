@@ -34,18 +34,16 @@ const nextConfig: NextConfig = {
     ],
   },
   
-  async headers() {
-    return [
-      {
-        source: '/:path*',
-        headers: [
-          {
-            key: 'Content-Security-Policy',
-            value: "default-src 'self'; frame-src 'self' https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com https://youtube-nocookie.com https://*.r2.cloudflarestorage.com; media-src 'self' https://*.r2.cloudflarestorage.com blob: data:; img-src 'self' https://*.r2.cloudflarestorage.com data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:3002 https://*.r2.cloudflarestorage.com;",
-          },
-        ],
-      },
-    ];
+  // Fix Video.js package.json parsing issue
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Ignore Video.js package.json files that cause parsing errors
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'video.js/package.json': false,
+      };
+    }
+    return config;
   },
   
   async rewrites() {

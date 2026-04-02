@@ -15,6 +15,11 @@ module.exports = {
         sans: ['var(--font-dm-sans)'],
         syne: ['var(--font-syne)'],
       },
+      colors: {
+        gray: {
+          750: '#2d3748', // Custom gray shade between 700 and 800
+        },
+      },
     },
   },
   plugins: [],

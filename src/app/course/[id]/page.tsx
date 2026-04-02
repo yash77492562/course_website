@@ -29,6 +29,11 @@ export default function CourseDetailPage() {
     try {
       setLoading(true);
       const data = await courseApi.getCourseById(courseId);
+      console.log('Course data loaded:', data);
+      console.log('Modules:', data.modules);
+      if (data.modules && data.modules.length > 0) {
+        console.log('First module lessons:', data.modules[0].lessons);
+      }
       setCourse(data);
     } catch (err) {
       console.error('Failed to load course:', err);
@@ -103,10 +108,12 @@ export default function CourseDetailPage() {
       "Pass technical and competency-based interviews"
     ],
     modules: course.modules?.length > 0 ? course.modules.map(module => ({
+      id: module.id,
       title: module.title,
       items: module.objectives && module.objectives.length > 0 
         ? module.objectives 
-        : [module.description]
+        : [module.description],
+      lessons: module.lessons || []
     })) : [
       {
         title: "Module 1: Foundations of Data Analytics",

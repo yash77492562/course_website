@@ -1,0 +1,610 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+import { useAuth } from '@/hooks/auth/useAuth';
+
+const VideoPlayerWrapper = dynamic(
+  () => import('@/components/features/VideoPlayer').then(mod => ({ default: mod.VideoPlayerWrapper })),
+  { ssr: false }
+);
+
+const PDFViewerSimple = dynamic(
+  () => import('@/components/features/PDFViewer/PDFViewerSimple').then(mod => ({ default: mod.PDFViewerSimple })),
+  { ssr: false }
+);
+
+interface LessonData {
+  id: string;
+  title: string;
+  description?: string;
+  contentType: 'VIDEO' | 'PDF';
+  videoType?: 'UPLOAD' | 'YOUTUBE';
+  videoUrl?: string;
+  videoUrls?: Record<string, string>;
+  hlsMasterPlaylist?: string;
+  hlsQualities?: Record<string, string>;
+  thumbnail?: string;
+  pdfUrl?: string;
+  pdfPassword?: string;
+  order: number;
+  module: {
+    id: string;
+    title: string;
+    order: number;
+    course: {
+      id: string;
+      title: string;
+      modules: Array<{
+        id: string;
+        title: string;
+        order: number;
+        lessons: Array<{
+          id: string;
+          title: string;
+          order: number;
+          contentType: 'VIDEO' | 'PDF';
+        }>;
+      }>;
+    };
+    lessons: Array<{
+      id: string;
+      title: string;
+      order: number;
+    }>;
+  };
+  previousLesson?: { id: string; title: string } | null;
+  nextLesson?: { id: string; title: string } | null;
+}
+
+interface VideoPlayerPageProps {
+  lessonId: string;
+}
+
+export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
+  const router = useRouter();
+  const { user, isAuthenticated, accessToken } = useAuth();
+  const [lessonData, setLessonData] = useState<LessonData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
+  const [hasPurchased, setHasPurchased] = useState(false);
+  const [checkingPurchase, setCheckingPurchase] = useState(true);
+
+  // Check if user has purchased the course
+  useEffect(() => {
+    async function checkPurchase() {
+      if (!lessonData?.module?.course?.id) {
+        setCheckingPurchase(false);
+        return;
+      }
+
+      if (isAuthenticated && user && accessToken) {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/api/payment/stripe/purchase-history/${user.id}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${accessToken}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            const purchases = data.data || data;
+            const purchased = Array.isArray(purchases) && purchases.some((p: any) => p.courseId === lessonData.module.course.id);
+            setHasPurchased(purchased);
+          }
+        } catch (error) {
+          console.error('Failed to check purchase:', error);
+        }
+      }
+      setCheckingPurchase(false);
+    }
+
+    checkPurchase();
+  }, [lessonData, isAuthenticated, user, accessToken]);
+
+  useEffect(() => {
+    const loadLesson = async () => {
+      try {
+        // Always fetch from API to get full navigation structure
+        const response = await fetch(`/api/lessons/${lessonId}`);
+        const result = await response.json();
+        
+        console.log('API Response:', result);
+        
+        if (result.success && result.data) {
+          console.log('Lesson Data Structure:', {
+            hasModule: !!result.data.module,
+            hasCourse: !!result.data.module?.course,
+            hasModules: !!result.data.module?.course?.modules,
+            moduleCount: result.data.module?.course?.modules?.length || 0
+          });
+          setLessonData(result.data);
+          if (result.data.module?.id) {
+            setExpandedModules(new Set([result.data.module.id]));
+          }
+        }
+        
+        setLoading(false);
+      } catch (error) {
+        console.error('Failed to load lesson:', error);
+        setLoading(false);
+      }
+    };
+
+    loadLesson();
+  }, [lessonId]);
+
+  // Get first lesson ID for free access
+  const getFirstLessonId = () => {
+    const allLessons = getAllLessonsInOrder();
+    return allLessons.length > 0 ? allLessons[0].id : null;
+  };
+
+  const isFirstLesson = (checkLessonId: string) => {
+    const allLessons = getAllLessonsInOrder();
+    if (allLessons.length === 0) return false;
+    return allLessons[0].id === checkLessonId;
+  };
+
+  // Check if user is trying to access a locked lesson
+  useEffect(() => {
+    if (!loading && !checkingPurchase && lessonData) {
+      const isFirst = isFirstLesson(lessonId);
+      
+      // If user hasn't purchased and trying to access non-free lesson, redirect
+      if (!hasPurchased && !isFirst) {
+        const firstLesson = getFirstLessonId();
+        if (firstLesson && firstLesson !== lessonId) {
+          alert('This lesson is locked. Please purchase the course to access all lessons.');
+          router.push(`/video-player/${firstLesson}`);
+        }
+      }
+    }
+  }, [loading, checkingPurchase, hasPurchased, lessonData, lessonId]);
+
+  const toggleModule = (moduleId: string) => {
+    setExpandedModules(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(moduleId)) {
+        newSet.delete(moduleId);
+      } else {
+        newSet.add(moduleId);
+      }
+      return newSet;
+    });
+  };
+
+  const navigateToLesson = (newLessonId: string) => {
+    // Check if user can access this lesson
+    if (!hasPurchased && !isFirstLesson(newLessonId)) {
+      alert('This lesson is locked. Please purchase the course to access all lessons.');
+      return;
+    }
+    router.push(`/video-player/${newLessonId}`);
+  };
+
+  const getAllLessonsInOrder = () => {
+    if (!lessonData?.module?.course?.modules) return [];
+    
+    const allLessons: Array<{ id: string; moduleId: string; order: number; moduleOrder: number }> = [];
+    
+    lessonData.module.course.modules.forEach(module => {
+      if (module.lessons) {
+        module.lessons.forEach(lesson => {
+          allLessons.push({
+            id: lesson.id,
+            moduleId: module.id,
+            order: lesson.order,
+            moduleOrder: module.order
+          });
+        });
+      }
+    });
+    
+    return allLessons.sort((a, b) => {
+      if (a.moduleOrder !== b.moduleOrder) {
+        return a.moduleOrder - b.moduleOrder;
+      }
+      return a.order - b.order;
+    });
+  };
+
+  const handleNext = () => {
+    if (!lessonData) return;
+    
+    const allLessons = getAllLessonsInOrder();
+    const currentIndex = allLessons.findIndex(l => l.id === lessonId);
+    
+    if (currentIndex >= 0 && currentIndex < allLessons.length - 1) {
+      const nextLessonId = allLessons[currentIndex + 1].id;
+      
+      // Check if user can access next lesson
+      if (!hasPurchased && !isFirstLesson(nextLessonId)) {
+        alert('This lesson is locked. Please purchase the course to access all lessons.');
+        return;
+      }
+      
+      navigateToLesson(nextLessonId);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (!lessonData) return;
+    
+    const allLessons = getAllLessonsInOrder();
+    const currentIndex = allLessons.findIndex(l => l.id === lessonId);
+    
+    if (currentIndex > 0) {
+      navigateToLesson(allLessons[currentIndex - 1].id);
+    }
+  };
+
+  const hasNext = () => {
+    if (!lessonData) return false;
+    
+    const allLessons = getAllLessonsInOrder();
+    const currentIndex = allLessons.findIndex(l => l.id === lessonId);
+    
+    return currentIndex >= 0 && currentIndex < allLessons.length - 1;
+  };
+
+  const hasPrevious = () => {
+    if (!lessonData) return false;
+    
+    const allLessons = getAllLessonsInOrder();
+    const currentIndex = allLessons.findIndex(l => l.id === lessonId);
+    
+    return currentIndex > 0;
+  };
+
+  if (loading || checkingPurchase) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white text-xl">Loading content...</div>
+      </div>
+    );
+  }
+
+  if (!lessonData) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-red-400 text-xl">Content not available</div>
+      </div>
+    );
+  }
+
+  console.log('Lesson Data:', lessonData);
+  console.log('Content Type:', lessonData.contentType);
+  console.log('Has Module:', !!lessonData.module);
+  console.log('Has Course:', !!lessonData.module?.course);
+  console.log('Has Modules Array:', !!lessonData.module?.course?.modules);
+  console.log('Modules Length:', lessonData.module?.course?.modules?.length);
+
+  const contentType = lessonData.contentType || 'VIDEO';
+  const hasFullNavigation = !!(lessonData.module?.course?.modules && lessonData.module.course.modules.length > 0);
+  
+  console.log('Has Full Navigation:', hasFullNavigation);
+
+  if (!hasFullNavigation) {
+    if (contentType === 'PDF') {
+      if (!lessonData.pdfUrl) {
+        return (
+          <div className="min-h-screen bg-black flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-red-400 text-xl mb-4">No PDF available</div>
+              <div className="text-gray-400 text-sm">This lesson does not have a PDF uploaded yet.</div>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="flex flex-col h-screen bg-gray-900">
+          <div className="bg-gray-800 border-b border-gray-700 px-6 py-4">
+            <h1 className="text-white text-xl font-semibold">{lessonData.title}</h1>
+          </div>
+          <div className="flex-1 bg-white overflow-hidden">
+            <PDFViewerSimple
+              pdfUrl={lessonData.pdfUrl}
+              password={lessonData.pdfPassword}
+              title={lessonData.title}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    const isYouTube = lessonData.videoType === 'YOUTUBE';
+    const hasHLS = lessonData.hlsMasterPlaylist || (lessonData.hlsQualities && Object.keys(lessonData.hlsQualities).length > 0);
+    const hasMP4 = lessonData.videoUrls && Object.keys(lessonData.videoUrls).length > 0;
+    
+    if (isYouTube && !lessonData.videoUrl) {
+      return (
+        <div className="min-h-screen bg-black flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-red-400 text-xl mb-4">No YouTube URL available</div>
+            <div className="text-gray-400 text-sm">Please add the YouTube URL from the course editor.</div>
+          </div>
+        </div>
+      );
+    }
+    
+    if (!isYouTube && !hasHLS && !hasMP4) {
+      return (
+        <div className="min-h-screen bg-black flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-red-400 text-xl mb-4">No video source available</div>
+            <div className="text-gray-400 text-sm">Please upload and publish the video from the course editor.</div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex flex-col h-screen bg-gray-900">
+        <div className="bg-gray-800 border-b border-gray-700 px-6 py-4">
+          <h1 className="text-white text-xl font-semibold">{lessonData.title}</h1>
+        </div>
+        <div className="flex-1 bg-black flex items-center justify-center p-6">
+          <div className="w-full max-w-6xl">
+            <VideoPlayerWrapper
+              videoType={lessonData.videoType || 'UPLOAD'}
+              hlsMasterPlaylist={lessonData.hlsMasterPlaylist}
+              hlsQualities={lessonData.hlsQualities}
+              videoUrls={lessonData.videoUrls}
+              videoUrl={lessonData.videoUrl}
+              thumbnail={lessonData.thumbnail}
+              title={lessonData.title}
+              autoplay={false}
+              className="rounded-lg overflow-hidden"
+            />
+          </div>
+        </div>
+        {lessonData.description && (
+          <div className="bg-gray-800 border-t border-gray-700 px-6 py-4">
+            <p className="text-gray-300">{lessonData.description}</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (contentType === 'PDF') {
+    if (!lessonData.pdfUrl) {
+      return (
+        <div className="min-h-screen bg-black flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-red-400 text-xl mb-4">No PDF available</div>
+            <div className="text-gray-400 text-sm">This lesson does not have a PDF uploaded yet.</div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="video-player-page flex h-screen bg-gray-900">
+        <div className="w-80 bg-gray-800 border-r border-gray-700 overflow-y-auto">
+          <div className="p-4">
+            <h2 className="text-white text-lg font-semibold mb-4">
+              {lessonData.module.course.title}
+            </h2>
+            
+            <div className="space-y-2">
+              {lessonData.module.course.modules
+                .sort((a, b) => a.order - b.order)
+                .map((module) => (
+                  <div key={module.id} className="border border-gray-700 rounded-lg overflow-hidden">
+                    <button
+                      onClick={() => toggleModule(module.id)}
+                      className="w-full px-4 py-3 bg-gray-750 hover:bg-gray-700 text-left flex items-center justify-between transition-colors"
+                    >
+                      <span className="text-white font-medium text-sm">{module.title}</span>
+                      <svg
+                        className={`w-5 h-5 text-gray-400 transition-transform ${expandedModules.has(module.id) ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    
+                    {expandedModules.has(module.id) && module.lessons && (
+                      <div className="bg-gray-800">
+                        {module.lessons
+                          .sort((a, b) => a.order - b.order)
+                          .map((lesson) => {
+                            const isLocked = !hasPurchased && !isFirstLesson(lesson.id);
+                            return (
+                              <button
+                                key={lesson.id}
+                                onClick={() => navigateToLesson(lesson.id)}
+                                className={`w-full px-4 py-2 text-left text-sm transition-colors ${lesson.id === lessonId ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span>{lesson.contentType === 'PDF' ? '📄' : '🎥'}</span>
+                                  <span className="truncate">{lesson.title}</span>
+                                  {isLocked && <span className="text-xs">🔒</span>}
+                                </div>
+                              </button>
+                            );
+                          })}
+                      </div>
+                    )}
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex-1 flex flex-col">
+          <div className="bg-gray-800 border-b border-gray-700 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-white text-xl font-semibold">{lessonData.title}</h1>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handlePrevious}
+                  disabled={!hasPrevious()}
+                  className={`px-4 py-2 rounded-lg transition-colors ${hasPrevious() ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-gray-700 text-gray-500 cursor-not-allowed'}`}
+                >
+                  &larr; Previous
+                </button>
+                <button
+                  onClick={handleNext}
+                  disabled={!hasNext()}
+                  className={`px-4 py-2 rounded-lg transition-colors ${hasNext() ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-700 text-gray-500 cursor-not-allowed'}`}
+                >
+                  Next &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex-1 bg-white overflow-hidden">
+            <PDFViewerSimple
+              pdfUrl={lessonData.pdfUrl}
+              password={lessonData.pdfPassword}
+              title={lessonData.title}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const isYouTube = lessonData.videoType === 'YOUTUBE';
+  const hasHLS = lessonData.hlsMasterPlaylist || (lessonData.hlsQualities && Object.keys(lessonData.hlsQualities).length > 0);
+  const hasMP4 = lessonData.videoUrls && Object.keys(lessonData.videoUrls).length > 0;
+  
+  if (isYouTube && !lessonData.videoUrl) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-400 text-xl mb-4">No YouTube URL available</div>
+          <div className="text-gray-400 text-sm">Please add the YouTube URL from the course editor.</div>
+        </div>
+      </div>
+    );
+  }
+  
+  if (!isYouTube && !hasHLS && !hasMP4) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-400 text-xl mb-4">No video source available</div>
+          <div className="text-gray-400 text-sm">Please upload and publish the video from the course editor.</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="video-player-page flex h-screen bg-gray-900">
+      {lessonData.module?.course?.modules && (
+        <div className="w-80 bg-gray-800 border-r border-gray-700 overflow-y-auto">
+          <div className="p-4">
+            <h2 className="text-white text-lg font-semibold mb-4">
+              {lessonData.module.course.title}
+            </h2>
+            
+            <div className="space-y-2">
+              {lessonData.module.course.modules
+                .sort((a, b) => a.order - b.order)
+                .map((module) => (
+                  <div key={module.id} className="border border-gray-700 rounded-lg overflow-hidden">
+                    <button
+                      onClick={() => toggleModule(module.id)}
+                      className="w-full px-4 py-3 bg-gray-750 hover:bg-gray-700 text-left flex items-center justify-between transition-colors"
+                    >
+                      <span className="text-white font-medium text-sm">{module.title}</span>
+                      <svg
+                        className={`w-5 h-5 text-gray-400 transition-transform ${expandedModules.has(module.id) ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    
+                    {expandedModules.has(module.id) && module.lessons && (
+                      <div className="bg-gray-800">
+                        {module.lessons
+                          .sort((a, b) => a.order - b.order)
+                          .map((lesson) => {
+                            const isLocked = !hasPurchased && !isFirstLesson(lesson.id);
+                            return (
+                              <button
+                                key={lesson.id}
+                                onClick={() => navigateToLesson(lesson.id)}
+                                className={`w-full px-4 py-2 text-left text-sm transition-colors ${lesson.id === lessonId ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'}`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span>{lesson.contentType === 'PDF' ? '📄' : '🎥'}</span>
+                                  <span className="truncate">{lesson.title}</span>
+                                  {isLocked && <span className="text-xs">🔒</span>}
+                                </div>
+                              </button>
+                            );
+                          })}
+                      </div>
+                    )}
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="flex-1 flex flex-col">
+        <div className="bg-gray-800 border-b border-gray-700 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-white text-xl font-semibold">{lessonData.title}</h1>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handlePrevious}
+                disabled={!hasPrevious()}
+                className={`px-4 py-2 rounded-lg transition-colors ${hasPrevious() ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-gray-700 text-gray-500 cursor-not-allowed'}`}
+              >
+                &larr; Previous
+              </button>
+              <button
+                onClick={handleNext}
+                disabled={!hasNext()}
+                className={`px-4 py-2 rounded-lg transition-colors ${hasNext() ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-700 text-gray-500 cursor-not-allowed'}`}
+              >
+                Next &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex-1 bg-black flex items-center justify-center p-6">
+          <div className="w-full max-w-6xl">
+            <VideoPlayerWrapper
+              videoType={lessonData.videoType || 'UPLOAD'}
+              hlsMasterPlaylist={lessonData.hlsMasterPlaylist}
+              hlsQualities={lessonData.hlsQualities}
+              videoUrls={lessonData.videoUrls}
+              videoUrl={lessonData.videoUrl}
+              thumbnail={lessonData.thumbnail}
+              title={lessonData.title}
+              autoplay={false}
+              className="rounded-lg overflow-hidden"
+            />
+          </div>
+        </div>
+
+        {lessonData.description && (
+          <div className="bg-gray-800 border-t border-gray-700 px-6 py-4">
+            <p className="text-gray-300">{lessonData.description}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

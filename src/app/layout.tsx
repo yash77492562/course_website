@@ -53,7 +53,6 @@ export default function RootLayout({
         className={`${dmSans.variable} ${syne.variable} antialiased w-full min-h-screen`}
         suppressHydrationWarning={true}
       >
-        <Navbar />
         {children}
       </body>
     </html>
