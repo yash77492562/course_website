@@ -299,7 +299,7 @@ export default function CourseDetailPage() {
         .pricing-price{font-family:'DM Sans',sans-serif;font-size:2.2rem;font-weight:800;margin:8px 0 6px;letter-spacing:-0.5px;color:var(--text-primary)}
         .pricing-small{color:var(--text-muted);font-size:.9rem;line-height:1.5}
         .pricing-pay{width:100%;justify-content:center;margin:14px 0;display:flex}
-        .pricing-badges{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+        .pricing-badges{display:flex;flex-direction:column;gap:12px;margin-top:20px}
         .badge-pill{font-size:.85rem;color:var(--text-primary);background:var(--grey-50);border:1px solid #e2e8f0;border-radius:999px;padding:8px 10px}
         .program-tags{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 22px}
         .program-cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}

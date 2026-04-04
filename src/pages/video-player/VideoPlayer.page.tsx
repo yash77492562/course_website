@@ -70,8 +70,9 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
   const [hasPurchased, setHasPurchased] = useState(false);
   const [checkingPurchase, setCheckingPurchase] = useState(true);
+  const [courseId, setCourseId] = useState<string | null>(null);
 
-  // Check if user has purchased the course
+  // Check if user has purchased the course - only check once per course
   useEffect(() => {
     async function checkPurchase() {
       if (!lessonData?.module?.course?.id) {
@@ -79,10 +80,32 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
         return;
       }
 
+      const currentCourseId = lessonData.module.course.id;
+      
+      // Check localStorage cache first
+      const cacheKey = `purchased_${currentCourseId}_${user?.id}`;
+      const cachedPurchase = localStorage.getItem(cacheKey);
+      
+      if (cachedPurchase === 'true') {
+        console.log('Using cached purchase status for course', currentCourseId);
+        setHasPurchased(true);
+        setCourseId(currentCourseId);
+        setCheckingPurchase(false);
+        return;
+      }
+      
+      // If we already checked this course, don't check again
+      if (courseId === currentCourseId && !checkingPurchase) {
+        return;
+      }
+
+      setCourseId(currentCourseId);
+      setCheckingPurchase(true);
+
       if (isAuthenticated && user && accessToken) {
         try {
           const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/api/payment/stripe/purchase-history/${user.id}`,
+            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/payment/stripe/purchase-history/${user.id}`,
             {
               headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -92,25 +115,47 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
 
           if (response.ok) {
             const data = await response.json();
-            const purchases = data.data || data;
-            const purchased = Array.isArray(purchases) && purchases.some((p: any) => p.courseId === lessonData.module.course.id);
+            console.log('Purchase history raw response:', data);
+            
+            // Backend returns the array directly, not wrapped in { data: [...] }
+            const purchases = Array.isArray(data) ? data : (data.data || data);
+            console.log('Purchases array:', purchases);
+            
+            const purchased = Array.isArray(purchases) && purchases.some((p: any) => {
+              console.log('Checking purchase:', p, 'against courseId:', currentCourseId);
+              return p.courseId === currentCourseId;
+            });
+            
+            console.log('Has purchased course', currentCourseId, ':', purchased);
             setHasPurchased(purchased);
+            
+            // Cache the result in localStorage
+            if (purchased) {
+              localStorage.setItem(cacheKey, 'true');
+            }
+          } else {
+            console.error('Purchase check failed:', response.status);
+            setHasPurchased(false);
           }
         } catch (error) {
           console.error('Failed to check purchase:', error);
+          setHasPurchased(false);
         }
+      } else {
+        setHasPurchased(false);
       }
       setCheckingPurchase(false);
     }
 
     checkPurchase();
-  }, [lessonData, isAuthenticated, user, accessToken]);
+  }, [lessonData?.module?.course?.id, isAuthenticated, user, accessToken]);
 
   useEffect(() => {
     const loadLesson = async () => {
       try {
-        // Always fetch from API to get full navigation structure
-        const response = await fetch(`/api/lessons/${lessonId}`);
+        // Fetch directly from backend API
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+        const response = await fetch(`${apiUrl}/courses/lessons/${lessonId}`);
         const result = await response.json();
         
         console.log('API Response:', result);
@@ -150,21 +195,9 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
     return allLessons[0].id === checkLessonId;
   };
 
-  // Check if user is trying to access a locked lesson
-  useEffect(() => {
-    if (!loading && !checkingPurchase && lessonData) {
-      const isFirst = isFirstLesson(lessonId);
-      
-      // If user hasn't purchased and trying to access non-free lesson, redirect
-      if (!hasPurchased && !isFirst) {
-        const firstLesson = getFirstLessonId();
-        if (firstLesson && firstLesson !== lessonId) {
-          alert('This lesson is locked. Please purchase the course to access all lessons.');
-          router.push(`/video-player/${firstLesson}`);
-        }
-      }
-    }
-  }, [loading, checkingPurchase, hasPurchased, lessonData, lessonId]);
+  // Check if user is trying to access a locked lesson - REMOVED AUTO REDIRECT
+  // We only check on manual navigation (clicking Next/Previous or lesson links)
+  // This prevents race conditions with the purchase check
 
   const toggleModule = (moduleId: string) => {
     setExpandedModules(prev => {
@@ -179,6 +212,12 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
   };
 
   const navigateToLesson = (newLessonId: string) => {
+    // Don't block navigation if still checking purchase
+    if (checkingPurchase) {
+      console.log('Still checking purchase, please wait...');
+      return;
+    }
+    
     // Check if user can access this lesson
     if (!hasPurchased && !isFirstLesson(newLessonId)) {
       alert('This lesson is locked. Please purchase the course to access all lessons.');
@@ -215,6 +254,12 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
 
   const handleNext = () => {
     if (!lessonData) return;
+    
+    // Don't allow navigation if still checking purchase
+    if (checkingPurchase) {
+      console.log('Still checking purchase, please wait...');
+      return;
+    }
     
     const allLessons = getAllLessonsInOrder();
     const currentIndex = allLessons.findIndex(l => l.id === lessonId);

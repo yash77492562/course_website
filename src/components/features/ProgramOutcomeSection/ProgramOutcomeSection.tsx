@@ -55,12 +55,13 @@ export function ProgramOutcomeSection({ outcomes, modules }: ProgramOutcomeSecti
                   key={lesson.id}
                   onClick={() => handleLessonClick(lesson.id)}
                   className="curriculum-lesson-button"
+                  style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
                 >
-                  <span className="lesson-icon">
+                  <span className="lesson-icon" style={{ flexShrink: 0, cursor: 'pointer' }}>
                     {lesson.contentType === 'PDF' ? '📄' : '🎥'}
                   </span>
-                  <span className="lesson-title">{lesson.title}</span>
-                  <span className="lesson-arrow">→</span>
+                  <span className="lesson-title" style={{ flex: 1, cursor: 'pointer' }}>{lesson.title}</span>
+                  <span className="lesson-arrow" style={{ flexShrink: 0, cursor: 'pointer' }}>→</span>
                 </button>
               ))}
           </div>
@@ -87,24 +88,25 @@ export function ProgramOutcomeSection({ outcomes, modules }: ProgramOutcomeSecti
                     key={lesson.id}
                     onClick={() => handleLessonClick(lesson.id)}
                     className="curriculum-lesson-button"
+                    style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
                   >
-                    <span className="lesson-icon">
+                    <span className="lesson-icon" style={{ flexShrink: 0, cursor: 'pointer' }}>
                       {lesson.contentType === 'PDF' ? '📄' : '🎥'}
                     </span>
-                    <span className="lesson-title">{lesson.title}</span>
-                    <span className="lesson-arrow">→</span>
+                    <span className="lesson-title" style={{ flex: 1, cursor: 'pointer' }}>{lesson.title}</span>
+                    <span className="lesson-arrow" style={{ flexShrink: 0, cursor: 'pointer' }}>→</span>
                   </button>
                 );
               }
               
               // Other lessons are locked
               return (
-                <div key={lesson.id} className="curriculum-lesson-locked">
-                  <span className="lesson-icon">
+                <div key={lesson.id} className="curriculum-lesson-locked" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span className="lesson-icon" style={{ flexShrink: 0 }}>
                     {lesson.contentType === 'PDF' ? '📄' : '🎥'}
                   </span>
-                  <span className="lesson-title">{lesson.title}</span>
-                  <span className="lesson-lock">🔒</span>
+                  <span className="lesson-title" style={{ flex: 1 }}>{lesson.title}</span>
+                  <span className="lesson-lock" style={{ flexShrink: 0 }}>🔒</span>
                 </div>
               );
             })}
@@ -218,6 +220,7 @@ export function ProgramOutcomeSection({ outcomes, modules }: ProgramOutcomeSecti
           font-size: 0.9rem;
           color: var(--text-primary);
           font-weight: 400;
+          cursor: pointer;
         }
 
         .lesson-arrow {
@@ -225,6 +228,7 @@ export function ProgramOutcomeSection({ outcomes, modules }: ProgramOutcomeSecti
           font-size: 1.2rem;
           opacity: 0;
           transition: opacity 0.2s;
+          flex-shrink: 0;
         }
 
         .curriculum-lesson-button:hover .lesson-arrow {

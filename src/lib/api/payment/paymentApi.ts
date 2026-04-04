@@ -10,6 +10,7 @@ interface CreateOrderResponse {
   orderId: string;
   clientSecret: string;
   paymentIntentId: string;
+  checkoutUrl?: string; // Stripe Checkout URL
   order: {
     id: string;
     amount: number;

@@ -19,6 +19,7 @@ class AuthApiClient {
    * Login user
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
+    console.log('🔐 Calling login API...');
     const response = await fetch(`${this.baseURL}/auth/login`, {
       method: 'POST',
       headers: {
@@ -27,12 +28,16 @@ class AuthApiClient {
       body: JSON.stringify(credentials),
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Login failed');
+    const result = await response.json();
+
+    // Check if the response indicates failure
+    if (!response.ok || !result.success) {
+      console.error('❌ Login API failed:', result.message);
+      throw new Error(result.message || 'Login failed');
     }
 
-    return await response.json();
+    console.log('✅ Login API successful');
+    return result;
   }
 
   /**
@@ -47,18 +52,21 @@ class AuthApiClient {
       body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Registration failed');
+    const result = await response.json();
+
+    // Check if the response indicates failure
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || 'Registration failed');
     }
 
-    return await response.json();
+    return result;
   }
 
   /**
    * Refresh access token using refresh token
    */
   async refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
+    console.log('🔄 Calling refresh token API...');
     const response = await fetch(`${this.baseURL}/auth/refresh`, {
       method: 'POST',
       headers: {
@@ -68,16 +76,20 @@ class AuthApiClient {
     });
 
     if (!response.ok) {
+      console.error('❌ Refresh token API failed');
       throw new Error('Token refresh failed');
     }
 
-    return await response.json();
+    const result = await response.json();
+    console.log('✅ Refresh token API successful');
+    return result;
   }
 
   /**
    * Get current user profile
    */
   async getProfile(accessToken: string): Promise<any> {
+    console.log('👤 Calling profile API with access token:', accessToken.substring(0, 20) + '...');
     const response = await fetch(`${this.baseURL}/auth/profile`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -85,10 +97,13 @@ class AuthApiClient {
     });
 
     if (!response.ok) {
+      console.error('❌ Profile API failed');
       throw new Error('Failed to fetch profile');
     }
 
-    return await response.json();
+    const result = await response.json();
+    console.log('✅ Profile API successful');
+    return result;
   }
 
   /**

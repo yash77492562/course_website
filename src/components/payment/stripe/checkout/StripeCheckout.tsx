@@ -207,10 +207,10 @@ export default function StripeCheckout({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    createOrder();
+    createOrderAndRedirect();
   }, [courseId, userId]);
 
-  const createOrder = async () => {
+  const createOrderAndRedirect = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -220,13 +220,15 @@ export default function StripeCheckout({
         currency: 'usd',
       });
 
-      setClientSecret(response.clientSecret);
-      setOrderId(response.orderId);
-      setAmount(response.order.amount);
+      // Redirect to Stripe Checkout
+      if (response.checkoutUrl) {
+        window.location.href = response.checkoutUrl;
+      } else {
+        throw new Error('No checkout URL received');
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to create order');
       onError?.(err.message);
-    } finally {
       setLoading(false);
     }
   };
@@ -273,7 +275,7 @@ export default function StripeCheckout({
       <div className="checkout-error">
         <h3>⚠️ Error</h3>
         <p>{error}</p>
-        <button onClick={createOrder} className="retry-button">
+        <button onClick={createOrderAndRedirect} className="retry-button">
           Try Again
         </button>
 

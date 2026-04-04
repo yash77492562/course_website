@@ -38,7 +38,6 @@ export interface ApiResponse<T = any> {
 
 export interface LoginResponse extends ApiResponse {
   data: {
-    user: User;
     access_token: string;
     refresh_token: string;
   };

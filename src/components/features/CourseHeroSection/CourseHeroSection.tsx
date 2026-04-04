@@ -158,7 +158,7 @@ export function CourseHeroSection({ programData }: CourseHeroSectionProps) {
         .pricing-title{font-size:.85rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
         .pricing-small{color:var(--text-muted);font-size:.9rem;line-height:1.5}
         .pricing-pay{width:100%;justify-content:center;margin:14px 0}
-        .pricing-badges{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+        .pricing-badges{display:flex;flex-direction:column;gap:12px;margin-top:20px}
         .badge-pill{font-size:.85rem;color:var(--text-primary);background:var(--grey-50);border:1px solid #e2e8f0;border-radius:999px;padding:8px 10px}
         .modal{position:fixed;inset:0;display:none;z-index:2000}
         .modal:not(.hidden){display:block}

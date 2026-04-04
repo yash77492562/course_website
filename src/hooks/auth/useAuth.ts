@@ -16,6 +16,9 @@ interface UseAuthReturn {
   refreshAccessToken: () => Promise<void>;
 }
 
+// Global refresh promise to prevent race conditions
+let refreshPromise: Promise<void> | null = null;
+
 export function useAuth(): UseAuthReturn {
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -23,11 +26,20 @@ export function useAuth(): UseAuthReturn {
 
   /**
    * Refresh access token using refresh token
+   * Uses a global promise to prevent concurrent refresh requests
    */
   const refreshAccessToken = useCallback(async () => {
+    // If refresh is already in progress, wait for it to complete
+    if (refreshPromise) {
+      console.log('⏸️ Refresh already in progress, waiting for it to complete...');
+      await refreshPromise;
+      return;
+    }
+
     const refreshToken = tokenManager.getRefreshToken();
     
     if (!refreshToken) {
+      console.log('⚠️ No refresh token found');
       setUser(null);
       setAccessToken(null);
       return;
@@ -35,6 +47,7 @@ export function useAuth(): UseAuthReturn {
 
     // Check if refresh token is expired
     if (tokenManager.isTokenExpired(refreshToken)) {
+      console.log('⚠️ Refresh token expired - user must login again');
       tokenManager.clearAll();
       setUser(null);
       setAccessToken(null);
@@ -42,24 +55,67 @@ export function useAuth(): UseAuthReturn {
     }
 
     try {
-      const response = await authApi.refreshToken(refreshToken);
-      
-      if (response.success && response.data?.access_token) {
-        setAccessToken(response.data.access_token);
-        
-        // Fetch user profile with new access token
-        const profileResponse = await authApi.getProfile(response.data.access_token);
-        if (profileResponse.success && profileResponse.data) {
-          setUser(profileResponse.data);
+      // Create a new refresh promise
+      refreshPromise = (async () => {
+        // Store old token for comparison
+        const oldToken = accessToken;
+        console.log('🔄 Refreshing access token...');
+        if (oldToken) {
+          console.log('📝 Old access token:', oldToken.substring(0, 50) + '...');
+          // Decode old token to see JTI
+          try {
+            const oldPayload = JSON.parse(atob(oldToken.split('.')[1]));
+            console.log('🔑 Old JTI:', oldPayload.jti);
+          } catch (e) {}
         }
-      }
+        
+        const response = await authApi.refreshToken(refreshToken);
+        
+        if (response.success && response.data?.access_token) {
+          const newToken = response.data.access_token;
+          console.log('✅ New access token received:', newToken.substring(0, 50) + '...');
+          
+          // Decode new token to see JTI
+          let newJti = 'unknown';
+          try {
+            const newPayload = JSON.parse(atob(newToken.split('.')[1]));
+            newJti = newPayload.jti;
+            console.log('🔑 New JTI:', newJti);
+          } catch (e) {}
+          
+          const tokensMatch = oldToken === newToken;
+          console.log('🔄 Token changed:', tokensMatch ? 'NO ❌' : 'YES ✅');
+          
+          // Show last 10 chars of each token for comparison
+          if (oldToken) {
+            console.log('📊 Token comparison:');
+            console.log('   Old token ends with:', oldToken.slice(-10));
+            console.log('   New token ends with:', newToken.slice(-10));
+            console.log('   Tokens are identical:', tokensMatch ? 'YES (BUG!)' : 'NO (CORRECT)');
+          }
+          
+          setAccessToken(newToken);
+          
+          // Fetch user profile with new access token
+          console.log('👤 Fetching user profile with new access token...');
+          const profileResponse = await authApi.getProfile(newToken);
+          if (profileResponse.success && profileResponse.data) {
+            setUser(profileResponse.data);
+            console.log('✅ User profile refreshed');
+          }
+        }
+      })();
+
+      await refreshPromise;
     } catch (error) {
-      console.error('Token refresh failed:', error);
+      console.error('❌ Token refresh failed:', error);
       tokenManager.clearAll();
       setUser(null);
       setAccessToken(null);
+    } finally {
+      refreshPromise = null; // Clear the promise
     }
-  }, []);
+  }, [accessToken]);
 
   /**
    * Initialize auth state on mount
@@ -84,21 +140,28 @@ export function useAuth(): UseAuthReturn {
   useEffect(() => {
     if (!accessToken) return;
 
-    // Refresh 5 minutes before expiry
+    // Refresh 10 seconds before expiry (since access token is only 1 min for testing)
     const checkInterval = setInterval(() => {
       try {
         const payload = JSON.parse(atob(accessToken.split('.')[1]));
         const exp = payload.exp * 1000;
         const timeUntilExpiry = exp - Date.now();
         
-        // Refresh if less than 5 minutes remaining
-        if (timeUntilExpiry < 5 * 60 * 1000) {
+        console.log('⏰ Token check - Time until expiry:', Math.floor(timeUntilExpiry / 1000), 'seconds');
+        console.log('📝 Current access token:', accessToken.substring(0, 20) + '...');
+        
+        // Refresh if less than 10 seconds remaining
+        if (timeUntilExpiry < 10 * 1000 && timeUntilExpiry > 0) {
+          console.log('⚠️ Access token expiring soon - auto-refreshing...');
+          refreshAccessToken();
+        } else if (timeUntilExpiry <= 0) {
+          console.log('❌ Access token expired - refreshing now...');
           refreshAccessToken();
         }
       } catch (error) {
-        console.error('Token check failed:', error);
+        console.error('❌ Token check failed:', error);
       }
-    }, 60 * 1000); // Check every minute
+    }, 5 * 1000); // Check every 5 seconds for testing (1min tokens)
 
     return () => clearInterval(checkInterval);
   }, [accessToken, refreshAccessToken]);
@@ -114,14 +177,25 @@ export function useAuth(): UseAuthReturn {
         throw new Error(response.message || 'Login failed');
       }
 
-      const { user: userData, access_token, refresh_token } = response.data;
+      const { access_token, refresh_token } = response.data;
+
+      console.log('🔐 Login successful');
+      console.log('📝 Access token received:', access_token.substring(0, 20) + '...');
+      console.log('📝 Refresh token stored in localStorage');
 
       // Store tokens
       setAccessToken(access_token);
       tokenManager.setRefreshToken(refresh_token);
-      setUser(userData);
+
+      // Fetch user profile with access token
+      console.log('👤 Fetching user profile with access token...');
+      const profileResponse = await authApi.getProfile(access_token);
+      if (profileResponse.success && profileResponse.data) {
+        setUser(profileResponse.data);
+        console.log('✅ User profile loaded:', profileResponse.data.email);
+      }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('❌ Login error:', error);
       throw error;
     }
   }, []);
@@ -137,14 +211,25 @@ export function useAuth(): UseAuthReturn {
         throw new Error(response.message || 'Registration failed');
       }
 
-      const { user: userData, access_token, refresh_token } = response.data;
+      const { access_token, refresh_token } = response.data;
+
+      console.log('🔐 Registration successful');
+      console.log('📝 Access token received:', access_token.substring(0, 20) + '...');
+      console.log('📝 Refresh token stored in localStorage');
 
       // Store tokens
       setAccessToken(access_token);
       tokenManager.setRefreshToken(refresh_token);
-      setUser(userData);
+
+      // Fetch user profile with access token
+      console.log('👤 Fetching user profile with access token...');
+      const profileResponse = await authApi.getProfile(access_token);
+      if (profileResponse.success && profileResponse.data) {
+        setUser(profileResponse.data);
+        console.log('✅ User profile loaded:', profileResponse.data.email);
+      }
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('❌ Registration error:', error);
       throw error;
     }
   }, []);

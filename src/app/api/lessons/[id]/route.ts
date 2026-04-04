@@ -8,9 +8,9 @@ export async function GET(
     const { id: lessonId } = await params;
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
     
-    console.log(`[Lesson API] Fetching lesson ${lessonId} from ${apiUrl}/api/lessons/${lessonId}`);
+    console.log(`[Lesson API] Fetching lesson ${lessonId} from ${apiUrl}/courses/lessons/${lessonId}`);
     
-    const response = await fetch(`${apiUrl}/api/lessons/${lessonId}`, {
+    const response = await fetch(`${apiUrl}/courses/lessons/${lessonId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

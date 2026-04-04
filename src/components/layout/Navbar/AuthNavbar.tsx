@@ -143,18 +143,19 @@ export function AuthNavbar() {
 
         {showDropdown && (
           <div 
-            className="absolute right-0 rounded-lg shadow-lg border py-2"
+            className="absolute right-0 rounded-lg shadow-lg border"
             style={{
-              marginTop: '8px',
-              width: '256px',
+              marginTop: '16px',
+              width: '220px',
               background: 'rgba(17,24,39,0.95)',
               backdropFilter: 'blur(12px)',
-              borderColor: 'rgba(14,165,233,0.2)'
+              borderColor: 'rgba(14,165,233,0.2)',
+              padding: '12px'
             }}
           >
             <div 
-              className="px-4 py-3 border-b"
-              style={{ borderColor: 'rgba(255,255,255,0.1)' }}
+              className="px-3 py-3 border-b"
+              style={{ borderColor: 'rgba(255,255,255,0.1)', marginBottom: '12px' }}
             >
               <p className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.95)' }}>
                 {user?.firstName} {user?.lastName}
@@ -164,67 +165,67 @@ export function AuthNavbar() {
               </p>
             </div>
             
-            <div className="py-2">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <Link 
-                href="/my-courses" 
-                className="flex items-center gap-3 px-4 py-2 text-sm transition-colors no-underline"
-                style={{ color: 'rgba(255,255,255,0.8)' }}
+                href="/courses" 
+                className="flex items-center px-3 py-3 text-sm transition-colors no-underline rounded-md"
+                style={{ color: 'rgba(255,255,255,0.85)', gap: '14px' }}
                 onClick={() => setShowDropdown(false)}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'transparent';
                 }}
               >
-                <span className="text-lg">📚</span>
+                <span style={{ fontSize: '18px' }}>🎓</span>
+                <span>Courses</span>
+              </Link>
+              
+              <Link 
+                href="/my-courses" 
+                className="flex items-center px-3 py-3 text-sm transition-colors no-underline rounded-md"
+                style={{ color: 'rgba(255,255,255,0.85)', gap: '14px' }}
+                onClick={() => setShowDropdown(false)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                <span style={{ fontSize: '18px' }}>📚</span>
                 <span>My Courses</span>
               </Link>
               
               <Link 
-                href="/purchased-courses" 
-                className="flex items-center gap-3 px-4 py-2 text-sm transition-colors no-underline"
-                style={{ color: 'rgba(255,255,255,0.8)' }}
-                onClick={() => setShowDropdown(false)}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                }}
-              >
-                <span className="text-lg">✅</span>
-                <span>Purchased Courses</span>
-              </Link>
-              
-              <Link 
                 href="/purchase-history" 
-                className="flex items-center gap-3 px-4 py-2 text-sm transition-colors no-underline"
-                style={{ color: 'rgba(255,255,255,0.8)' }}
+                className="flex items-center px-3 py-3 text-sm transition-colors no-underline rounded-md"
+                style={{ color: 'rgba(255,255,255,0.85)', gap: '14px' }}
                 onClick={() => setShowDropdown(false)}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'transparent';
                 }}
               >
-                <span className="text-lg">📜</span>
+                <span style={{ fontSize: '18px' }}>🧾</span>
                 <span>Purchase History</span>
               </Link>
             </div>
             
             <div 
-              className="border-t pt-2"
-              style={{ borderColor: 'rgba(255,255,255,0.1)' }}
+              className="border-t"
+              style={{ borderColor: 'rgba(255,255,255,0.1)', marginTop: '12px', paddingTop: '12px' }}
             >
               <button 
                 onClick={() => {
                   logout();
                   setShowDropdown(false);
                 }}
-                className="flex items-center gap-3 px-4 py-2 text-sm transition-colors w-full text-left"
-                style={{ color: '#ef4444' }}
+                className="flex items-center px-3 py-3 text-sm transition-colors w-full text-left rounded-md"
+                style={{ color: '#ef4444', gap: '14px' }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'rgba(239,68,68,0.1)';
                 }}
@@ -232,7 +233,7 @@ export function AuthNavbar() {
                   e.currentTarget.style.background = 'transparent';
                 }}
               >
-                <span className="text-lg">🚪</span>
+                <span style={{ fontSize: '18px' }}>🚪</span>
                 <span>Logout</span>
               </button>
             </div>
