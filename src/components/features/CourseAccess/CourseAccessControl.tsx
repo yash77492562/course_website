@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/auth/useAuth';
 import { useState, useEffect, createContext, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { useCourseAccess } from '@/hooks/course/useCourseAccess';
 
 // Dynamically import StripeCheckout to avoid SSR issues
 const StripeCheckout = dynamic(
@@ -22,6 +23,7 @@ interface PayNowContextType {
   handlePayNow: () => void;
   hasPurchased: boolean;
   isAuthenticated: boolean;
+  showPaymentButtons: boolean; // Add this flag
 }
 
 const PayNowContext = createContext<PayNowContextType | undefined>(undefined);
@@ -40,41 +42,40 @@ export function CourseAccessControl({
   coursePrice,
   children,
 }: CourseAccessControlProps) {
-  const { user, isAuthenticated, accessToken } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const router = useRouter();
-  const [hasPurchased, setHasPurchased] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
+  
+  // Set flag to skip cache on first load
+  useEffect(() => {
+    sessionStorage.setItem(`skip_cache_${courseId}`, 'true');
+  }, [courseId]);
+  
+  // Use the new centralized access hook
+  const { hasAccess: hasPurchased, isLoading: isChecking, clearCache } = useCourseAccess(courseId);
+  
   const [showCheckout, setShowCheckout] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
+  // Debug logging
   useEffect(() => {
-    async function checkAccess() {
-      if (isAuthenticated && user && accessToken) {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002/api'}/payment/stripe/purchase-history/${user.id}`,
-            {
-              headers: {
-                'Authorization': `Bearer ${accessToken}`,
-              },
-            }
-          );
+    console.log('[CourseAccessControl] ========== STATE UPDATE ==========');
+    console.log('[CourseAccessControl] Course ID:', courseId);
+    console.log('[CourseAccessControl] Is Authenticated:', isAuthenticated);
+    console.log('[CourseAccessControl] User ID:', user?.id);
+    console.log('[CourseAccessControl] Has Purchased:', hasPurchased);
+    console.log('[CourseAccessControl] Is Checking:', isChecking);
+    console.log('[CourseAccessControl] Show Payment Buttons:', !hasPurchased);
+    console.log('[CourseAccessControl] ====================================');
+  }, [courseId, isAuthenticated, user?.id, hasPurchased, isChecking]);
 
-          if (response.ok) {
-            const data = await response.json();
-            const purchases = data.data || data;
-            const purchased = Array.isArray(purchases) && purchases.some((p: any) => p.courseId === courseId);
-            setHasPurchased(purchased);
-          }
-        } catch (error) {
-          console.error('Failed to check purchase:', error);
-        }
-      }
-      setIsChecking(false);
-    }
-
-    checkAccess();
-  }, [courseId, isAuthenticated, user, accessToken]);
+  // Additional debug for context value
+  useEffect(() => {
+    console.log('[CourseAccessControl] 🎯 Context Value Updated:', {
+      hasPurchased,
+      isAuthenticated,
+      showPaymentButtons: !hasPurchased
+    });
+  }, [hasPurchased, isAuthenticated]);
 
   const handlePayNow = () => {
     if (!isAuthenticated) {
@@ -88,8 +89,8 @@ export function CourseAccessControl({
   };
 
   const handleCheckoutSuccess = () => {
-    setHasPurchased(true);
-    setShowCheckout(false);
+    // Refresh the page to update purchase status
+    window.location.reload();
   };
 
   if (isChecking) {
@@ -107,10 +108,11 @@ export function CourseAccessControl({
     handlePayNow,
     hasPurchased,
     isAuthenticated,
+    showPaymentButtons: !hasPurchased, // Don't show if already purchased
   };
 
   return (
-    <PayNowContext.Provider value={contextValue}>
+    <PayNowContext.Provider value={contextValue} key={`access-${hasPurchased}`}>
       {/* Show course content */}
       <div className={showCheckout || showLoginPrompt ? 'opacity-30 pointer-events-none' : ''}>
         {children}

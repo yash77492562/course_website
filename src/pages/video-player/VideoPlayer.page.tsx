@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { useAuth } from '@/hooks/auth/useAuth';
+import { useCourseAccess } from '@/hooks/course/useCourseAccess';
 
 const VideoPlayerWrapper = dynamic(
   () => import('@/components/features/VideoPlayer').then(mod => ({ default: mod.VideoPlayerWrapper })),
@@ -64,91 +64,20 @@ interface VideoPlayerPageProps {
 
 export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
   const router = useRouter();
-  const { user, isAuthenticated, accessToken } = useAuth();
   const [lessonData, setLessonData] = useState<LessonData | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
-  const [hasPurchased, setHasPurchased] = useState(false);
-  const [checkingPurchase, setCheckingPurchase] = useState(true);
   const [courseId, setCourseId] = useState<string | null>(null);
+  
+  // Use the new centralized access hook
+  const { hasAccess: hasPurchased, isLoading: checkingPurchase } = useCourseAccess(courseId);
 
-  // Check if user has purchased the course - only check once per course
+  // Set courseId when lesson data loads
   useEffect(() => {
-    async function checkPurchase() {
-      if (!lessonData?.module?.course?.id) {
-        setCheckingPurchase(false);
-        return;
-      }
-
-      const currentCourseId = lessonData.module.course.id;
-      
-      // Check localStorage cache first
-      const cacheKey = `purchased_${currentCourseId}_${user?.id}`;
-      const cachedPurchase = localStorage.getItem(cacheKey);
-      
-      if (cachedPurchase === 'true') {
-        console.log('Using cached purchase status for course', currentCourseId);
-        setHasPurchased(true);
-        setCourseId(currentCourseId);
-        setCheckingPurchase(false);
-        return;
-      }
-      
-      // If we already checked this course, don't check again
-      if (courseId === currentCourseId && !checkingPurchase) {
-        return;
-      }
-
-      setCourseId(currentCourseId);
-      setCheckingPurchase(true);
-
-      if (isAuthenticated && user && accessToken) {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002'}/payment/stripe/purchase-history/${user.id}`,
-            {
-              headers: {
-                'Authorization': `Bearer ${accessToken}`,
-              },
-            }
-          );
-
-          if (response.ok) {
-            const data = await response.json();
-            console.log('Purchase history raw response:', data);
-            
-            // Backend returns the array directly, not wrapped in { data: [...] }
-            const purchases = Array.isArray(data) ? data : (data.data || data);
-            console.log('Purchases array:', purchases);
-            
-            const purchased = Array.isArray(purchases) && purchases.some((p: any) => {
-              console.log('Checking purchase:', p, 'against courseId:', currentCourseId);
-              return p.courseId === currentCourseId;
-            });
-            
-            console.log('Has purchased course', currentCourseId, ':', purchased);
-            setHasPurchased(purchased);
-            
-            // Cache the result in localStorage
-            if (purchased) {
-              localStorage.setItem(cacheKey, 'true');
-            }
-          } else {
-            console.error('Purchase check failed:', response.status);
-            setHasPurchased(false);
-          }
-        } catch (error) {
-          console.error('Failed to check purchase:', error);
-          setHasPurchased(false);
-        }
-      } else {
-        setHasPurchased(false);
-      }
-      setCheckingPurchase(false);
+    if (lessonData?.module?.course?.id) {
+      setCourseId(lessonData.module.course.id);
     }
-
-    checkPurchase();
-  }, [lessonData?.module?.course?.id, isAuthenticated, user, accessToken]);
+  }, [lessonData?.module?.course?.id]);
 
   useEffect(() => {
     const loadLesson = async () => {

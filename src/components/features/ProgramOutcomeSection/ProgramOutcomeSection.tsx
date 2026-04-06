@@ -1,9 +1,10 @@
 'use client';
 
-import { usePayNow } from '@/components/features/CourseAccess/CourseAccessControl';
 import { useRouter } from 'next/navigation';
+import { useCourseAccess } from '@/hooks/course/useCourseAccess';
 
 interface ProgramOutcomeSectionProps {
+  courseId?: string; // Add courseId to check purchase status
   outcomes: string[];
   modules: Array<{
     id?: string;
@@ -18,17 +19,9 @@ interface ProgramOutcomeSectionProps {
   }>;
 }
 
-export function ProgramOutcomeSection({ outcomes, modules }: ProgramOutcomeSectionProps) {
+export function ProgramOutcomeSection({ courseId, outcomes, modules }: ProgramOutcomeSectionProps) {
   const router = useRouter();
-  
-  // Try to get PayNow context, but don't fail if not available
-  let hasPurchased = false;
-  try {
-    const payNowContext = usePayNow();
-    hasPurchased = payNowContext.hasPurchased;
-  } catch (e) {
-    // Not within CourseAccessControl, that's okay
-  }
+  const { hasAccess: hasPurchased } = useCourseAccess(courseId || null);
 
   const outcomesHtml = (outcomes || []).map((outcome, index) => (
     <li key={index}>{outcome}</li>

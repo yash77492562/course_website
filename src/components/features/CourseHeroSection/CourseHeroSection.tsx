@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useCourseAccess } from '@/hooks/course/useCourseAccess';
 
 interface CourseHeroSectionProps {
+  courseId?: string; // Add courseId to check purchase status
   programData: {
     badge: string;
     headline: string;
@@ -24,16 +26,27 @@ function escapeHtml(str = "") {
     .replaceAll("'", "&#039;");
 }
 
-export function CourseHeroSection({ programData }: CourseHeroSectionProps) {
-  const [showModal, setShowModal] = useState(false);
+export function CourseHeroSection({ courseId, programData }: CourseHeroSectionProps) {
+  const router = useRouter();
+  const { hasAccess, isLoading } = useCourseAccess(courseId || null);
+
+  // Debug logging
+  console.log('[CourseHeroSection] Render state:', {
+    courseId,
+    hasAccess,
+    isLoading,
+    showPayButtons: !hasAccess && !isLoading
+  });
 
   const handleTalkToUs = (e: React.MouseEvent) => {
     e.preventDefault();
-    setShowModal(true);
+    router.push('/contact');
   };
 
-  const closeModal = () => {
-    setShowModal(false);
+  const handleStartLearning = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // Navigate to the first lesson of the course
+    router.push(`/courses/${courseId}`);
   };
 
   const highlightsHtml = (programData.highlights || []).map((tag, index) => (
@@ -66,82 +79,81 @@ export function CourseHeroSection({ programData }: CourseHeroSectionProps) {
 
             <div className="program-tags">{highlightsHtml}</div>
 
-            <div className="program-cta-row">
-              <a className="btn-primary" href={escapeHtml(programData.checkoutUrl)} target="_blank" rel="noopener noreferrer">Pay Now</a>
-              <a className="btn-outline-dark" href="#talk" onClick={handleTalkToUs}>Talk to us first</a>
-            </div>
+            {!isLoading && (
+              <div className="program-cta-row">
+                {hasAccess ? (
+                  <>
+                    <button className="btn-primary" onClick={handleStartLearning}>
+                      Start Learning →
+                    </button>
+                    <p className="access-note">✅ You have full access to this course</p>
+                  </>
+                ) : (
+                  <>
+                    <a className="btn-primary" href={escapeHtml(programData.checkoutUrl)} target="_blank" rel="noopener noreferrer">Pay Now</a>
+                    <a className="btn-outline-dark" href="#talk" onClick={handleTalkToUs}>Talk to us first</a>
+                  </>
+                )}
+              </div>
+            )}
 
-            <p className="trust-note">Secure checkout • Seat reserved after payment • Limited cohort size</p>
+            {!hasAccess && !isLoading && (
+              <p className="trust-note">Secure checkout • Seat reserved after payment • Limited cohort size</p>
+            )}
           </div>
 
           <div className="program-hero-right">
-            <div className="pricing-card reveal">
-              <div className="pricing-card-top">
-                <div className="pricing-title">Reserve your seat</div>
-                <div className="pricing-price">{escapeHtml(programData.price)}</div>
-                <div className="pricing-small">Seats are limited to keep mentoring quality high.</div>
+            {!isLoading && (
+              <div className="pricing-card reveal">
+                {hasAccess ? (
+                  <>
+                    <div className="pricing-card-top">
+                      <div className="pricing-title">You're enrolled!</div>
+                      <div className="pricing-enrolled">✅ Full Access</div>
+                      <div className="pricing-small">Start learning and build your portfolio.</div>
+                    </div>
+                    <button className="btn-primary pricing-pay" onClick={handleStartLearning}>
+                      Continue Learning
+                    </button>
+                    <div className="pricing-badges">
+                      <div className="badge-pill">✅ Career support included</div>
+                      <div className="badge-pill">✅ Portfolio projects</div>
+                      <div className="badge-pill">✅ Interview prep</div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="pricing-card-top">
+                      <div className="pricing-title">Reserve your seat</div>
+                      <div className="pricing-price">{escapeHtml(programData.price)}</div>
+                      <div className="pricing-small">Seats are limited to keep mentoring quality high.</div>
+                    </div>
+                    <a className="btn-primary pricing-pay" href={escapeHtml(programData.checkoutUrl)} target="_blank" rel="noopener noreferrer">Pay Now</a>
+                    <div className="pricing-badges">
+                      <div className="badge-pill">✅ Career support included</div>
+                      <div className="badge-pill">✅ Portfolio projects</div>
+                      <div className="badge-pill">✅ Interview prep</div>
+                    </div>
+                  </>
+                )}
               </div>
-              <a className="btn-primary pricing-pay" href={escapeHtml(programData.checkoutUrl)} target="_blank" rel="noopener noreferrer">Pay Now</a>
-              <div className="pricing-badges">
-                <div className="badge-pill">✅ Career support included</div>
-                <div className="badge-pill">✅ Portfolio projects</div>
-                <div className="badge-pill">✅ Interview prep</div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Modal */}
-      <div className={`modal ${showModal ? '' : 'hidden'}`} aria-hidden={!showModal} id="talk-modal">
-        <div className="modal-backdrop" onClick={closeModal}></div>
-        <div className="modal-card" role="dialog" aria-modal="true" aria-labelledby="talk-title">
-          <h3 id="talk-title">Talk to us first</h3>
-          <p className="modal-sub">Tell us a bit about your goal — we'll reply within 24 hours.</p>
-
-          <form action="https://formspree.io/f/xjgenqzk" method="POST">
-            <label>
-              Name
-              <input name="name" required />
-            </label>
-
-            <label>
-              Email
-              <input name="email" type="email" required />
-            </label>
-
-            <label>
-              Phone (optional)
-              <input name="phone" />
-            </label>
-
-            <label>
-              Which program?
-              <input name="program" readOnly value={escapeHtml(programData.badge)} />
-            </label>
-
-            <label>
-              Message
-              <textarea name="message" rows={4} placeholder="What are you trying to achieve?" required></textarea>
-            </label>
-
-            <button className="btn-primary" type="submit">Send</button>
-          </form>
-
-          <button className="modal-x" onClick={closeModal} aria-label="Close">×</button>
-        </div>
-      </div>
-
-      {/* Sticky pay bar */}
-      <div className="sticky-pay">
-        <div className="sticky-pay-inner">
-          <div className="sticky-left">
-            <div className="sticky-title">{escapeHtml(programData.badge)}</div>
-            <div className="sticky-sub">Spots left: {escapeHtml(String(programData.spotsLeft))} • {escapeHtml(programData.price)}</div>
+      {/* Sticky pay bar - only show if user hasn't purchased */}
+      {!isLoading && !hasAccess && (
+        <div className="sticky-pay">
+          <div className="sticky-pay-inner">
+            <div className="sticky-left">
+              <div className="sticky-title">{escapeHtml(programData.badge)}</div>
+              <div className="sticky-sub">Spots left: {escapeHtml(String(programData.spotsLeft))} • {escapeHtml(programData.price)}</div>
+            </div>
+            <a className="btn-primary" href={escapeHtml(programData.checkoutUrl)} target="_blank" rel="noopener noreferrer">Pay Now</a>
           </div>
-          <a className="btn-primary" href={escapeHtml(programData.checkoutUrl)} target="_blank" rel="noopener noreferrer">Pay Now</a>
         </div>
-      </div>
+      )}
 
       <style jsx>{`
         .program-hero{padding:120px 5vw 70px;background:var(--grey-50)}
@@ -152,24 +164,16 @@ export function CourseHeroSection({ programData }: CourseHeroSectionProps) {
         .meta-v{font-family:'DM Sans',sans-serif;font-weight:700;color:var(--text-primary);font-size:1.05rem}
         .pricing-price{font-family:'DM Sans',sans-serif;font-size:2.2rem;font-weight:800;margin:8px 0 6px;letter-spacing:-0.5px}
         .program-tags{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 22px}
-        .program-cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}
+        .program-cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;align-items:center}
         .trust-note{margin-top:14px;color:var(--text-muted);font-size:.9rem}
+        .access-note{margin:0;color:#10b981;font-size:.95rem;font-weight:500}
+        .pricing-enrolled{font-family:'DM Sans',sans-serif;font-size:1.8rem;font-weight:700;margin:8px 0 6px;color:#10b981}
         .pricing-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:22px;position:sticky;top:92px}
         .pricing-title{font-size:.85rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
         .pricing-small{color:var(--text-muted);font-size:.9rem;line-height:1.5}
         .pricing-pay{width:100%;justify-content:center;margin:14px 0}
         .pricing-badges{display:flex;flex-direction:column;gap:12px;margin-top:20px}
         .badge-pill{font-size:.85rem;color:var(--text-primary);background:var(--grey-50);border:1px solid #e2e8f0;border-radius:999px;padding:8px 10px}
-        .modal{position:fixed;inset:0;display:none;z-index:2000}
-        .modal:not(.hidden){display:block}
-        .modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.45)}
-        .modal-card{position:relative;max-width:520px;margin:90px auto 0;background:#fff;border-radius:16px;padding:22px 20px;border:1px solid #e2e8f0;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-        .modal-sub{color:var(--text-muted);margin:8px 0 14px;line-height:1.5}
-        .modal-card label{display:block;font-size:.85rem;color:var(--text-primary);margin:10px 0}
-        .modal-card input,.modal-card textarea{width:100%;margin-top:6px;padding:10px 12px;border:1px solid #d1d5db;border-radius:10px;font-family:'DM Sans',sans-serif}
-        .modal-card textarea{resize:vertical}
-        .modal-x{position:absolute;top:10px;right:12px;border:0;background:transparent;font-size:28px;line-height:1;cursor:pointer;color:var(--text-muted)}
-        .modal-x:hover{color:var(--text-primary)}
         .sticky-pay{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-top:1px solid #e2e8f0;z-index:999}
         .sticky-pay-inner{max-width:1200px;margin:0 auto;padding:12px 5vw;display:flex;justify-content:space-between;align-items:center;gap:14px}
         .sticky-title{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0;color:var(--text-primary)}

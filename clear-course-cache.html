@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clear Course Access Cache</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f7f8fa;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #0f172a;
+      margin-bottom: 10px;
+    }
+    p {
+      color: #64748b;
+      line-height: 1.6;
+    }
+    button {
+      background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(14, 165, 233, 0.4);
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      display: none;
+    }
+    .result.success {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #10b981;
+    }
+    .result.info {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #3b82f6;
+    }
+    .cache-list {
+      background: #f1f5f9;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-family: monospace;
+      font-size: 14px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧹 Clear Course Access Cache</h1>
+    <p>
+      This tool will clear all cached course access data from your browser's localStorage.
+      This is useful if you've purchased a course but the "Pay Now" buttons are still showing.
+    </p>
+    
+    <div id="cacheInfo" class="cache-list"></div>
+    
+    <button onclick="clearCache()">Clear Cache & Reload</button>
+    
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    // Show current cache on load
+    window.addEventListener('DOMContentLoaded', () => {
+      showCurrentCache();
+    });
+
+    function showCurrentCache() {
+      const cacheInfo = document.getElementById('cacheInfo');
+      const cacheKeys = Object.keys(localStorage).filter(key => 
+        key.startsWith('course_access_') || key.startsWith('purchased_')
+      );
+      
+      if (cacheKeys.length === 0) {
+        cacheInfo.innerHTML = '<strong>No course cache found</strong>';
+      } else {
+        cacheInfo.innerHTML = '<strong>Current cache entries:</strong><br>' + 
+          cacheKeys.map(key => `• ${key}`).join('<br>');
+      }
+    }
+
+    function clearCache() {
+      const result = document.getElementById('result');
+      
+      // Find all course-related cache keys
+      const keysToRemove = Object.keys(localStorage).filter(key => 
+        key.startsWith('course_access_') || 
+        key.startsWith('purchased_') ||
+        key.startsWith('user_purchased_courses')
+      );
+      
+      if (keysToRemove.length === 0) {
+        result.className = 'result info';
+        result.style.display = 'block';
+        result.innerHTML = '✓ No course cache found. Your cache is already clean!';
+        return;
+      }
+      
+      // Remove all course cache
+      keysToRemove.forEach(key => localStorage.removeItem(key));
+      
+      result.className = 'result success';
+      result.style.display = 'block';
+      result.innerHTML = `✓ Successfully cleared ${keysToRemove.length} cache entries!<br><br>Reloading page in 2 seconds...`;
+      
+      // Reload after 2 seconds
+      setTimeout(() => {
+        window.location.href = 'http://localhost:3001/course/69c65b0ab8422af8511ad61d';
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

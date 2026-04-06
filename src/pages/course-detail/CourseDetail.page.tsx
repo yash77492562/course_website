@@ -184,6 +184,19 @@ const programDetails = {
 };
 
 export function CourseDetailPage({ courseId = '1' }: CourseDetailPageProps) {
+  // Map static courseId to actual database courseId
+  // TODO: Replace these with your actual database course IDs
+  const getDatabaseCourseId = (staticId: string) => {
+    const mapping: { [key: string]: string } = {
+      '1': '69c65b0ab8422af8511ad61d', // Replace with your actual Data Analytics course ID
+      '2': 'YOUR_DATA_ENGINEERING_COURSE_ID', // Replace with your actual Data Engineering course ID
+      '3': 'YOUR_DATA_SCIENCE_COURSE_ID', // Replace with your actual Data Science course ID
+    };
+    return mapping[staticId] || staticId;
+  };
+
+  const actualCourseId = getDatabaseCourseId(courseId);
+
   // Map courseId to program key
   const getProgramKey = (id: string) => {
     switch(id) {
@@ -211,6 +224,7 @@ export function CourseDetailPage({ courseId = '1' }: CourseDetailPageProps) {
     <div style={{ paddingTop: '0px' }}>
       {/* 1. Course Program Hero Section */}
       <CourseHeroSection 
+        courseId={actualCourseId}
         programData={{
           badge: p.badge,
           headline: p.headline,
@@ -225,6 +239,7 @@ export function CourseDetailPage({ courseId = '1' }: CourseDetailPageProps) {
 
       {/* 2. Program Outcome & Curriculum Section */}
       <ProgramOutcomeSection 
+        courseId={actualCourseId}
         outcomes={p.outcomes}
         modules={p.modules}
       />

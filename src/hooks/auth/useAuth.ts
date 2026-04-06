@@ -95,6 +95,7 @@ export function useAuth(): UseAuthReturn {
           }
           
           setAccessToken(newToken);
+          tokenManager.setAccessToken(newToken); // Store in tokenManager
           
           // Fetch user profile with new access token
           console.log('👤 Fetching user profile with new access token...');
@@ -136,23 +137,40 @@ export function useAuth(): UseAuthReturn {
 
   /**
    * Auto-refresh access token before expiry
+   * For 1-day tokens, refresh when less than 1 hour remaining
+   * For shorter tokens (testing), refresh when less than 10 seconds remaining
    */
   useEffect(() => {
     if (!accessToken) return;
 
-    // Refresh 10 seconds before expiry (since access token is only 1 min for testing)
     const checkInterval = setInterval(() => {
       try {
         const payload = JSON.parse(atob(accessToken.split('.')[1]));
         const exp = payload.exp * 1000;
         const timeUntilExpiry = exp - Date.now();
+        const secondsUntilExpiry = Math.floor(timeUntilExpiry / 1000);
         
-        console.log('⏰ Token check - Time until expiry:', Math.floor(timeUntilExpiry / 1000), 'seconds');
+        console.log('⏰ Token check - Time until expiry:', secondsUntilExpiry, 'seconds');
         console.log('📝 Current access token:', accessToken.substring(0, 20) + '...');
         
-        // Refresh if less than 10 seconds remaining
-        if (timeUntilExpiry < 10 * 1000 && timeUntilExpiry > 0) {
-          console.log('⚠️ Access token expiring soon - auto-refreshing...');
+        // Determine refresh threshold based on token lifetime
+        const tokenLifetime = exp - (payload.iat * 1000);
+        let refreshThreshold;
+        
+        if (tokenLifetime > 60 * 60 * 1000) {
+          // Token lifetime > 1 hour: refresh when 1 hour remaining
+          refreshThreshold = 60 * 60 * 1000;
+        } else if (tokenLifetime > 10 * 60 * 1000) {
+          // Token lifetime > 10 minutes: refresh when 5 minutes remaining
+          refreshThreshold = 5 * 60 * 1000;
+        } else {
+          // Short-lived token: refresh when 10 seconds remaining
+          refreshThreshold = 10 * 1000;
+        }
+        
+        // Refresh if within threshold or expired
+        if (timeUntilExpiry < refreshThreshold && timeUntilExpiry > 0) {
+          console.log(`⚠️ Access token expiring soon (${secondsUntilExpiry}s remaining) - auto-refreshing...`);
           refreshAccessToken();
         } else if (timeUntilExpiry <= 0) {
           console.log('❌ Access token expired - refreshing now...');
@@ -161,7 +179,7 @@ export function useAuth(): UseAuthReturn {
       } catch (error) {
         console.error('❌ Token check failed:', error);
       }
-    }, 5 * 1000); // Check every 5 seconds for testing (1min tokens)
+    }, 5 * 60 * 1000); // Check every 5 minutes for production (1-day tokens)
 
     return () => clearInterval(checkInterval);
   }, [accessToken, refreshAccessToken]);
@@ -185,6 +203,7 @@ export function useAuth(): UseAuthReturn {
 
       // Store tokens
       setAccessToken(access_token);
+      tokenManager.setAccessToken(access_token); // Store in tokenManager
       tokenManager.setRefreshToken(refresh_token);
 
       // Fetch user profile with access token
@@ -219,6 +238,7 @@ export function useAuth(): UseAuthReturn {
 
       // Store tokens
       setAccessToken(access_token);
+      tokenManager.setAccessToken(access_token); // Store in tokenManager
       tokenManager.setRefreshToken(refresh_token);
 
       // Fetch user profile with access token
