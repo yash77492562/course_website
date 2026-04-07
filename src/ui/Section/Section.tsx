@@ -7,25 +7,30 @@ interface SectionProps {
   className?: string;
   background?: 'white' | 'gray' | 'dark';
   padding?: 'normal' | 'large';
+  id?: string;
 }
 
 export function Section({ 
   children, 
   className, 
   background = 'white',
-  padding = 'normal'
+  padding = 'normal',
+  id
 }: SectionProps) {
   return (
-    <section className={cn(
-      'w-full',
-      {
-        'bg-white': background === 'white',
-        'bg-slate-50': background === 'gray',
-        'bg-navy': background === 'dark',
-        // Remove padding classes since we're using global CSS
-      },
-      className
-    )}>
+    <section 
+      id={id}
+      className={cn(
+        'w-full',
+        {
+          'bg-white': background === 'white',
+          'bg-slate-50': background === 'gray',
+          'bg-navy': background === 'dark',
+          // Remove padding classes since we're using global CSS
+        },
+        className
+      )}
+    >
       {children}
     </section>
   );

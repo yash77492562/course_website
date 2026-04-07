@@ -22,7 +22,7 @@ export default function LoginPage() {
     try {
       await login(credentials);
       
-      const redirect = searchParams?.get('redirect') || '/dashboard';
+      const redirect = searchParams?.get('redirect') || '/';
       router.push(redirect);
     } catch (err: any) {
       setError(err.message || 'Login failed. Please check your credentials.');

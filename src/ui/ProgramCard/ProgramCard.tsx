@@ -11,11 +11,14 @@ export function ProgramCard({ program }: ProgramCardProps) {
         background: '#ffffff',
         border: '1px solid #e2e8f0',
         borderRadius: '14px',
-        padding: '36px 32px',
+        padding: '20px',
         position: 'relative',
         overflow: 'hidden',
         transition: 'transform 0.28s, box-shadow 0.28s, border-color 0.28s',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        height: '320px',
+        display: 'flex',
+        flexDirection: 'column'
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-6px)';
@@ -44,16 +47,17 @@ export function ProgramCard({ program }: ProgramCardProps) {
       
       {/* Icon */}
       <div style={{
-        width: '52px',
-        height: '52px',
-        borderRadius: '12px',
+        width: '44px',
+        height: '44px',
+        borderRadius: '10px',
         background: 'rgba(6,182,212,0.15)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: '22px',
-        marginBottom: '20px',
-        border: '1px solid rgba(6,182,212,0.2)'
+        fontSize: '18px',
+        marginBottom: '14px',
+        border: '1px solid rgba(6,182,212,0.2)',
+        flexShrink: 0
       }}>
         {program.icon}
       </div>
@@ -61,40 +65,47 @@ export function ProgramCard({ program }: ProgramCardProps) {
       {/* Title */}
       <h3 style={{
         fontFamily: 'Syne, sans-serif',
-        fontSize: '1.2rem',
+        fontSize: '1.1rem',
         fontWeight: '700',
         color: '#0f172a',
         marginBottom: '10px',
-        letterSpacing: '-0.2px'
+        letterSpacing: '-0.2px',
+        flexShrink: 0,
+        lineHeight: '1.3'
       }}>
         {program.title}
       </h3>
       
-      {/* Description */}
-      <p style={{
-        fontSize: '0.9rem',
-        lineHeight: '1.65',
+      {/* Description - Scrollable */}
+      <div style={{
+        fontSize: '0.85rem',
+        lineHeight: '1.55',
         color: '#64748b',
-        marginBottom: '24px'
+        marginBottom: '12px',
+        flex: '1',
+        overflow: 'auto',
+        maxHeight: '110px',
+        paddingRight: '8px'
       }}>
         {program.body}
-      </p>
+      </div>
       
       {/* Tags */}
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
-        gap: '6px',
-        marginBottom: '24px'
+        gap: '5px',
+        marginBottom: '14px',
+        flexShrink: 0
       }}>
-        {program.tags.map((tag) => (
+        {program.tags.slice(0, 3).map((tag) => (
           <span 
             key={tag}
             style={{
-              fontSize: '0.72rem',
+              fontSize: '0.68rem',
               fontWeight: '500',
-              letterSpacing: '0.4px',
-              padding: '3px 10px',
+              letterSpacing: '0.3px',
+              padding: '3px 9px',
               background: '#eef0f5',
               color: '#64748b',
               borderRadius: '100px'
@@ -116,7 +127,8 @@ export function ProgramCard({ program }: ProgramCardProps) {
           fontWeight: '500',
           color: '#0ea5e9',
           textDecoration: 'none',
-          transition: 'gap 0.2s'
+          transition: 'gap 0.2s',
+          flexShrink: 0
         }}
       >
         {program.ctaText}

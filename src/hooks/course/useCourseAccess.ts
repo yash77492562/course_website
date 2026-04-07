@@ -113,37 +113,29 @@ export function useCourseAccess(courseId: string | null): UseCourseAccessReturn 
         throw new Error(`Access check failed: ${response.status}`);
       }
 
-      const data: CourseAccessResponse = await response.json();
+      const result = await response.json();
+      
+      console.log(`[useCourseAccess] ========== RAW API RESPONSE ==========`);
+      console.log(`[useCourseAccess] Full result:`, JSON.stringify(result, null, 2));
+      console.log(`[useCourseAccess] result.data:`, result.data);
+      console.log(`[useCourseAccess] result.success:`, result.success);
+      console.log(`[useCourseAccess] ==========================================`);
+      
+      // Handle wrapped response from gateway
+      const data: CourseAccessResponse = result.data || result;
       
       console.log(`[useCourseAccess] ========== ACCESS CHECK ==========`);
       console.log(`[useCourseAccess] Course ID: ${courseId}`);
       console.log(`[useCourseAccess] User ID: ${user.id}`);
-      console.log(`[useCourseAccess] API Response:`, data);
+      console.log(`[useCourseAccess] Extracted data:`, JSON.stringify(data, null, 2));
       console.log(`[useCourseAccess] Has Access: ${data.hasAccess}`);
       console.log(`[useCourseAccess] Reason: ${data.reason}`);
       console.log(`[useCourseAccess] ====================================`);
       
-      // Check reload flag
-      const reloadFlag = sessionStorage.getItem(`first_access_check_${courseId}`);
-      console.log(`[useCourseAccess] 🔄 Reload flag for ${courseId}:`, reloadFlag);
-      
       setHasAccess(data.hasAccess);
       setReason(data.reason);
       
-      // If access granted and this is first check, reload page to ensure UI updates
-      if (data.hasAccess && reloadFlag !== 'done') {
-        console.log('[useCourseAccess] ✅ Access granted! Reloading page to update UI...');
-        sessionStorage.setItem(`first_access_check_${courseId}`, 'done');
-        console.log('[useCourseAccess] 🔄 Flag set, reloading in 500ms...');
-        // Small delay to ensure state is saved
-        setTimeout(() => {
-          console.log('[useCourseAccess] 🔄 RELOADING NOW!');
-          window.location.reload();
-        }, 500);
-        return;
-      } else if (data.hasAccess) {
-        console.log('[useCourseAccess] ✅ Access granted (already reloaded once)');
-      }
+      console.log(`[useCourseAccess] ✅ Access check complete. hasAccess=${data.hasAccess}, reason=${data.reason}`);
       
       // Cache the result
       localStorage.setItem(cacheKey, JSON.stringify({
@@ -230,7 +222,9 @@ export function useUserPurchasedCourses() {
           throw new Error(`Failed to fetch purchased courses: ${response.status}`);
         }
 
-        const data = await response.json();
+        const result = await response.json();
+        // Handle wrapped response from gateway
+        const data = result.data || result;
         setCourseIds(data.courseIds || []);
       } catch (err: any) {
         console.error('[useUserPurchasedCourses] Error:', err);

@@ -12,7 +12,10 @@ export function HeroSection() {
     <section className="min-h-screen relative flex items-center overflow-hidden" 
              style={{ 
                background: 'linear-gradient(160deg, #050d1f 0%, #0d1f40 60%, #0a2240 100%)',
-               padding: '100px 5vw 80px'
+               paddingTop: '140px',
+               paddingBottom: '80px',
+               paddingLeft: '5vw',
+               paddingRight: '5vw'
              }}>
       {/* Animated SVG Background */}
       <AnimatedBackground className="absolute inset-0 pointer-events-none z-0" />

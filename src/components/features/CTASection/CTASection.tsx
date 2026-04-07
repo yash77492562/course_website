@@ -6,6 +6,7 @@ import { SectionTitle } from '@/ui/SectionTitle/SectionTitle';
 export function CTASection() {
   return (
     <section
+      id="contact"
       style={{
         background: '#ffffff',
         textAlign: 'center',

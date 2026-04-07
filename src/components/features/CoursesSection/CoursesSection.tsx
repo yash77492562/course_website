@@ -94,10 +94,10 @@ export function CoursesSection() {
   }
 
   return (
-    <Section>
-      <div className="text-center mb-12">
+    <Section id="programs">
+      <div style={{ textAlign: 'center', marginBottom: '48px' }}>
         <SectionLabel>Our Programs</SectionLabel>
-        <h2 className="text-3xl font-bold text-gray-900 mt-4">
+        <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', marginTop: '16px', marginBottom: '32px' }}>
           Specialist Programs
         </h2>
       </div>
@@ -108,11 +108,49 @@ export function CoursesSection() {
           <p className="text-sm mt-2">Please check back later.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {courses.map((program, index) => (
-            <ProgramCard key={index} program={program} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {courses.slice(0, 3).map((program, index) => (
+              <ProgramCard key={index} program={program} />
+            ))}
+          </div>
+          
+          {/* View All Courses Button */}
+          {courses.length > 3 && (
+            <div style={{ textAlign: 'center', marginTop: '56px' }}>
+              <a
+                href="/courses"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '12px 32px',
+                  background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
+                  color: 'white',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontWeight: 500,
+                  fontSize: '15px',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  boxShadow: '0 4px 12px rgba(14,165,233,0.3)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(14,165,233,0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(14,165,233,0.3)';
+                }}
+              >
+                View All Courses
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+          )}
+        </>
       )}
     </Section>
   );

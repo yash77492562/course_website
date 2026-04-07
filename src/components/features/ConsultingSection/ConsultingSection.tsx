@@ -13,6 +13,7 @@ interface ConsultingSectionProps {
 export function ConsultingSection({ services }: ConsultingSectionProps) {
   return (
     <section
+      id="consulting"
       style={{
         background: '#050d1f',
         position: 'relative',

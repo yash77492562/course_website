@@ -1,4 +1,5 @@
 // app/page.tsx - Route file (following kiro.md guidelines)
+import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { Footer } from '@/components/layout/Footer/Footer';
 import { HeroSection } from '@/components/features/HeroSection/HeroSection';
 import { AboutSection } from '@/components/features/AboutSection/AboutSection';
@@ -15,6 +16,7 @@ import consultingData from '@/data/consulting/data.json';
 export default function HomeRoute() {
   return (
     <div className="w-full min-h-screen">
+      <Navbar />
       <main className="w-full">
         <HeroSection />
         <AboutSection />
