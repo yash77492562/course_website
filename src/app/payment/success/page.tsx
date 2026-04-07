@@ -133,7 +133,7 @@ function PaymentSuccessContent() {
         </div>
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
           <button 
-            onClick={() => router.push('/course')}
+            onClick={() => router.push('/my-courses')}
             style={{
               background: '#667eea',
               color: 'white',
