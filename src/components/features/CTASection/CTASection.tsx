@@ -1,7 +1,6 @@
 'use client';
 
 import { SectionLabel } from '@/ui/SectionLabel/SectionLabel';
-import { SectionTitle } from '@/ui/SectionTitle/SectionTitle';
 
 export function CTASection() {
   return (
@@ -59,7 +58,7 @@ export function CTASection() {
           }}
         >
           <a
-            href="#"
+            href="/courses"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -82,14 +81,14 @@ export function CTASection() {
               e.currentTarget.style.transform = 'translateY(0)';
             }}
           >
-            Apply Now
+            Explore Now
             <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
           </a>
           
           <a
-            href="#"
+            href="/contact"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -113,7 +112,7 @@ export function CTASection() {
               e.currentTarget.style.color = '#0f172a';
             }}
           >
-            Book a Consultation
+            Talk With Us
           </a>
         </div>
       </div>

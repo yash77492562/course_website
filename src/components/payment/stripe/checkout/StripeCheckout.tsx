@@ -242,15 +242,15 @@ export default function StripeCheckout({
         <style jsx>{`
           .checkout-loading {
             text-align: center;
-            padding: 48px;
+            padding: 80px 40px;
           }
 
           .spinner {
-            width: 40px;
-            height: 40px;
-            margin: 0 auto 16px;
-            border: 4px solid #e5e7eb;
-            border-top-color: #2563eb;
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 24px;
+            border: 4px solid rgba(14, 165, 233, 0.15);
+            border-top-color: #0ea5e9;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
           }
@@ -262,8 +262,9 @@ export default function StripeCheckout({
           }
 
           .checkout-loading p {
-            color: #6b7280;
-            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            font-weight: 500;
           }
         `}</style>
       </div>
@@ -273,7 +274,8 @@ export default function StripeCheckout({
   if (error) {
     return (
       <div className="checkout-error">
-        <h3>⚠️ Error</h3>
+        <div className="error-icon">⚠️</div>
+        <h3>Error</h3>
         <p>{error}</p>
         <button onClick={createOrderAndRedirect} className="retry-button">
           Try Again
@@ -282,33 +284,54 @@ export default function StripeCheckout({
         <style jsx>{`
           .checkout-error {
             text-align: center;
-            padding: 48px;
-            background: #fef2f2;
-            border-radius: 12px;
+            padding: 60px 40px;
+          }
+
+          .error-icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 12px rgba(239, 68, 68, 0.3));
           }
 
           .checkout-error h3 {
-            color: #dc2626;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 24px;
+            font-weight: 700;
+            font-family: 'Syne', sans-serif;
             margin-bottom: 12px;
+            letter-spacing: -0.5px;
           }
 
           .checkout-error p {
-            color: #991b1b;
-            margin-bottom: 24px;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
           }
 
           .retry-button {
-            padding: 10px 24px;
-            background: #2563eb;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 15px;
+            box-shadow: 0 4px 16px rgba(14, 165, 233, 0.3);
+            transition: all 0.2s;
           }
 
           .retry-button:hover {
-            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(14, 165, 233, 0.4);
+          }
+
+          .retry-button:active {
+            transform: translateY(0);
           }
         `}</style>
       </div>

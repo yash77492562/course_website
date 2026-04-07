@@ -244,36 +244,49 @@ export function CourseAccessControl({
           >
             {/* Modal Header */}
             <div 
-              className="sticky top-0 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10 border-b"
+              className="sticky top-0 flex items-center justify-between rounded-t-2xl z-10 border-b"
               style={{
                 background: 'rgba(17, 34, 64, 0.95)',
-                borderColor: 'rgba(14, 165, 233, 0.15)'
+                borderColor: 'rgba(14, 165, 233, 0.15)',
+                padding: '28px 32px 24px'
               }}
             >
               <div>
                 <h2 
-                  className="text-xl font-bold"
                   style={{ 
                     color: 'rgba(255, 255, 255, 0.95)',
-                    fontFamily: 'Syne, sans-serif'
+                    fontFamily: 'Syne, sans-serif',
+                    fontSize: '24px',
+                    fontWeight: '700',
+                    letterSpacing: '-0.5px',
+                    marginBottom: '8px'
                   }}
                 >
                   Complete Your Purchase
                 </h2>
                 <p 
-                  className="text-sm mt-1"
-                  style={{ color: 'rgba(255, 255, 255, 0.6)' }}
+                  style={{ 
+                    color: 'rgba(255, 255, 255, 0.6)',
+                    fontSize: '15px',
+                    margin: 0
+                  }}
                 >
                   {courseTitle}
                 </p>
               </div>
               <button
                 onClick={() => setShowCheckout(false)}
-                className="p-2 rounded-lg transition-all duration-200"
+                className="rounded-lg transition-all duration-200"
                 aria-label="Close"
                 style={{
                   color: 'rgba(255, 255, 255, 0.5)',
-                  background: 'transparent'
+                  background: 'transparent',
+                  padding: '10px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
@@ -284,14 +297,14 @@ export function CourseAccessControl({
                   e.currentTarget.style.color = 'rgba(255, 255, 255, 0.5)';
                 }}
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg style={{ width: '24px', height: '24px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="p-6">
+            <div style={{ padding: '32px' }}>
               <StripeCheckout
                 courseId={courseId}
                 userId={user.id}

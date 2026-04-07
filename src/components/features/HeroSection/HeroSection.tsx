@@ -48,7 +48,7 @@ export function HeroSection() {
               Explore Programs
               <ArrowRightIcon size={16} />
             </Button>
-            <Button href="#consulting" variant="ghost" size="lg">
+            <Button href="/partner" variant="ghost" size="lg">
               Partner With Us
             </Button>
           </div>
