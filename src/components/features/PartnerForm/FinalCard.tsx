@@ -24,6 +24,7 @@ export function FinalCard({ value, onChange, onSubmit, isSubmitting, disabled }:
           autoFocus
           required
           minLength={20}
+          maxLength={2000}
         />
         <div className="char-count">{value.length}/2000</div>
         <button

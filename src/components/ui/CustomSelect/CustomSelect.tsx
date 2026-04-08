@@ -38,7 +38,7 @@ export function CustomSelect({ name, value, onChange, options, placeholder = 'Se
   };
 
   return (
-    <div ref={dropdownRef} style={{ position: 'relative', width: '100%', maxWidth: '400px' }}>
+    <div ref={dropdownRef} style={{ position: 'relative', width: '100%', maxWidth: '400px', marginBottom: '24px' }}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -50,6 +50,7 @@ export function CustomSelect({ name, value, onChange, options, placeholder = 'Se
           textAlign: 'left',
           cursor: 'pointer',
           color: value ? '#0f172a' : '#9ca3af',
+          marginBottom: 0,
         }}
       >
         <span>{selectedOption ? selectedOption.label : placeholder}</span>
@@ -70,18 +71,18 @@ export function CustomSelect({ name, value, onChange, options, placeholder = 'Se
       {isOpen && (
         <div
           style={{
-            position: 'absolute',
-            top: 'calc(100% + 2px)',
-            left: 0,
-            right: 0,
+            position: 'fixed',
+            left: dropdownRef.current?.getBoundingClientRect().left || 0,
+            top: (dropdownRef.current?.getBoundingClientRect().bottom || 0) + 4,
+            width: dropdownRef.current?.getBoundingClientRect().width || 400,
             background: 'white',
             border: '2px solid #e2e8f0',
             borderRadius: '10px',
             boxShadow: '0 10px 40px rgba(0, 0, 0, 0.15)',
-            maxHeight: '320px',
+            maxHeight: '280px',
             overflowY: 'auto',
             overflowX: 'hidden',
-            zIndex: 1000,
+            zIndex: 9999,
           }}
           className="custom-select-dropdown"
         >

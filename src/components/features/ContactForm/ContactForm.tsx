@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { contactApi, type ContactFormData } from '@/lib/api/contact/contactApi';
+import { CustomSelect } from '@/components/features/PartnerForm/CustomSelect';
 
 export function ContactForm() {
   const [currentCard, setCurrentCard] = useState(0);
@@ -183,21 +184,20 @@ export function ContactForm() {
       <div className="card">
         <div className="progress-indicator">Step 4 of 5</div>
         <h3 className="field-title">What can we help you with?</h3>
-        <select
+        <CustomSelect
           name="subject"
           value={formData.subject}
           onChange={handleChange}
-          className="field-input"
-          autoFocus
-        >
-          <option value="">Select a subject</option>
-          <option value="Course Inquiry">Course Inquiry</option>
-          <option value="Technical Support">Technical Support</option>
-          <option value="Payment Issue">Payment Issue</option>
-          <option value="Partnership">Partnership Opportunity</option>
-          <option value="Feedback">Feedback</option>
-          <option value="Other">Other</option>
-        </select>
+          options={[
+            { value: 'Course Inquiry', label: 'Course Inquiry' },
+            { value: 'Technical Support', label: 'Technical Support' },
+            { value: 'Payment Issue', label: 'Payment Issue' },
+            { value: 'Partnership Opportunity', label: 'Partnership Opportunity' },
+            { value: 'Feedback', label: 'Feedback' },
+            { value: 'Other', label: 'Other' },
+          ]}
+          placeholder="Select a subject"
+        />
         <button
           onClick={handleNext}
           disabled={!formData.subject}
@@ -227,6 +227,7 @@ export function ContactForm() {
             autoFocus
             required
             minLength={10}
+            maxLength={2000}
           />
           <div className="char-count">{formData.message.length}/2000</div>
           <button
@@ -353,7 +354,6 @@ export function ContactForm() {
           max-width: 600px;
           min-height: 500px;
           perspective: 1000px;
-          overflow: hidden !important;
         }
 
         .card-slide {
@@ -398,6 +398,7 @@ export function ContactForm() {
           align-items: center !important;
           justify-content: center !important;
           text-align: center !important;
+          overflow: visible !important;
         }
 
         .icon-circle {

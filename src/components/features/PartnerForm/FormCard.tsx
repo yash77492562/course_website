@@ -53,15 +53,19 @@ export function FormCard({
           placeholder={placeholder}
         />
       ) : type === 'textarea' ? (
-        <textarea
-          name={name}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          className="field-input"
-          rows={rows}
-          autoFocus
-        />
+        <>
+          <textarea
+            name={name}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            className="field-input"
+            rows={rows}
+            autoFocus
+            maxLength={500}
+          />
+          <div className="char-count">{value.length}/500</div>
+        </>
       ) : (
         <input
           type={type}
