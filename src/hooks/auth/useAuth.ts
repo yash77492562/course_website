@@ -223,7 +223,9 @@ export function useAuth(): UseAuthReturn {
           console.log('⏳ Time until expiry:', daysUntilRefreshExpiry, 'days');
           console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         } catch (e) {
-          console.error('❌ Failed to decode refresh token');
+          // Just log warning - don't clear tokens during info display
+          // Tokens will be cleared when actually used if invalid
+          console.warn('⚠️ Could not decode refresh token for display (non-critical)');
         }
       }
     } catch (error) {
@@ -313,7 +315,7 @@ export function useAuth(): UseAuthReturn {
         console.log('   Expires:', refreshExp.toLocaleString());
         console.log('   Lifetime:', refreshDays, 'days (7 days)');
       } catch (e) {
-        console.error('❌ Failed to decode refresh token');
+        console.warn('⚠️ Invalid refresh token (non-critical)');
       }
       
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -387,7 +389,7 @@ export function useAuth(): UseAuthReturn {
         console.log('   Expires:', refreshExp.toLocaleString());
         console.log('   Lifetime:', refreshDays, 'days (7 days)');
       } catch (e) {
-        console.error('❌ Failed to decode refresh token');
+        console.warn('⚠️ Invalid refresh token (non-critical)');
       }
       
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');

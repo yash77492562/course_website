@@ -20,7 +20,11 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentModuleIndex, setCurrentModuleIndex] = useState(2); // Example: user is on module 3 (index 2)
+  
+  // Track user's current module based on progress
+  // TODO: Get this from backend based on user's completed lessons
+  // For now, calculate based on last accessed or default to last module
+  const [currentModuleIndex, setCurrentModuleIndex] = useState<number>(0);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -40,6 +44,14 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
       setError(null);
       const data = await enrollmentApi.getEnrolledCourseById(courseId);
       setCourse(data);
+      
+      // TODO: Get user progress from backend to determine current module
+      // For now, set current module to the last one (most recent)
+      // This assumes user is working through the course sequentially
+      if (data.modules && data.modules.length > 0) {
+        // Set to last module index as "current" by default
+        setCurrentModuleIndex(data.modules.length - 1);
+      }
     } catch (err) {
       console.error('Failed to load course:', err);
       setError('Failed to load course details');
@@ -73,9 +85,13 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
     return null;
   }
 
-  const pastModules = course.modules?.slice(0, currentModuleIndex) || [];
-  const currentModule = course.modules?.[currentModuleIndex];
-  const futureModules = course.modules?.slice(currentModuleIndex + 1) || [];
+  // Split modules into past (completed), current, and remaining (all accessible)
+  // Since user has purchased, NO modules are locked - just organized by progress
+  const allModules = course.modules || [];
+  const pastModules = allModules.slice(0, currentModuleIndex).reverse(); // Reverse to show newest first (4,3,2,1)
+  const currentModule = allModules[currentModuleIndex];
+  const remainingModules = allModules.slice(currentModuleIndex + 1);
+  // Note: remainingModules are NOT locked, just not yet started
 
   return (
     <>
@@ -151,7 +167,7 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
               </p>
             </div>
 
-            {/* Current Module Section */}
+            {/* Current Module Section - Show on top */}
             {currentModule && (
               <div style={{ marginBottom: '48px' }}>
                 <h2 style={{
@@ -182,7 +198,7 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
               </div>
             )}
 
-            {/* Past Modules Section */}
+            {/* Past Modules Section (Completed) - Show in reverse order below current */}
             {pastModules.length > 0 && (
               <div style={{ marginBottom: '48px' }}>
                 <h2 style={{
@@ -218,8 +234,8 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
               </div>
             )}
 
-            {/* Future Modules Section (Locked) */}
-            {futureModules.length > 0 && (
+            {/* Remaining Modules Section (Not started yet, but accessible) */}
+            {remainingModules.length > 0 && (
               <div>
                 <h2 style={{
                   fontSize: '24px',
@@ -235,75 +251,20 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
-                    background: '#64748b',
+                    background: '#8b5cf6',
                     display: 'inline-block'
                   }}></span>
-                  Upcoming Modules
+                  Available Modules
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {futureModules.map((module) => (
-                    <div
+                  {remainingModules.map((module) => (
+                    <ModuleCard 
                       key={module.id}
-                      style={{
-                        background: 'rgba(255,255,255,0.05)',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        borderRadius: '12px',
-                        padding: '20px',
-                        position: 'relative',
-                        opacity: 0.6,
-                      }}
-                    >
-                      <div style={{
-                        position: 'absolute',
-                        top: '12px',
-                        right: '12px',
-                        padding: '4px 12px',
-                        borderRadius: '20px',
-                        fontSize: '0.75rem',
-                        fontWeight: '600',
-                        background: 'rgba(100,116,139,0.2)',
-                        color: 'rgba(255,255,255,0.6)',
-                        border: '1px solid rgba(100,116,139,0.3)',
-                      }}>
-                        🔒 Locked
-                      </div>
-                      
-                      <div style={{
-                        width: '48px',
-                        height: '48px',
-                        borderRadius: '10px',
-                        background: 'rgba(100,116,139,0.2)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '1.25rem',
-                        fontWeight: '700',
-                        color: 'rgba(255,255,255,0.4)',
-                        marginBottom: '16px',
-                      }}>
-                        {module.order}
-                      </div>
-                      
-                      <h3 style={{
-                        fontFamily: 'Syne, sans-serif',
-                        fontSize: '1.15rem',
-                        fontWeight: '700',
-                        color: 'rgba(255,255,255,0.6)',
-                        marginBottom: '12px',
-                        letterSpacing: '-0.2px',
-                        lineHeight: '1.3',
-                        paddingRight: '80px',
-                      }}>
-                        {module.title}
-                      </h3>
-                      
-                      <div style={{
-                        fontSize: '0.85rem',
-                        color: 'rgba(255,255,255,0.4)',
-                      }}>
-                        Complete previous modules to unlock
-                      </div>
-                    </div>
+                      module={module} 
+                      courseId={courseId}
+                      isPast={false}
+                      isCurrent={false}
+                    />
                   ))}
                 </div>
               </div>

@@ -71,11 +71,55 @@ export interface Lesson {
   title: string;
   description: string;
   duration: string;
+  
+  // Content type
+  contentType?: 'VIDEO' | 'PDF' | 'QUIZ';
+  
+  // Video fields
   videoUrl?: string;
+  videoUrls?: Record<string, string>; // Multiple quality URLs (legacy MP4)
+  videoType?: 'UPLOAD' | 'YOUTUBE';
+  thumbnail?: string;
+  originalWidth?: number;
+  originalHeight?: number;
+  videoDuration?: number;
+  
+  // HLS streaming fields
+  hlsMasterPlaylist?: string; // HLS master playlist URL
+  hlsQualities?: Record<string, string>; // HLS quality playlists per quality
+  
+  // PDF fields
+  pdfUrl?: string;
+  pdfPassword?: string;
+  isPasswordProtected?: boolean;
+  
+  // Quiz fields
+  quizData?: QuizData;
+  
   resources: LessonResource[];
   order: number;
   isCompleted?: boolean;
-  contentType?: 'VIDEO' | 'PDF';
+}
+
+export interface QuizData {
+  questions: QuizQuestion[];
+  passingScore?: number; // Percentage required to pass (e.g., 70)
+  timeLimit?: number; // Time limit in minutes (optional)
+  allowRetake?: boolean; // Allow multiple attempts
+}
+
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  options: QuizOption[];
+  correctAnswer: string; // ID of the correct option
+  explanation?: string; // Explanation shown after answering
+  points?: number; // Points for this question (default: 1)
+}
+
+export interface QuizOption {
+  id: string;
+  text: string;
 }
 
 export interface LessonResource {

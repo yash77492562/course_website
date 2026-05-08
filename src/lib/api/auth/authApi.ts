@@ -78,7 +78,7 @@ class AuthApiClient {
       console.log('📝 Refresh token JTI:', payload.jti);
       console.log('⏰ Refresh token expires:', exp.toLocaleString());
     } catch (e) {
-      console.error('❌ Failed to decode refresh token');
+      console.warn('⚠️ Failed to decode refresh token (non-critical)');
     }
     
     const response = await fetch(`${this.baseURL}/auth/refresh`, {

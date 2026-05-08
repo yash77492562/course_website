@@ -56,7 +56,13 @@ class CourseApiClient {
   }
 
   async getPublishedCourses(): Promise<Course[]> {
-    const response = await this.request<PaginatedResponse<Course>>('/courses/public');
+    const response = await this.request<PaginatedResponse<Course> | Course[]>('/courses/public');
+    
+    // Handle both paginated and non-paginated responses
+    if (Array.isArray(response)) {
+      return response;
+    }
+    
     return response.data;
   }
 
@@ -65,7 +71,13 @@ class CourseApiClient {
   }
 
   async getAllCourses(): Promise<Course[]> {
-    const response = await this.request<PaginatedResponse<Course>>('/courses');
+    const response = await this.request<PaginatedResponse<Course> | Course[]>('/courses');
+    
+    // Handle both paginated and non-paginated responses
+    if (Array.isArray(response)) {
+      return response;
+    }
+    
     return response.data;
   }
 }
