@@ -45,14 +45,9 @@ export function useAuth(): UseAuthReturn {
       return;
     }
 
-    // Check if refresh token is expired
-    if (tokenManager.isTokenExpired(refreshToken)) {
-      console.log('⚠️ Refresh token expired - user must login again');
-      tokenManager.clearAll();
-      setUser(null);
-      setAccessToken(null);
-      return;
-    }
+    // Don't validate refresh token expiration on frontend
+    // Let backend validate it - backend will return error if expired
+    console.log('✅ Found refresh token, will attempt refresh (backend will validate expiration)');
 
     try {
       // Create a new refresh promise
@@ -78,10 +73,11 @@ export function useAuth(): UseAuthReturn {
         const response = await authApi.refreshToken(refreshToken);
         
         if (response.success && response.data?.access_token) {
-          const newToken = response.data.access_token;
+          const newAccessToken = response.data.access_token;
+          const newRefreshToken = response.data.refresh_token; // Backend rotates refresh tokens
           
           try {
-            const newPayload = JSON.parse(atob(newToken.split('.')[1]));
+            const newPayload = JSON.parse(atob(newAccessToken.split('.')[1]));
             const newIat = new Date(newPayload.iat * 1000);
             const newExp = new Date(newPayload.exp * 1000);
             const timeUntilExpiry = newExp.getTime() - Date.now();
@@ -95,7 +91,7 @@ export function useAuth(): UseAuthReturn {
             console.log('⏰ Expires at:', newExp.toLocaleString());
             console.log('⏳ Valid for:', minutesUntilExpiry, 'minutes');
             
-            const tokensMatch = oldToken === newToken;
+            const tokensMatch = oldToken === newAccessToken;
             if (tokensMatch) {
               console.log('⚠️ WARNING: New token is identical to old token (BUG!)');
             } else {
@@ -106,12 +102,18 @@ export function useAuth(): UseAuthReturn {
             console.error('❌ Failed to decode new token');
           }
           
-          setAccessToken(newToken);
-          tokenManager.setAccessToken(newToken); // Store in tokenManager
+          setAccessToken(newAccessToken);
+          tokenManager.setAccessToken(newAccessToken); // Store in tokenManager
+          
+          // Store NEW refresh token (token rotation)
+          if (newRefreshToken) {
+            console.log('🔄 Storing new refresh token (token rotation)');
+            tokenManager.setRefreshToken(newRefreshToken);
+          }
           
           // Fetch user profile with new access token
           console.log('👤 Fetching user profile with new access token...');
-          const profileResponse = await authApi.getProfile(newToken);
+          const profileResponse = await authApi.getProfile(newAccessToken);
           if (profileResponse.success && profileResponse.data) {
             setUser(profileResponse.data);
             console.log('✅ User profile refreshed');
@@ -140,9 +142,16 @@ export function useAuth(): UseAuthReturn {
    */
   useEffect(() => {
     const initAuth = async () => {
-      console.log('🔄 Initializing auth state...');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('🔄 INITIALIZING AUTH STATE');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      
       const refreshToken = tokenManager.getRefreshToken();
       const storedAccessToken = tokenManager.getAccessToken();
+      
+      console.log('📦 Stored tokens check:');
+      console.log('   Access token:', storedAccessToken ? 'EXISTS' : 'MISSING');
+      console.log('   Refresh token:', refreshToken ? 'EXISTS' : 'MISSING');
       
       // If we have a stored access token that's not expired, use it
       if (storedAccessToken && !tokenManager.isTokenExpired(storedAccessToken)) {
@@ -161,22 +170,41 @@ export function useAuth(): UseAuthReturn {
         }
         
         setIsLoading(false);
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         return;
       }
       
-      // If access token is expired but we have a valid refresh token, refresh it
-      if (refreshToken && !tokenManager.isTokenExpired(refreshToken)) {
-        console.log('🔄 Access token expired, refreshing with refresh token...');
+      // If access token is expired or missing but we have a valid refresh token, refresh it
+      if (refreshToken) {
+        console.log('🔍 Found refresh token, attempting to refresh access token...');
+        
+        // Don't validate refresh token expiration on frontend
+        // Let the backend validate it - backend will return error if expired
+        console.log('🔄 Access token missing/expired, refreshing with refresh token...');
         try {
           await refreshAccessToken();
+          console.log('✅ Token refresh completed during init');
         } catch (error) {
           console.error('❌ Failed to refresh token on init');
+          console.error('   Error details:', error);
+          
+          // Only clear tokens if backend says refresh token is invalid/expired
+          // Check if error message indicates token is expired
+          const errorMessage = error?.message || '';
+          if (errorMessage.includes('expired') || errorMessage.includes('invalid')) {
+            console.log('🗑️ Clearing expired/invalid tokens');
+            tokenManager.clearAll();
+          } else {
+            // Network error or temporary issue - keep tokens for retry
+            console.log('⚠️ Keeping refresh token for retry later (network error)');
+          }
         }
       } else {
-        console.log('⚠️ No valid tokens found');
+        console.log('⚠️ No refresh token found - user must login');
       }
       
       setIsLoading(false);
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     };
 
     initAuth();
@@ -211,22 +239,12 @@ export function useAuth(): UseAuthReturn {
       // Check refresh token
       const refreshToken = tokenManager.getRefreshToken();
       if (refreshToken) {
-        try {
-          const refreshPayload = JSON.parse(atob(refreshToken.split('.')[1]));
-          const refreshExp = new Date(refreshPayload.exp * 1000);
-          const timeUntilRefreshExpiry = refreshExp.getTime() - now.getTime();
-          const daysUntilRefreshExpiry = Math.floor(timeUntilRefreshExpiry / 86400000);
-          
-          console.log('🔄 REFRESH TOKEN INFO');
-          console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-          console.log('⏰ Expires at:', refreshExp.toLocaleString());
-          console.log('⏳ Time until expiry:', daysUntilRefreshExpiry, 'days');
-          console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        } catch (e) {
-          // Just log warning - don't clear tokens during info display
-          // Tokens will be cleared when actually used if invalid
-          console.warn('⚠️ Could not decode refresh token for display (non-critical)');
-        }
+        console.log('🔄 REFRESH TOKEN INFO');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log('✅ Refresh token exists in localStorage');
+        console.log('📝 Note: Refresh token is NOT a JWT (random bytes)');
+        console.log('⏰ Expiration: 7 days (validated by backend only)');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       }
     } catch (error) {
       console.error('❌ Failed to decode access token:', error);

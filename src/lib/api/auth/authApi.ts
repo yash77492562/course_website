@@ -6,7 +6,7 @@ import type {
   User,
 } from '@/types/auth/auth.types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
 
 class AuthApiClient {
   private baseURL: string;
@@ -86,7 +86,7 @@ class AuthApiClient {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ refreshToken }),
+      body: JSON.stringify({ refresh_token: refreshToken }), // Use refresh_token with underscore
       cache: 'no-store', // Disable caching
     });
 
