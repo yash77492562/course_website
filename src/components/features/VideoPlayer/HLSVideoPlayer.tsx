@@ -501,9 +501,16 @@ export function HLSVideoPlayer({
     const controlBar = player.getChild('controlBar');
     if (controlBar) {
       // Check if quality selector already exists to prevent duplicates
-      const existingQualitySelector = controlBar.getChild('ManualQualityMenuButton');
+      const existingManualSelector = controlBar.getChild('ManualQualityMenuButton');
+      const existingQualitySelector = controlBar.getChild('QualityMenuButton');
+      
+      if (existingManualSelector) {
+        console.log('⚠️ ManualQualityMenuButton already exists, removing old one');
+        controlBar.removeChild(existingManualSelector);
+      }
+      
       if (existingQualitySelector) {
-        console.log('⚠️ Quality selector already exists, removing old one');
+        console.log('⚠️ QualityMenuButton already exists, removing it before adding ManualQualityMenuButton');
         controlBar.removeChild(existingQualitySelector);
       }
       
@@ -992,6 +999,20 @@ export function HLSVideoPlayer({
           // Add quality button to control bar (before fullscreen button)
           const controlBar = player.getChild('controlBar');
           if (controlBar) {
+            // Check if quality selector already exists to prevent duplicates
+            const existingManualSelector = controlBar.getChild('ManualQualityMenuButton');
+            const existingQualitySelector = controlBar.getChild('QualityMenuButton');
+            
+            if (existingManualSelector) {
+              console.log('⚠️ ManualQualityMenuButton already exists, skipping QualityMenuButton');
+              return; // Don't add another quality selector
+            }
+            
+            if (existingQualitySelector) {
+              console.log('⚠️ QualityMenuButton already exists, removing old one');
+              controlBar.removeChild(existingQualitySelector);
+            }
+            
             const fullscreenToggle = controlBar.getChild('fullscreenToggle');
             const fullscreenIndex = controlBar.children().indexOf(fullscreenToggle);
             
@@ -1008,6 +1029,20 @@ export function HLSVideoPlayer({
             // Add quality button to control bar (before fullscreen button)
             const controlBar = player.getChild('controlBar');
             if (controlBar) {
+              // Check if quality selector already exists to prevent duplicates
+              const existingManualSelector = controlBar.getChild('ManualQualityMenuButton');
+              const existingQualitySelector = controlBar.getChild('QualityMenuButton');
+              
+              if (existingManualSelector) {
+                console.log('⚠️ ManualQualityMenuButton already exists, skipping QualityMenuButton');
+                return; // Don't add another quality selector
+              }
+              
+              if (existingQualitySelector) {
+                console.log('⚠️ QualityMenuButton already exists, removing old one');
+                controlBar.removeChild(existingQualitySelector);
+              }
+              
               const fullscreenToggle = controlBar.getChild('fullscreenToggle');
               const fullscreenIndex = controlBar.children().indexOf(fullscreenToggle);
               
@@ -1147,6 +1182,12 @@ export function HLSVideoPlayer({
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
+        }
+
+        /* Hide the vjs-control-text that's causing duplicate icon */
+        .vjs-quality-selector .vjs-control-text {
+          display: none !important;
+          visibility: hidden !important;
         }
 
         /* Hover effect */
