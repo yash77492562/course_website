@@ -111,7 +111,9 @@ export function HLSVideoPlayer({
             parent.updateLabel();
             const iconPlaceholder = parent.el().querySelector('.vjs-icon-placeholder');
             if (iconPlaceholder) {
-              iconPlaceholder.textContent = 'Auto';
+              iconPlaceholder.innerHTML = `
+                <span class="quality-icon">⚙</span>
+              `;
               console.log('🏷️ Button label updated to: Auto');
             }
           }
@@ -366,8 +368,8 @@ export function HLSVideoPlayer({
             parent.updateLabel();
             const iconPlaceholder = parent.el().querySelector('.vjs-icon-placeholder');
             if (iconPlaceholder) {
-              iconPlaceholder.textContent = this.options_.label;
-              console.log('🏷️ Button label updated to:', this.options_.label);
+              iconPlaceholder.innerHTML = `<span class="quality-icon">⚙</span>`;
+              console.log('🏷️ Button label updated to:', this.options_.label, '(icon only)');
             }
           }
           
@@ -402,7 +404,7 @@ export function HLSVideoPlayer({
         
         this.qualities = qualities;
         this.addClass('vjs-quality-selector');
-        (this as any).controlText('Quality');
+        (this as any).controlText('⚙');
         
         console.log('🎬 ManualQualityMenuButton constructor - qualities:', this.qualities);
         console.log('🎬 Number of qualities:', Object.keys(this.qualities).length);
@@ -410,8 +412,14 @@ export function HLSVideoPlayer({
         // Set initial quality to Auto
         this.selectedQualityValue = 'Auto';
         
-        // Set initial label
-        setTimeout(() => this.updateLabel(), 100);
+        // Set initial HTML structure immediately
+        setTimeout(() => {
+          const iconPlaceholder = this.el().querySelector('.vjs-icon-placeholder');
+          if (iconPlaceholder) {
+            iconPlaceholder.innerHTML = `<span class="quality-icon">⚙</span>`;
+          }
+          this.updateLabel();
+        }, 100);
       }
       
       setSelectedQuality(value: string) {
@@ -425,14 +433,14 @@ export function HLSVideoPlayer({
       updateLabel() {
         const currentQuality = this.selectedQualityValue || 'Auto';
         
-        // Update button text - create a text node to replace the entire content
+        // Update button with only the gear icon (no text)
         const controlTextEl = this.el().querySelector('.vjs-icon-placeholder');
         if (controlTextEl) {
-          // Clear all content and set only the quality text
-          controlTextEl.textContent = currentQuality;
+          // Show only the gear icon
+          controlTextEl.innerHTML = `<span class="quality-icon">⚙</span>`;
         }
         
-        // Update aria-label
+        // Update aria-label for accessibility
         this.el().setAttribute('aria-label', `Quality: ${currentQuality}`);
       }
       
@@ -852,7 +860,7 @@ export function HLSVideoPlayer({
             constructor(player: any, options: any) {
               super(player, options);
               this.addClass('vjs-quality-selector');
-              (this as any).controlText('Quality');
+              (this as any).controlText('⚙');
               
               // Update button label when quality changes
               const qualityLevels = (player as any).qualityLevels();
@@ -860,8 +868,14 @@ export function HLSVideoPlayer({
                 this.updateLabel();
               });
               
-              // Set initial label
-              setTimeout(() => this.updateLabel(), 100);
+              // Set initial HTML structure immediately
+              setTimeout(() => {
+                const iconPlaceholder = this.el().querySelector('.vjs-icon-placeholder');
+                if (iconPlaceholder) {
+                  iconPlaceholder.innerHTML = `<span class="quality-icon">⚙</span>`;
+                }
+                this.updateLabel();
+              }, 100);
             }
             
             setSelectedQuality(value: string | number) {
@@ -894,10 +908,11 @@ export function HLSVideoPlayer({
                 currentQuality = enabledHeight + 'p';
               }
               
-              // Update button text - use textContent instead of icon placeholder
-              const controlTextEl = this.el().querySelector('.vjs-control-text');
+              // Update button with only the gear icon (no text)
+              const controlTextEl = this.el().querySelector('.vjs-icon-placeholder');
               if (controlTextEl) {
-                controlTextEl.textContent = currentQuality;
+                // Show only the gear icon
+                controlTextEl.innerHTML = `<span class="quality-icon">⚙</span>`;
               }
               
               // Also update the button's aria-label
@@ -1097,6 +1112,49 @@ export function HLSVideoPlayer({
           )}
         </div>
       )}
+
+      {/* Custom Styles for Quality Selector */}
+      <style jsx global>{`
+        /* Quality Selector Button Styles */
+        .vjs-quality-selector .vjs-icon-placeholder {
+          font-family: Arial, sans-serif !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 100% !important;
+          height: 100% !important;
+          padding: 0 !important;
+        }
+
+        .vjs-quality-selector .vjs-icon-placeholder::before {
+          content: none !important;
+          display: none !important;
+        }
+
+        .vjs-quality-selector .quality-icon {
+          font-size: 2em !important;
+          line-height: 1 !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
+        .vjs-quality-selector {
+          cursor: pointer !important;
+        }
+
+        .vjs-quality-selector button {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
+        /* Hover effect */
+        .vjs-quality-selector:hover .quality-icon {
+          transform: scale(1.15);
+          transition: transform 0.2s ease;
+        }
+      `}</style>
     </div>
   );
 }
