@@ -1,0 +1,1 @@
+export type { CourseCardProps } from '@/types/course/types';

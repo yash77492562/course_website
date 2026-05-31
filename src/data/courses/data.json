@@ -1,0 +1,180 @@
+{
+  "courses": [
+    {
+      "id": "1",
+      "title": "Complete Data Analytics Bootcamp",
+      "description": "Master data analytics from beginner to advanced level with hands-on projects and real-world case studies.",
+      "price": 999,
+      "originalPrice": 1499,
+      "duration": "12 weeks",
+      "level": "BEGINNER",
+      "category": "Data Analytics",
+      "thumbnail": "/images/courses/data-analytics.jpg",
+      "instructor": "Dr. Sarah Johnson",
+      "rating": 4.8,
+      "studentsCount": 2847,
+      "totalModules": 3,
+      "totalLessons": 4,
+      "certification": true,
+      "spotsLeft": 15,
+      "nextCohort": "Next batch starting March 15, 2026",
+      "features": [
+        "Career support included",
+        "Portfolio projects",
+        "Interview prep",
+        "Lifetime access",
+        "Certificate of completion"
+      ],
+      "skills": ["SQL", "Excel", "Python", "Statistics"],
+      "tools": ["Excel", "SQL Server", "Python", "Jupyter"],
+      "outcomes": [
+        "Analyze complex datasets",
+        "Create compelling visualizations",
+        "Build predictive models",
+        "Present insights to stakeholders"
+      ],
+      "status": "PUBLISHED",
+      "modules": [
+        {
+          "id": "m1",
+          "title": "Foundations of Data Analytics",
+          "description": "Learn the fundamentals of data analytics and statistical thinking",
+          "duration": "2 weeks",
+          "order": 1,
+          "courseId": "1",
+          "createdAt": "2024-01-01T00:00:00Z",
+          "updatedAt": "2024-01-01T00:00:00Z",
+          "objectives": ["Understand data types", "Learn statistical concepts", "Practice with real data"],
+          "lessons": [
+            {
+              "id": "l1",
+              "title": "Introduction to Data Analytics",
+              "description": "Overview of data analytics and its applications in business",
+              "duration": "45 min",
+              "order": 1,
+              "resources": []
+            },
+            {
+              "id": "l2", 
+              "title": "Statistical Foundations",
+              "description": "Basic statistics concepts for data analysis",
+              "duration": "60 min",
+              "order": 2,
+              "resources": []
+            }
+          ]
+        },
+        {
+          "id": "m2",
+          "title": "Excel for Data Analysis",
+          "description": "Master Excel for advanced data analysis and visualization",
+          "duration": "2 weeks",
+          "order": 2,
+          "courseId": "1",
+          "createdAt": "2024-01-01T00:00:00Z",
+          "updatedAt": "2024-01-01T00:00:00Z",
+          "objectives": ["Master Excel functions", "Create pivot tables", "Build dashboards"],
+          "lessons": [
+            {
+              "id": "l3",
+              "title": "Advanced Excel Functions",
+              "description": "VLOOKUP, INDEX-MATCH, and advanced formulas",
+              "duration": "90 min",
+              "order": 1,
+              "resources": []
+            }
+          ]
+        },
+        {
+          "id": "m3",
+          "title": "SQL for Data Analytics",
+          "description": "Learn SQL for querying and analyzing databases",
+          "duration": "3 weeks",
+          "order": 3,
+          "courseId": "1",
+          "createdAt": "2024-01-01T00:00:00Z",
+          "updatedAt": "2024-01-01T00:00:00Z",
+          "objectives": ["Write complex queries", "Join multiple tables", "Optimize performance"],
+          "lessons": [
+            {
+              "id": "l4",
+              "title": "SQL Fundamentals",
+              "description": "Basic SQL queries and database concepts",
+              "duration": "75 min",
+              "order": 1,
+              "resources": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Advanced SQL for Data Analysis",
+      "description": "Deep dive into SQL queries, optimization, and advanced analytics functions.",
+      "price": 599,
+      "originalPrice": 899,
+      "duration": "8 weeks",
+      "level": "INTERMEDIATE",
+      "category": "SQL",
+      "thumbnail": "/images/courses/sql-advanced.jpg",
+      "instructor": "Mike Chen",
+      "rating": 4.9,
+      "studentsCount": 1523,
+      "totalModules": 0,
+      "totalLessons": 0,
+      "certification": true,
+      "spotsLeft": 8,
+      "nextCohort": "Next batch starting April 1, 2026",
+      "features": [
+        "Hands-on practice",
+        "Real database projects",
+        "Query optimization",
+        "Performance tuning"
+      ],
+      "skills": ["Advanced SQL", "Query Optimization", "Database Design"],
+      "tools": ["SQL Server", "PostgreSQL", "MySQL"],
+      "outcomes": [
+        "Write complex SQL queries",
+        "Optimize database performance",
+        "Design efficient schemas"
+      ],
+      "status": "PUBLISHED",
+      "modules": []
+    },
+    {
+      "id": "3",
+      "title": "Python for Data Science",
+      "description": "Learn Python programming specifically for data science applications.",
+      "price": 799,
+      "originalPrice": 1199,
+      "duration": "10 weeks",
+      "level": "BEGINNER",
+      "category": "Python",
+      "thumbnail": "/images/courses/python-data-science.jpg",
+      "instructor": "Anna Rodriguez",
+      "rating": 4.7,
+      "studentsCount": 3241,
+      "totalModules": 0,
+      "totalLessons": 0,
+      "certification": true,
+      "spotsLeft": 12,
+      "nextCohort": "Next batch starting March 22, 2026",
+      "features": [
+        "Jupyter notebooks",
+        "Data visualization",
+        "Machine learning basics",
+        "Pandas & NumPy"
+      ],
+      "skills": ["Python", "Pandas", "NumPy", "Matplotlib"],
+      "tools": ["Python", "Jupyter", "Pandas", "Scikit-learn"],
+      "outcomes": [
+        "Write Python for data analysis",
+        "Create data visualizations",
+        "Build machine learning models"
+      ],
+      "status": "PUBLISHED",
+      "modules": []
+    }
+  ]
+}

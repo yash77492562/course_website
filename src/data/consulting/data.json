@@ -1,0 +1,22 @@
+[
+  {
+    "icon": "🔗",
+    "title": "Data Pipelines",
+    "body": "End-to-end pipeline design, build, and optimisation. From ingestion to transformation to delivery — reliable, scalable, and observable."
+  },
+  {
+    "icon": "📈",
+    "title": "BI & Reporting",
+    "body": "Unified reporting layers and interactive dashboards that give leadership real-time visibility across the entire organisation."
+  },
+  {
+    "icon": "🧠",
+    "title": "AI & Advanced Analytics",
+    "body": "Predictive models, NLP solutions, and AI-powered decision tools tailored to your specific business context and data assets."
+  },
+  {
+    "icon": "☁️",
+    "title": "Cloud Data Architecture",
+    "body": "Modern cloud-native data platforms on AWS, Azure, or GCP. Architected for performance, governance, and cost efficiency."
+  }
+]

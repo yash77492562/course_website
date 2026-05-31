@@ -1,0 +1,56 @@
+{
+  "reasons": [
+    {
+      "icon": "🎯",
+      "title": "Industry-Aligned Curriculum",
+      "description": "Built around the tools, workflows, and expectations of real data teams — not textbooks."
+    },
+    {
+      "icon": "🛠️",
+      "title": "Real-World Projects",
+      "description": "Every programme includes hands-on projects drawn from genuine consulting engagements."
+    },
+    {
+      "icon": "🧭",
+      "title": "Mentorship & Career Guidance",
+      "description": "One-to-one support from experienced data professionals throughout your learning journey."
+    },
+    {
+      "icon": "💡",
+      "title": "Consulting-Led Training Approach",
+      "description": "Our instructors are active consultants — you learn what's practised, not just what's taught."
+    },
+    {
+      "icon": "🇬🇧",
+      "title": "UK-Based Standards",
+      "description": "Curricula aligned with UK industry standards, employer expectations, and GDPR compliance."
+    }
+  ],
+  "metrics": [
+    {
+      "name": "Job Readiness",
+      "value": 95,
+      "display": "95%"
+    },
+    {
+      "name": "Project Portfolio",
+      "value": 100,
+      "display": "100%"
+    },
+    {
+      "name": "Industry Tools",
+      "value": 90,
+      "display": "90%"
+    },
+    {
+      "name": "Mentored Hours",
+      "value": 80,
+      "display": "80+hrs"
+    },
+    {
+      "name": "Employer Feedback",
+      "value": 98,
+      "display": "★ 4.9"
+    }
+  ]
+}
