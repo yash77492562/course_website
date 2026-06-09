@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import LoginPage from '@/pages/auth/login/Login.page';
+import LoginPage from '@/_pages-legacy/auth/login/Login.page';
 
 export default function LoginRoute() {
   return (

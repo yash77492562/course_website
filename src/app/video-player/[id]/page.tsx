@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import VideoPlayerPage from '@/pages/video-player/VideoPlayer.page';
+import VideoPlayerPage from '@/_pages-legacy/video-player/VideoPlayer.page';
 
 export default function VideoPlayerRoute() {
   const params = useParams();
