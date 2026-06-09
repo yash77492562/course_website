@@ -220,6 +220,12 @@ export default function StripeCheckout({
         currency: 'usd',
       });
 
+      // STEP 3: Store orderId in localStorage for polling after Stripe redirect
+      if (response.orderId) {
+        localStorage.setItem('pending_order_id', response.orderId);
+        console.log('📦 Stored pending order ID:', response.orderId);
+      }
+
       // Redirect to Stripe Checkout
       if (response.checkoutUrl) {
         window.location.href = response.checkoutUrl;

@@ -45,11 +45,16 @@ function CourseContent({ course, courseId }: { course: Course; courseId: string 
         : [module.description],
       lessons: module.lessons || []
     })) : [],
-    faqs: course.faqs && course.faqs.length > 0 ? course.faqs : [
-      { q: "Do I need prior experience?", a: "No. We start from fundamentals and ramp up to job-ready skills with projects." },
-      { q: "Is this suitable for career changers?", a: "Yes — the program is designed for reskilling and includes interview preparation." },
-      { q: "How do I secure my spot?", a: "Click Pay Now to reserve a seat. Once payment is confirmed, we'll onboard you with the next cohort details." }
-    ]
+    faqs: course.faqs && course.faqs.length > 0 
+      ? course.faqs.map((faq: any) => ({
+          q: faq.question || faq.q || '',
+          a: faq.answer || faq.a || ''
+        }))
+      : [
+          { q: "Do I need prior experience?", a: "No. We start from fundamentals and ramp up to job-ready skills with projects." },
+          { q: "Is this suitable for career changers?", a: "Yes — the program is designed for reskilling and includes interview preparation." },
+          { q: "How do I secure my spot?", a: "Click Pay Now to reserve a seat. Once payment is confirmed, we'll onboard you with the next cohort details." }
+        ]
   };
 
   return (
@@ -392,11 +397,16 @@ export default function CourseDetailPage() {
         ]
       }
     ],
-    faqs: course.faqs && course.faqs.length > 0 ? course.faqs : [
-      { q: "Do I need prior experience?", a: "No. We start from fundamentals and ramp up to job-ready skills with projects." },
-      { q: "Is this suitable for career changers?", a: "Yes — the program is designed for reskilling and includes interview preparation." },
-      { q: "How do I secure my spot?", a: "Click Pay Now to reserve a seat. Once payment is confirmed, we'll onboard you with the next cohort details." }
-    ]
+    faqs: course.faqs && course.faqs.length > 0 
+      ? course.faqs.map((faq: any) => ({
+          q: faq.question || faq.q || '',
+          a: faq.answer || faq.a || ''
+        }))
+      : [
+          { q: "Do I need prior experience?", a: "No. We start from fundamentals and ramp up to job-ready skills with projects." },
+          { q: "Is this suitable for career changers?", a: "Yes — the program is designed for reskilling and includes interview preparation." },
+          { q: "How do I secure my spot?", a: "Click Pay Now to reserve a seat. Once payment is confirmed, we'll onboard you with the next cohort details." }
+        ]
   };
 
   return (

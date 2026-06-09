@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useCourseAccess } from '@/hooks/course/useCourseAccess';
 import { Navbar } from '@/components/layout/Navbar/Navbar';
+import { useAlert } from '@/hooks/useAlert';
 
 const VideoPlayerWrapper = dynamic(
   () => import('@/components/features/VideoPlayer').then(mod => ({ default: mod.VideoPlayerWrapper })),
@@ -83,6 +84,7 @@ interface VideoPlayerPageProps {
 
 export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
   const router = useRouter();
+  const { showAlert } = useAlert();
   const [lessonData, setLessonData] = useState<LessonData | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
@@ -159,7 +161,12 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
     
     // Check if user can access this lesson
     if (!hasPurchased && !isFirstLesson(newLessonId)) {
-      alert('This lesson is locked. Please purchase the course to access all lessons.');
+      showAlert({
+        variant: 'warning',
+        title: 'Lesson Locked',
+        message: 'This lesson is locked. Please purchase the course to access all lessons.',
+        duration: 5000,
+      });
       return;
     }
     router.push(`/video-player/${newLessonId}`);
@@ -208,7 +215,12 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
       
       // Check if user can access next lesson
       if (!hasPurchased && !isFirstLesson(nextLessonId)) {
-        alert('This lesson is locked. Please purchase the course to access all lessons.');
+        showAlert({
+          variant: 'warning',
+          title: 'Lesson Locked',
+          message: 'This lesson is locked. Please purchase the course to access all lessons.',
+          duration: 5000,
+        });
         return;
       }
       

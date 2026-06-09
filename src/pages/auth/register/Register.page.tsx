@@ -20,7 +20,7 @@ export default function RegisterPage() {
 
     try {
       await register(data);
-      router.push('/dashboard');
+      router.push('/');
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {

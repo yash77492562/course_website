@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAlert } from '@/hooks/useAlert';
 
 interface PDFViewerSimpleProps {
   pdfUrl: string;
@@ -9,6 +10,7 @@ interface PDFViewerSimpleProps {
 }
 
 export function PDFViewerSimple({ pdfUrl, password, title }: PDFViewerSimpleProps) {
+  const { showAlert } = useAlert();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [blobUrl, setBlobUrl] = useState<string>('');
@@ -123,7 +125,12 @@ export function PDFViewerSimple({ pdfUrl, password, title }: PDFViewerSimpleProp
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(password);
-                  alert('Password copied to clipboard!');
+                  showAlert({
+                    variant: 'success',
+                    title: 'Success!',
+                    message: 'Password copied to clipboard!',
+                    duration: 3000,
+                  });
                 }}
                 className="ml-2 px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium rounded transition-colors"
               >

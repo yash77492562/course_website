@@ -177,6 +177,34 @@ class PaymentApiClient {
       throw error;
     }
   }
+
+  /**
+   * Get order status for polling (Step 5)
+   * Returns: { orderId, status: 'pending' | 'paid' | 'failed', paidAt }
+   */
+  async getOrderStatus(orderId: string): Promise<{
+    orderId: string;
+    status: 'pending' | 'paid' | 'failed';
+    paidAt: string | null;
+    failedAt: string | null;
+    amount: number;
+    currency: string;
+  }> {
+    const url = `${this.baseURL}/payment/stripe/order/${orderId}/status`;
+
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch order status');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Get order status failed:', error);
+      throw error;
+    }
+  }
 }
 
 export const paymentApi = new PaymentApiClient(API_BASE_URL);

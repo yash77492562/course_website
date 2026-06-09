@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, Syne } from "next/font/google";
 import "./globals.css";
 import { Navbar } from '@/components/layout/Navbar/Navbar';
+import { AlertProvider } from '@/hooks/useAlert';
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -53,7 +54,9 @@ export default function RootLayout({
         className={`${dmSans.variable} ${syne.variable} antialiased w-full min-h-screen`}
         suppressHydrationWarning={true}
       >
-        {children}
+        <AlertProvider>
+          {children}
+        </AlertProvider>
       </body>
     </html>
   );
