@@ -104,8 +104,8 @@ export interface Lesson {
 export interface QuizData {
   questions: QuizQuestion[];
   passingScore?: number; // Percentage required to pass (e.g., 70)
-  timeLimit?: number; // Time limit in minutes (optional)
-  allowRetake?: boolean; // Allow multiple attempts
+  timeLimit: number; // Time limit in minutes (required, in minutes)
+  maxAttempts: number; // Max attempts (0 = infinite, 1-10 = limited attempts)
 }
 
 export interface QuizQuestion {

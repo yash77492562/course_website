@@ -399,6 +399,8 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
                 <QuizViewer
                   quizData={lessonData.quizData}
                   title={lessonData.title}
+                  lessonId={lessonData.id}
+                  courseId={lessonData.module.course.id}
                   onComplete={handleQuizComplete}
                 />
               </div>
@@ -419,6 +421,8 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
             <QuizViewer
               quizData={lessonData.quizData}
               title={lessonData.title}
+              lessonId={lessonData.id}
+              courseId={lessonData.module.course.id}
               onComplete={handleQuizComplete}
             />
           </div>
