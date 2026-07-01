@@ -4,10 +4,10 @@ const BACKEND_API = process.env.NEXT_PUBLIC_BACKEND_API || 'http://localhost:500
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { lessonId: string } }
+  { params }: { params: Promise<{ lessonId: string }> }
 ) {
   try {
-    const { lessonId } = params;
+    const { lessonId } = await params;
 
     // Get auth token from Authorization header
     const authHeader = request.headers.get('authorization');

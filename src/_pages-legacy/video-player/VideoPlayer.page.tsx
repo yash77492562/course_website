@@ -397,7 +397,7 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
               {renderHeader()}
               <div className="flex-1 bg-white overflow-y-auto">
                 <QuizViewer
-                  quizData={lessonData.quizData}
+                  quizData={{ timeLimit: 0, maxAttempts: 0, ...lessonData.quizData }}
                   title={lessonData.title}
                   lessonId={lessonData.id}
                   courseId={lessonData.module.course.id}
@@ -419,7 +419,7 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
           </div>
           <div className="flex-1 bg-white overflow-y-auto">
             <QuizViewer
-              quizData={lessonData.quizData}
+              quizData={{ timeLimit: 0, maxAttempts: 0, ...lessonData.quizData }}
               title={lessonData.title}
               lessonId={lessonData.id}
               courseId={lessonData.module.course.id}
