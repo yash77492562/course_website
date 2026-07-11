@@ -44,7 +44,9 @@ export interface LoginResponse extends ApiResponse {
 }
 
 export interface RefreshTokenResponse extends ApiResponse {
-  data: {
+  // `data` is absent when there is no active session to refresh (401 for
+  // anonymous visitors), so it is optional rather than guaranteed.
+  data?: {
     access_token: string;
     refresh_token: string;
   };

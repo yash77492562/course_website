@@ -58,13 +58,7 @@ export function ConsultingSection({ services }: ConsultingSectionProps) {
           </SectionTitle>
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '20px'
-          }}
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {services.map((service, index) => (
             <ConsultingCard key={index} service={service} />
           ))}

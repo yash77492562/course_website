@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/utils/logger';
 import { useAuth } from '@/hooks/auth/useAuth';
 import { useState, useEffect, createContext, useContext } from 'react';
 import { useRouter } from 'next/navigation';
@@ -58,19 +59,19 @@ export function CourseAccessControl({
 
   // Debug logging
   useEffect(() => {
-    console.log('[CourseAccessControl] ========== STATE UPDATE ==========');
-    console.log('[CourseAccessControl] Course ID:', courseId);
-    console.log('[CourseAccessControl] Is Authenticated:', isAuthenticated);
-    console.log('[CourseAccessControl] User ID:', user?.id);
-    console.log('[CourseAccessControl] Has Purchased:', hasPurchased);
-    console.log('[CourseAccessControl] Is Checking:', isChecking);
-    console.log('[CourseAccessControl] Show Payment Buttons:', !hasPurchased);
-    console.log('[CourseAccessControl] ====================================');
+    logger.debug('[CourseAccessControl] ========== STATE UPDATE ==========');
+    logger.debug('[CourseAccessControl] Course ID:', courseId);
+    logger.debug('[CourseAccessControl] Is Authenticated:', isAuthenticated);
+    logger.debug('[CourseAccessControl] User ID:', user?.id);
+    logger.debug('[CourseAccessControl] Has Purchased:', hasPurchased);
+    logger.debug('[CourseAccessControl] Is Checking:', isChecking);
+    logger.debug('[CourseAccessControl] Show Payment Buttons:', !hasPurchased);
+    logger.debug('[CourseAccessControl] ====================================');
   }, [courseId, isAuthenticated, user?.id, hasPurchased, isChecking]);
 
   // Additional debug for context value
   useEffect(() => {
-    console.log('[CourseAccessControl] 🎯 Context Value Updated:', {
+    logger.debug('[CourseAccessControl] 🎯 Context Value Updated:', {
       hasPurchased,
       isAuthenticated,
       showPaymentButtons: !hasPurchased

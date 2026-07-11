@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Syne } from "next/font/google";
 import "./globals.css";
 import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { AlertProvider } from '@/hooks/useAlert';
+import { AuthProvider } from '@/providers/AuthProvider';
+import { QueryProvider } from '@/providers/QueryProvider';
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -15,6 +17,13 @@ const syne = Syne({
   subsets: ["latin"],
   weight: ["400", "600", "700", "800"],
 });
+
+// Ensure the site scales correctly on phones (proper mobile responsiveness).
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 export const metadata: Metadata = {
   title: "Riva Data — Reskilling. Innovation. Vision. Achievement.",
@@ -54,9 +63,13 @@ export default function RootLayout({
         className={`${dmSans.variable} ${syne.variable} antialiased w-full min-h-screen`}
         suppressHydrationWarning={true}
       >
-        <AlertProvider>
-          {children}
-        </AlertProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <AlertProvider>
+              {children}
+            </AlertProvider>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

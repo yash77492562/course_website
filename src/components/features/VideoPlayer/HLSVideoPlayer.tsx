@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/utils/logger';
 import { useEffect, useRef, useState } from 'react';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
@@ -65,7 +66,7 @@ export function HLSVideoPlayer({
         const player = this.player();
         
         if (!player) {
-          console.warn('Player not available');
+          logger.warn('Player not available');
           return;
         }
         
@@ -76,9 +77,9 @@ export function HLSVideoPlayer({
         // CRITICAL FIX: Save the current duration before switching
         // The duration is already correct from the initial load
         const savedDuration = player.duration();
-        console.log('💾 Saving duration before quality switch:', savedDuration);
+        logger.debug('💾 Saving duration before quality switch:', savedDuration);
         
-        console.log('🎯 Manual quality clicked:', this.options_.label, 'URL:', this.options_.url);
+        logger.debug('🎯 Manual quality clicked:', this.options_.label, 'URL:', this.options_.url);
         
         // Remove selection from all items
         if (parent && parent.el) {
@@ -95,7 +96,7 @@ export function HLSVideoPlayer({
         this.isCurrentlySelected = true;
         (this as any).selected(true);
         
-        console.log('✅ Selection updated - only', this.options_.label, 'should be selected');
+        logger.debug('✅ Selection updated - only', this.options_.label, 'should be selected');
         
         // Save selected value to parent
         if (parent && typeof parent.setSelectedQuality === 'function') {
@@ -114,29 +115,29 @@ export function HLSVideoPlayer({
               iconPlaceholder.innerHTML = `
                 <span class="quality-icon">⚙</span>
               `;
-              console.log('🏷️ Button label updated to: Auto');
+              logger.debug('🏷️ Button label updated to: Auto');
             }
           }
           return; // Don't switch source for Auto
         }
         
         // Show loading spinner
-        console.log('🔄 Adding loading spinner...');
+        logger.debug('🔄 Adding loading spinner...');
         player.addClass('vjs-waiting');
         
         // Switch video source for specific quality
         try {
-          console.log('🔄 Switching video source to:', this.options_.url);
-          console.log('🔄 Current time before switch:', currentTime);
-          console.log('🔄 Was paused:', wasPaused);
+          logger.debug('🔄 Switching video source to:', this.options_.url);
+          logger.debug('🔄 Current time before switch:', currentTime);
+          logger.debug('🔄 Was paused:', wasPaused);
           
           // CRITICAL FIX: Pause and reset before changing source
           player.pause();
-          console.log('⏸️ Player paused');
+          logger.debug('⏸️ Player paused');
           
           // CRITICAL: Clear any existing error state before switching
           if (player.error()) {
-            console.log('🧹 Clearing existing error state');
+            logger.debug('🧹 Clearing existing error state');
             // @ts-ignore - Video.js types don't allow null but it's valid
             player.error(null);
           }
@@ -149,7 +150,7 @@ export function HLSVideoPlayer({
             try {
               const vhs = (tech as any).vhs;
               if (vhs.mediaSource && vhs.mediaSource.sourceBuffers) {
-                console.log('🧹 Clearing source buffers before quality switch');
+                logger.debug('🧹 Clearing source buffers before quality switch');
                 for (let i = 0; i < vhs.mediaSource.sourceBuffers.length; i++) {
                   const sourceBuffer = vhs.mediaSource.sourceBuffers[i];
                   if (!sourceBuffer.updating && sourceBuffer.buffered.length > 0) {
@@ -160,50 +161,50 @@ export function HLSVideoPlayer({
                         sourceBuffer.remove(start, end);
                       }
                     } catch (err) {
-                      console.warn('⚠️ Could not clear source buffer:', err);
+                      logger.warn('⚠️ Could not clear source buffer:', err);
                     }
                   }
                 }
               }
             } catch (err) {
-              console.warn('⚠️ Could not access source buffers:', err);
+              logger.warn('⚠️ Could not access source buffers:', err);
             }
           }
           
           // Set up event listener BEFORE changing source
           const handleLoadedMetadata = () => {
-            console.log('📥 loadedmetadata - Metadata loaded for new quality');
+            logger.debug('📥 loadedmetadata - Metadata loaded for new quality');
             
             // CRITICAL FIX: For HLS, duration becomes available after playing starts
             // We need to wait for 'loadeddata' or start playing to get duration
             const proceedWithPlayback = () => {
-              console.log('🔄 Removing loading spinner...');
+              logger.debug('🔄 Removing loading spinner...');
               player.removeClass('vjs-waiting');
               
               // Start playing first (from beginning of nearest segment)
               if (!wasPaused) {
-                console.log('▶️ Starting playback...');
+                logger.debug('▶️ Starting playback...');
                 const playPromise = player.play();
                 
                 if (playPromise !== undefined) {
                   playPromise.then(() => {
-                    console.log('✅ Video playing, now seeking to:', currentTime);
+                    logger.debug('✅ Video playing, now seeking to:', currentTime);
                     
                     // Once playing, seek to the desired time
                     // Use a small delay to ensure HLS has loaded some segments
                     setTimeout(() => {
                       player.currentTime(currentTime);
-                      console.log('✅ Seeked to timestamp');
+                      logger.debug('✅ Seeked to timestamp');
                     }, 300);
                   }).catch((err: Error) => {
-                    console.warn('⚠️ Autoplay failed:', err);
+                    logger.warn('⚠️ Autoplay failed:', err);
                     player.removeClass('vjs-waiting');
                     // Try seeking anyway
                     player.currentTime(currentTime);
                   });
                 }
               } else {
-                console.log('⏸️ Video was paused, seeking without playing');
+                logger.debug('⏸️ Video was paused, seeking without playing');
                 // If paused, just seek
                 setTimeout(() => {
                   player.currentTime(currentTime);
@@ -219,7 +220,7 @@ export function HLSVideoPlayer({
               // CRITICAL FIX: Use saved duration if new duration is not available
               if ((!duration || isNaN(duration) || duration === Infinity) && savedDuration && !isNaN(savedDuration) && savedDuration !== Infinity) {
                 duration = savedDuration;
-                console.log('📥 loadeddata - Using saved duration:', duration, 'seconds');
+                logger.debug('📥 loadeddata - Using saved duration:', duration, 'seconds');
                 
                 // Manually set the duration on the player's tech
                 const tech = player.tech({ IWillNotUseThisInPlugins: true });
@@ -229,7 +230,7 @@ export function HLSVideoPlayer({
                   (player as any).cache_.duration = savedDuration;
                 }
               } else {
-                console.log('📥 loadeddata - First frame loaded, duration:', duration);
+                logger.debug('📥 loadeddata - First frame loaded, duration:', duration);
               }
               
               player.off('loadeddata', handleLoadedData);
@@ -237,9 +238,9 @@ export function HLSVideoPlayer({
               player.off('playing', handlePlaying);
               
               if (duration && !isNaN(duration) && duration !== Infinity && duration > 0) {
-                console.log('✅ Duration available:', duration, 'seconds');
+                logger.debug('✅ Duration available:', duration, 'seconds');
               } else {
-                console.log('⚠️ Duration still not available, but proceeding');
+                logger.debug('⚠️ Duration still not available, but proceeding');
               }
               
               proceedWithPlayback();
@@ -248,10 +249,10 @@ export function HLSVideoPlayer({
             // Sometimes duration only becomes available after video starts playing
             const handlePlaying = () => {
               const duration = player.duration();
-              console.log('▶️ playing event - duration:', duration);
+              logger.debug('▶️ playing event - duration:', duration);
               
               if (duration && !isNaN(duration) && duration !== Infinity && duration > 0) {
-                console.log('✅ Duration available after playing:', duration, 'seconds');
+                logger.debug('✅ Duration available after playing:', duration, 'seconds');
                 player.off('loadeddata', handleLoadedData);
                 player.off('durationchange', handleDurationChange);
                 player.off('playing', handlePlaying);
@@ -261,10 +262,10 @@ export function HLSVideoPlayer({
             
             const handleDurationChange = () => {
               const duration = player.duration();
-              console.log('🕐 Duration changed:', duration);
+              logger.debug('🕐 Duration changed:', duration);
               
               if (duration && !isNaN(duration) && duration !== Infinity && duration > 0) {
-                console.log('✅ Duration available via durationchange:', duration, 'seconds');
+                logger.debug('✅ Duration available via durationchange:', duration, 'seconds');
                 player.off('loadeddata', handleLoadedData);
                 player.off('durationchange', handleDurationChange);
                 proceedWithPlayback();
@@ -277,7 +278,7 @@ export function HLSVideoPlayer({
             // CRITICAL FIX: Use saved duration if new duration is not available
             if ((!duration || isNaN(duration) || duration === Infinity) && savedDuration && !isNaN(savedDuration) && savedDuration !== Infinity) {
               duration = savedDuration;
-              console.log('✅ Using saved duration:', duration, 'seconds');
+              logger.debug('✅ Using saved duration:', duration, 'seconds');
               
               // Manually set the duration on the player's tech
               const tech = player.tech({ IWillNotUseThisInPlugins: true });
@@ -288,10 +289,10 @@ export function HLSVideoPlayer({
               
               proceedWithPlayback();
             } else if (duration && !isNaN(duration) && duration !== Infinity && duration > 0) {
-              console.log('✅ Duration already available:', duration, 'seconds');
+              logger.debug('✅ Duration already available:', duration, 'seconds');
               proceedWithPlayback();
             } else {
-              console.log('⏳ Waiting for loadeddata, durationchange, or playing event...');
+              logger.debug('⏳ Waiting for loadeddata, durationchange, or playing event...');
               // Listen for all three events - whichever fires first with valid duration wins
               player.one('loadeddata', handleLoadedData);
               player.on('durationchange', handleDurationChange);
@@ -304,14 +305,14 @@ export function HLSVideoPlayer({
                 player.off('playing', handlePlaying);
                 
                 const currentDuration = player.duration();
-                console.log('⏰ Timeout reached, duration:', currentDuration);
+                logger.debug('⏰ Timeout reached, duration:', currentDuration);
                 
                 if (!player.hasClass('vjs-waiting')) {
                   // Already proceeded, do nothing
                   return;
                 }
                 
-                console.log('⏰ Proceeding after timeout');
+                logger.debug('⏰ Proceeding after timeout');
                 proceedWithPlayback();
               }, 3000);
             }
@@ -323,10 +324,10 @@ export function HLSVideoPlayer({
             
             // Only log if it's not a recoverable error
             if (!error || error.code !== 3) {
-              console.error('❌ Video error event:', e);
+              logger.error('❌ Video error event:', e);
               if (error) {
-                console.error('❌ Error code:', error.code);
-                console.error('❌ Error message:', error.message);
+                logger.error('❌ Error code:', error.code);
+                logger.error('❌ Error message:', error.message);
               }
             }
             
@@ -335,7 +336,7 @@ export function HLSVideoPlayer({
             
             // Try to recover from MEDIA_ERR_DECODE silently
             if (error && error.code === 3) {
-              console.log('🔄 Recovering from quality switch error...');
+              logger.debug('🔄 Recovering from quality switch error...');
               
               // Clear the error to make player interactive again
               // @ts-ignore - Video.js types don't allow null but it's valid
@@ -358,23 +359,23 @@ export function HLSVideoPlayer({
           player.one('loadedmetadata', handleLoadedMetadata);
           player.one('error', handleError);
           
-          console.log('✅ Event listeners registered');
+          logger.debug('✅ Event listeners registered');
           
           // Change source using the tech directly for more reliable loading (reuse tech from above)
           if (tech && tech.el_) {
-            console.log('🔧 Using tech to change source');
+            logger.debug('🔧 Using tech to change source');
             tech.el_.src = this.options_.url;
             tech.el_.load();
-            console.log('✅ Tech source changed and loaded');
+            logger.debug('✅ Tech source changed and loaded');
           } else {
             // Fallback to normal method
-            console.log('🔧 Using player.src() method');
+            logger.debug('🔧 Using player.src() method');
             player.src({
               src: this.options_.url,
               type: 'application/x-mpegURL'
             });
             player.load();
-            console.log('✅ Player source changed and loaded');
+            logger.debug('✅ Player source changed and loaded');
           }
           
           // Update button label
@@ -383,7 +384,7 @@ export function HLSVideoPlayer({
             const iconPlaceholder = parent.el().querySelector('.vjs-icon-placeholder');
             if (iconPlaceholder) {
               iconPlaceholder.innerHTML = `<span class="quality-icon">⚙</span>`;
-              console.log('🏷️ Button label updated to:', this.options_.label, '(icon only)');
+              logger.debug('🏷️ Button label updated to:', this.options_.label, '(icon only)');
             }
           }
           
@@ -392,13 +393,13 @@ export function HLSVideoPlayer({
           // Fallback: Remove loading spinner after 10 seconds
           setTimeout(() => {
             if (player.hasClass('vjs-waiting')) {
-              console.log('⏰ Fallback timeout - removing loading spinner');
+              logger.debug('⏰ Fallback timeout - removing loading spinner');
               player.removeClass('vjs-waiting');
             }
           }, 10000);
           
         } catch (error) {
-          console.error('❌ Error switching quality:', error);
+          logger.error('❌ Error switching quality:', error);
           player.removeClass('vjs-waiting');
         }
       }
@@ -420,8 +421,8 @@ export function HLSVideoPlayer({
         this.addClass('vjs-quality-selector');
         (this as any).controlText('⚙');
         
-        console.log('🎬 ManualQualityMenuButton constructor - qualities:', this.qualities);
-        console.log('🎬 Number of qualities:', Object.keys(this.qualities).length);
+        logger.debug('🎬 ManualQualityMenuButton constructor - qualities:', this.qualities);
+        logger.debug('🎬 Number of qualities:', Object.keys(this.qualities).length);
         
         // Set initial quality to Auto
         this.selectedQualityValue = 'Auto';
@@ -464,12 +465,12 @@ export function HLSVideoPlayer({
         // Get qualities from options since this is called during super() construction
         const qualities = (this as any).options_?.qualities || this.qualities || {};
         
-        console.log('📋 createItems called - qualities:', qualities);
-        console.log('📋 Number of qualities:', Object.keys(qualities).length);
+        logger.debug('📋 createItems called - qualities:', qualities);
+        logger.debug('📋 Number of qualities:', Object.keys(qualities).length);
         
         // Safety check
         if (!qualities || typeof qualities !== 'object' || Object.keys(qualities).length === 0) {
-          console.error('❌ Qualities not available in createItems');
+          logger.error('❌ Qualities not available in createItems');
           return items;
         }
         
@@ -498,7 +499,7 @@ export function HLSVideoPlayer({
           }));
         });
         
-        console.log('📋 Manual quality menu items created:', items.length);
+        logger.debug('📋 Manual quality menu items created:', items.length);
         
         return items;
       }
@@ -519,12 +520,12 @@ export function HLSVideoPlayer({
       const existingQualitySelector = controlBar.getChild('QualityMenuButton');
       
       if (existingManualSelector) {
-        console.log('⚠️ ManualQualityMenuButton already exists, removing old one');
+        logger.debug('⚠️ ManualQualityMenuButton already exists, removing old one');
         controlBar.removeChild(existingManualSelector);
       }
       
       if (existingQualitySelector) {
-        console.log('⚠️ QualityMenuButton already exists, removing it before adding ManualQualityMenuButton');
+        logger.debug('⚠️ QualityMenuButton already exists, removing it before adding ManualQualityMenuButton');
         controlBar.removeChild(existingQualitySelector);
       }
       
@@ -532,7 +533,7 @@ export function HLSVideoPlayer({
       const fullscreenIndex = controlBar.children().indexOf(fullscreenToggle);
       
       controlBar.addChild('ManualQualityMenuButton', { qualities }, fullscreenIndex);
-      console.log('✅ Manual quality selector added to control bar');
+      logger.debug('✅ Manual quality selector added to control bar');
     }
   };
 
@@ -554,7 +555,7 @@ export function HLSVideoPlayer({
         // Use master playlist if available
         videoSource = hlsMasterPlaylist;
         sourceType = 'application/x-mpegURL';
-        console.log('🎬 Using HLS master playlist:', videoSource);
+        logger.debug('🎬 Using HLS master playlist:', videoSource);
       } else if (hlsQualities && Object.keys(hlsQualities).length > 0) {
         // Use highest quality HLS playlist
         const qualities = Object.keys(hlsQualities).sort((a, b) => {
@@ -565,27 +566,27 @@ export function HLSVideoPlayer({
         const bestQuality = qualities[0];
         videoSource = hlsQualities[bestQuality];
         sourceType = 'application/x-mpegURL';
-        console.log('🎬 Using HLS quality:', bestQuality, videoSource);
-        console.log('📊 Available HLS qualities:', qualities.join(', '));
+        logger.debug('🎬 Using HLS quality:', bestQuality, videoSource);
+        logger.debug('📊 Available HLS qualities:', qualities.join(', '));
       } else if (videoUrls && Object.keys(videoUrls).length > 0) {
         // Fallback to MP4
         videoSource = Object.values(videoUrls)[0];
         sourceType = 'video/mp4';
-        console.log('🎬 Using MP4 fallback:', videoSource);
+        logger.debug('🎬 Using MP4 fallback:', videoSource);
       }
 
       if (!videoSource) {
-        console.error('❌ No video source available');
-        console.log('Debug - hlsMasterPlaylist:', hlsMasterPlaylist);
-        console.log('Debug - hlsQualities:', hlsQualities);
-        console.log('Debug - videoUrls:', videoUrls);
+        logger.error('❌ No video source available');
+        logger.debug('Debug - hlsMasterPlaylist:', hlsMasterPlaylist);
+        logger.debug('Debug - hlsQualities:', hlsQualities);
+        logger.debug('Debug - videoUrls:', videoUrls);
         return;
       }
 
-      console.log('🎥 Initializing Video.js player...');
-      console.log('   Video element:', videoElement);
-      console.log('   Video element in DOM:', document.body.contains(videoElement));
-      console.log('   Video element parent:', videoElement.parentElement);
+      logger.debug('🎥 Initializing Video.js player...');
+      logger.debug('   Video element:', videoElement);
+      logger.debug('   Video element in DOM:', document.body.contains(videoElement));
+      logger.debug('   Video element parent:', videoElement.parentElement);
 
       const player = videojs(videoElement, {
         controls: true,
@@ -620,14 +621,14 @@ export function HLSVideoPlayer({
           nativeTextTracks: false
         }
       }, () => {
-        console.log('✅ Video.js player ready');
+        logger.debug('✅ Video.js player ready');
         setIsReady(true);
         
         // Unmute after a short delay to allow autoplay
         setTimeout(() => {
           if (player && !player.isDisposed()) {
             player.muted(false);
-            console.log('🔊 Video unmuted');
+            logger.debug('🔊 Video unmuted');
           }
         }, 1000);
       });
@@ -657,13 +658,13 @@ export function HLSVideoPlayer({
       // Add quality selector after source is loaded and quality levels are available
       // Use 'one' instead of 'on' to prevent duplicate quality selectors
       player.one('loadedmetadata', () => {
-        console.log('📊 Video metadata loaded');
+        logger.debug('📊 Video metadata loaded');
         
         // CRITICAL FIX: If we have hlsQualities prop, use manual quality selector
         // because individual playlists don't have resolution metadata
         if (hlsQualities && Object.keys(hlsQualities).length > 1) {
-          console.log('📺 Using manual quality selector for individual playlists');
-          console.log('📺 Available qualities:', Object.keys(hlsQualities).join(', '));
+          logger.debug('📺 Using manual quality selector for individual playlists');
+          logger.debug('📺 Available qualities:', Object.keys(hlsQualities).join(', '));
           
           // Create manual quality selector
           addManualQualitySelector(player, hlsQualities);
@@ -673,16 +674,16 @@ export function HLSVideoPlayer({
         // Initialize quality levels plugin for master playlist
         const qualityLevels = (player as any).qualityLevels();
         
-        console.log('🔍 Quality Levels Object:', qualityLevels);
-        console.log('🔍 Quality Levels Length:', qualityLevels ? qualityLevels.length : 'undefined');
+        logger.debug('🔍 Quality Levels Object:', qualityLevels);
+        logger.debug('🔍 Quality Levels Length:', qualityLevels ? qualityLevels.length : 'undefined');
         
         if (qualityLevels && qualityLevels.length > 0) {
-          console.log('📺 Available quality levels:', qualityLevels.length);
+          logger.debug('📺 Available quality levels:', qualityLevels.length);
           
           // Log available qualities with all details
           for (let i = 0; i < qualityLevels.length; i++) {
             const level = qualityLevels[i];
-            console.log(`   Quality ${i}:`, {
+            logger.debug(`   Quality ${i}:`, {
               height: level.height,
               width: level.width,
               bitrate: level.bitrate,
@@ -693,7 +694,7 @@ export function HLSVideoPlayer({
           
           // Listen for quality level changes
           qualityLevels.on('change', () => {
-            console.log('🔄 Quality level changed');
+            logger.debug('🔄 Quality level changed');
             const enabledLevels = [];
             for (let i = 0; i < qualityLevels.length; i++) {
               const level = qualityLevels[i];
@@ -701,7 +702,7 @@ export function HLSVideoPlayer({
                 enabledLevels.push(`${level.height}p (${level.bitrate} bps)`);
               }
             }
-            console.log(`   Enabled qualities: ${enabledLevels.join(', ')}`);
+            logger.debug(`   Enabled qualities: ${enabledLevels.join(', ')}`);
           });
           
           // Create custom quality selector button
@@ -728,7 +729,7 @@ export function HLSVideoPlayer({
               const currentTime = player.currentTime();
               const wasPaused = player.paused();
               
-              console.log('🎯 Quality clicked:', this.options_.label, 'Value:', this.options_.value);
+              logger.debug('🎯 Quality clicked:', this.options_.label, 'Value:', this.options_.value);
               
               // First, remove 'vjs-selected' class from ALL menu items using DOM query
               if (parent && parent.el) {
@@ -763,7 +764,7 @@ export function HLSVideoPlayer({
               this.isCurrentlySelected = true;
               (this as any).selected(true);
               
-              console.log('✅ Selection updated - only', this.options_.label, 'should be selected');
+              logger.debug('✅ Selection updated - only', this.options_.label, 'should be selected');
               
               // Save selected value to parent
               if (parent && typeof parent.setSelectedQuality === 'function') {
@@ -776,7 +777,7 @@ export function HLSVideoPlayer({
                   for (let i = 0; i < qualityLevels.length; i++) {
                     qualityLevels[i].enabled = true;
                   }
-                  console.log('🔄 Quality set to: Auto (adaptive streaming enabled)');
+                  logger.debug('🔄 Quality set to: Auto (adaptive streaming enabled)');
                   setCurrentQuality('Auto');
                 }
               } else if (typeof this.options_.value === 'string') {
@@ -784,7 +785,7 @@ export function HLSVideoPlayer({
                 const hlsQualities = (parent as any).options_.hlsQualities;
                 if (hlsQualities && hlsQualities[this.options_.value]) {
                   const newSource = hlsQualities[this.options_.value];
-                  console.log('🔄 Switching to quality:', this.options_.value + 'p', newSource);
+                  logger.debug('🔄 Switching to quality:', this.options_.value + 'p', newSource);
                   
                   // Save current time and state
                   const currentTime = player.currentTime();
@@ -801,7 +802,7 @@ export function HLSVideoPlayer({
                     player.currentTime(currentTime);
                     if (!wasPaused) {
                       player.play()?.catch((err: Error) => {
-                        console.warn('⚠️ Autoplay after quality change failed:', err);
+                        logger.warn('⚠️ Autoplay after quality change failed:', err);
                       });
                     }
                   });
@@ -820,8 +821,8 @@ export function HLSVideoPlayer({
                 // THEN: Enable only the selected quality
                 qualityLevels[this.options_.value].enabled = true;
                 
-                console.log('🔄 Quality set to:', selectedHeight + 'p');
-                console.log('🔄 Forcing quality switch by clearing buffer...');
+                logger.debug('🔄 Quality set to:', selectedHeight + 'p');
+                logger.debug('🔄 Forcing quality switch by clearing buffer...');
                 setCurrentQuality(selectedHeight + 'p');
                 
                 // Force immediate quality switch by triggering a seek
@@ -838,13 +839,13 @@ export function HLSVideoPlayer({
                           const end = sourceBuffer.buffered.end(sourceBuffer.buffered.length - 1);
                           if (end > start) {
                             sourceBuffer.remove(start, end);
-                            console.log('🧹 Cleared buffer to force quality switch');
+                            logger.debug('🧹 Cleared buffer to force quality switch');
                           }
                         }
                       }
                     }
                   } catch (err) {
-                    console.warn('⚠️ Could not clear buffer:', err);
+                    logger.warn('⚠️ Could not clear buffer:', err);
                   }
                 }
               }
@@ -854,7 +855,7 @@ export function HLSVideoPlayer({
                 const controlTextEl = parent.el().querySelector('.vjs-control-text');
                 if (controlTextEl) {
                   controlTextEl.textContent = this.options_.label;
-                  console.log('🏷️ Button label updated to:', this.options_.label);
+                  logger.debug('🏷️ Button label updated to:', this.options_.label);
                 }
               }
               
@@ -866,7 +867,7 @@ export function HLSVideoPlayer({
                   
                   if (!wasPaused) {
                     player.play()?.catch((err: Error) => {
-                      console.warn('⚠️ Autoplay after quality change failed:', err);
+                      logger.warn('⚠️ Autoplay after quality change failed:', err);
                     });
                   }
                 }
@@ -997,7 +998,7 @@ export function HLSVideoPlayer({
                 }
               }
               
-              console.log('📋 Quality menu items created:', items.length, 'Selected:', selectedValue);
+              logger.debug('📋 Quality menu items created:', items.length, 'Selected:', selectedValue);
               
               return items;
             }
@@ -1018,12 +1019,12 @@ export function HLSVideoPlayer({
             const existingQualitySelector = controlBar.getChild('QualityMenuButton');
             
             if (existingManualSelector) {
-              console.log('⚠️ ManualQualityMenuButton already exists, skipping QualityMenuButton');
+              logger.debug('⚠️ ManualQualityMenuButton already exists, skipping QualityMenuButton');
               return; // Don't add another quality selector
             }
             
             if (existingQualitySelector) {
-              console.log('⚠️ QualityMenuButton already exists, removing old one');
+              logger.debug('⚠️ QualityMenuButton already exists, removing old one');
               controlBar.removeChild(existingQualitySelector);
             }
             
@@ -1031,14 +1032,14 @@ export function HLSVideoPlayer({
             const fullscreenIndex = controlBar.children().indexOf(fullscreenToggle);
             
             controlBar.addChild('QualityMenuButton', { hlsQualities }, fullscreenIndex);
-            console.log('✅ Quality selector added to control bar');
+            logger.debug('✅ Quality selector added to control bar');
           }
         } else {
-          console.log('⚠️ No quality levels available');
+          logger.debug('⚠️ No quality levels available');
           
           // Even if no quality levels from HLS, add quality selector if we have hlsQualities prop
           if (hlsQualities && Object.keys(hlsQualities).length > 0) {
-            console.log('📊 Adding quality selector from hlsQualities prop');
+            logger.debug('📊 Adding quality selector from hlsQualities prop');
             
             // Add quality button to control bar (before fullscreen button)
             const controlBar = player.getChild('controlBar');
@@ -1048,12 +1049,12 @@ export function HLSVideoPlayer({
               const existingQualitySelector = controlBar.getChild('QualityMenuButton');
               
               if (existingManualSelector) {
-                console.log('⚠️ ManualQualityMenuButton already exists, skipping QualityMenuButton');
+                logger.debug('⚠️ ManualQualityMenuButton already exists, skipping QualityMenuButton');
                 return; // Don't add another quality selector
               }
               
               if (existingQualitySelector) {
-                console.log('⚠️ QualityMenuButton already exists, removing old one');
+                logger.debug('⚠️ QualityMenuButton already exists, removing old one');
                 controlBar.removeChild(existingQualitySelector);
               }
               
@@ -1061,7 +1062,7 @@ export function HLSVideoPlayer({
               const fullscreenIndex = controlBar.children().indexOf(fullscreenToggle);
               
               controlBar.addChild('QualityMenuButton', { hlsQualities }, fullscreenIndex);
-              console.log('✅ Quality selector added to control bar (from prop)');
+              logger.debug('✅ Quality selector added to control bar (from prop)');
             }
           }
         }
@@ -1073,28 +1074,28 @@ export function HLSVideoPlayer({
         
         // Only log non-recoverable errors (not MEDIA_ERR_DECODE which we handle)
         if (errorDisplay && errorDisplay.code !== 3) {
-          console.error('❌ Video.js error:', error);
-          console.error('Error code:', errorDisplay.code);
-          console.error('Error message:', errorDisplay.message);
+          logger.error('❌ Video.js error:', error);
+          logger.error('Error code:', errorDisplay.code);
+          logger.error('Error message:', errorDisplay.message);
         }
       });
 
       // Debug: Log when video starts playing
       player.on('play', () => {
-        console.log('▶️ Video started playing');
+        logger.debug('▶️ Video started playing');
       });
 
       player.on('playing', () => {
-        console.log('▶️ Video is playing');
-        console.log('Video dimensions:', player.videoWidth(), 'x', player.videoHeight());
+        logger.debug('▶️ Video is playing');
+        logger.debug('Video dimensions:', player.videoWidth(), 'x', player.videoHeight());
       });
 
       player.on('loadstart', () => {
-        console.log('📥 Video load started');
+        logger.debug('📥 Video load started');
       });
 
       player.on('loadeddata', () => {
-        console.log('📥 Video data loaded');
+        logger.debug('📥 Video data loaded');
       });
       
       // Track segment loading to verify quality switching
@@ -1102,10 +1103,10 @@ export function HLSVideoPlayer({
       if (tech && (tech as any).vhs) {
         (tech as any).vhs.on('loadedplaylist', () => {
           const qualityLevels = (player as any).qualityLevels();
-          console.log('📋 Playlist loaded, current quality levels:');
+          logger.debug('📋 Playlist loaded, current quality levels:');
           for (let i = 0; i < qualityLevels.length; i++) {
             const level = qualityLevels[i];
-            console.log(`   ${level.height}p: ${level.enabled ? '✅ ENABLED' : '❌ disabled'}`);
+            logger.debug(`   ${level.height}p: ${level.enabled ? '✅ ENABLED' : '❌ disabled'}`);
           }
         });
       }

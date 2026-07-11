@@ -243,7 +243,6 @@ export function PartnerPage() {
           width: 100%;
           max-width: 600px;
           min-height: 500px;
-          perspective: 1000px;
         }
 
         .card-slide {

@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/utils/logger';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/auth/useAuth';
@@ -14,7 +15,7 @@ export default function PurchasesPage() {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      console.log('❌ Not authenticated, redirecting to login...');
+      logger.debug('❌ Not authenticated, redirecting to login...');
       router.push('/login');
     }
   }, [isAuthenticated, authLoading, router]);

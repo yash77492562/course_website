@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/utils/logger';
 import { useState, useEffect } from 'react';
 import { CoursesSection } from '@/components/features/CoursesSection/CoursesSection';
 import type { Course } from '@/types/course/types';
@@ -28,13 +29,13 @@ export function CoursesPage() {
 
   const handleEnroll = (courseId: string) => {
     // TODO: Implement enrollment logic
-    console.log('Enrolling in course:', courseId);
+    logger.debug('Enrolling in course:', courseId);
     // This will be connected to the API later
   };
 
   const handleViewDetails = (courseId: string) => {
     // TODO: Navigate to course details page
-    console.log('Viewing course details:', courseId);
+    logger.debug('Viewing course details:', courseId);
     // This will navigate to /courses/[id] when routing is set up
   };
 

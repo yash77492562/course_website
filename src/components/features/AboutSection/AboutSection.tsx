@@ -15,16 +15,9 @@ export function AboutSection() {
       }}
       id="about"
     >
-      {/* Grid container matching original about-inner */}
-      <div 
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '80px',
-          alignItems: 'center'
-        }}
-      >
-        
+      {/* Grid container — stacks to one column on mobile, two from md up */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-center">
+
         {/* Left side - RIVA Card */}
         <RivaCard />
 

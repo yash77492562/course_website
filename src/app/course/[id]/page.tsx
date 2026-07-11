@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/utils/logger';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { courseApi } from '@/lib/api/course/courseApi';
@@ -16,7 +17,7 @@ function CourseContent({ course, courseId }: { course: Course; courseId: string 
 
   // Debug logging
   useEffect(() => {
-    console.log('[CourseContent] 🎨 Render with showPaymentButtons:', showPaymentButtons);
+    logger.debug('[CourseContent] 🎨 Render with showPaymentButtons:', showPaymentButtons);
   }, [showPaymentButtons]);
 
   // Transform course data to match the expected format
@@ -92,6 +93,14 @@ function CourseContent({ course, courseId }: { course: Course; courseId: string 
               <>
                 <div className="program-cta-row">
                   <PayNowButton className="btn-primary">Pay Now</PayNowButton>
+                  {programData.modules[0]?.lessons?.[0]?.id && (
+                    <a
+                      className="btn-outline-dark"
+                      href={`/video-player/${programData.modules[0].lessons[0].id}`}
+                    >
+                      Watch free preview →
+                    </a>
+                  )}
                   <a className="btn-outline-dark" href="/contact">Talk to us first</a>
                 </div>
                 <p className="trust-note">Secure checkout • Seat reserved after payment • Limited cohort size</p>
@@ -233,14 +242,14 @@ export default function CourseDetailPage() {
     try {
       setLoading(true);
       const data = await courseApi.getCourseById(courseId);
-      console.log('Course data loaded:', data);
-      console.log('Modules:', data.modules);
+      logger.debug('Course data loaded:', data);
+      logger.debug('Modules:', data.modules);
       if (data.modules && data.modules.length > 0) {
-        console.log('First module lessons:', data.modules[0].lessons);
+        logger.debug('First module lessons:', data.modules[0].lessons);
       }
       setCourse(data);
     } catch (err) {
-      console.error('Failed to load course:', err);
+      logger.error('Failed to load course:', err);
       setError('Failed to load course details');
     } finally {
       setLoading(false);

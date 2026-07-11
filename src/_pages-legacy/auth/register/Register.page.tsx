@@ -110,8 +110,9 @@ export default function RegisterPage() {
           }}
         />
 
-        {/* Main card container */}
-        <div 
+        {/* Main card container — single column on phones, two columns from md up */}
+        <div
+          className="grid grid-cols-1 md:grid-cols-2"
           style={{
             width: '100%',
             maxWidth: '1000px',
@@ -120,20 +121,16 @@ export default function RegisterPage() {
             border: '1px solid rgba(14, 165, 233, 0.2)',
             backdropFilter: 'blur(20px)',
             boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
             overflow: 'hidden',
             animation: 'slideUp 0.6s ease-out'
           }}
         >
-          {/* Left side - Course promotion */}
-          <div 
+          {/* Left side - Course promotion (hidden on phones) */}
+          <div
+            className="hidden md:flex flex-col justify-center"
             style={{
               padding: '60px 50px',
               background: 'linear-gradient(135deg, rgba(14,165,233,0.15) 0%, rgba(6,182,212,0.15) 100%)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
               position: 'relative'
             }}
           >

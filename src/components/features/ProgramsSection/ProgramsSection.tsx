@@ -7,6 +7,7 @@ import { ProgramCard } from '@/ui/ProgramCard/ProgramCard';
 import { courseApi } from '@/lib/api/course/courseApi';
 import { Course } from '@/types/course/types';
 import type { Program } from '@/types/program/types';
+import { logger } from '@/lib/utils/logger';
 
 export function ProgramsSection() {
   const [programs, setPrograms] = useState<Program[]>([]);
@@ -34,7 +35,7 @@ export function ProgramsSection() {
       
       setPrograms(transformedPrograms);
     } catch (err) {
-      console.error('Failed to load programs:', err);
+      logger.error('Failed to load programs:', err);
       setError('Failed to load programs');
       setPrograms([]);
     } finally {

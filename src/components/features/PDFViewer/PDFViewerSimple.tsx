@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/utils/logger';
 import { useState, useEffect } from 'react';
 import { useAlert } from '@/hooks/useAlert';
 
@@ -16,14 +17,14 @@ export function PDFViewerSimple({ pdfUrl, password, title }: PDFViewerSimpleProp
   const [blobUrl, setBlobUrl] = useState<string>('');
 
   useEffect(() => {
-    console.log('📄 PDFViewerSimple mounted');
-    console.log('PDF URL:', pdfUrl);
-    console.log('Has password:', !!password);
+    logger.debug('📄 PDFViewerSimple mounted');
+    logger.debug('PDF URL:', pdfUrl);
+    logger.debug('Has password:', !!password);
     
     // Download the PDF and create a blob URL to bypass CORS
     const loadPDF = async () => {
       try {
-        console.log('📥 Downloading PDF...');
+        logger.debug('📥 Downloading PDF...');
         const response = await fetch(pdfUrl);
         
         if (!response.ok) {
@@ -31,15 +32,15 @@ export function PDFViewerSimple({ pdfUrl, password, title }: PDFViewerSimpleProp
         }
         
         const blob = await response.blob();
-        console.log('✅ PDF downloaded:', blob.size, 'bytes');
+        logger.debug('✅ PDF downloaded:', blob.size, 'bytes');
         
         const url = URL.createObjectURL(blob);
-        console.log('✅ Blob URL created:', url);
+        logger.debug('✅ Blob URL created:', url);
         
         setBlobUrl(url);
         setLoading(false);
       } catch (err) {
-        console.error('❌ Failed to load PDF:', err);
+        logger.error('❌ Failed to load PDF:', err);
         setError(err instanceof Error ? err.message : 'Failed to load PDF');
         setLoading(false);
       }

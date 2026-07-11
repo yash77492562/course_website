@@ -1,4 +1,5 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002/api';
+import { logger } from '@/lib/utils/logger';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
 interface CreateOrderRequest {
   courseId: string;
@@ -93,7 +94,7 @@ class PaymentApiClient {
 
       return await response.json();
     } catch (error) {
-      console.error('Create order failed:', error);
+      logger.error('Create order failed:', error);
       throw error;
     }
   }
@@ -113,7 +114,7 @@ class PaymentApiClient {
 
       return await response.json();
     } catch (error) {
-      console.error('Get order failed:', error);
+      logger.error('Get order failed:', error);
       throw error;
     }
   }
@@ -133,7 +134,7 @@ class PaymentApiClient {
 
       return await response.json();
     } catch (error) {
-      console.error('Get user orders failed:', error);
+      logger.error('Get user orders failed:', error);
       throw error;
     }
   }
@@ -153,7 +154,7 @@ class PaymentApiClient {
 
       return await response.json();
     } catch (error) {
-      console.error('Get purchase history failed:', error);
+      logger.error('Get purchase history failed:', error);
       throw error;
     }
   }
@@ -173,7 +174,7 @@ class PaymentApiClient {
 
       return await response.json();
     } catch (error) {
-      console.error('Get payment status failed:', error);
+      logger.error('Get payment status failed:', error);
       throw error;
     }
   }
@@ -201,7 +202,7 @@ class PaymentApiClient {
 
       return await response.json();
     } catch (error) {
-      console.error('Get order status failed:', error);
+      logger.error('Get order status failed:', error);
       throw error;
     }
   }

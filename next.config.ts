@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ['192.168.29.6'],
   // Enable standalone output for Docker
   output: 'standalone',
   
@@ -48,18 +49,11 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
-  
-  async rewrites() {
-    // Use Docker internal network in production, localhost in development
-    const backendUrl = process.env.BACKEND_URL || 'http://localhost:3002';
-    
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${backendUrl}/:path*`,  // No /api prefix on backend
-      },
-    ];
-  },
+
+  // Note: no /api rewrite/proxy. The browser calls the backend directly via
+  // NEXT_PUBLIC_API_URL. The only frontend-served route is GET /active
+  // (app/active/route.ts). This also removes the old build-time failure when
+  // BACKEND_URL was unset.
 };
 
 export default nextConfig;

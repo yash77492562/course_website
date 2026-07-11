@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/utils/logger';
 interface Payment {
   paymentId: string;
   orderId: string;
@@ -67,7 +68,7 @@ export function PurchaseHistoryCard({ payment }: PurchaseHistoryCardProps) {
 
   const handleDownloadInvoice = () => {
     if (payment.invoiceUrl) {
-      console.log('📄 Opening invoice URL:', payment.invoiceUrl);
+      logger.debug('📄 Opening invoice URL:', payment.invoiceUrl);
       // Stripe receipt URLs work as-is
       window.open(payment.invoiceUrl, '_blank');
     }

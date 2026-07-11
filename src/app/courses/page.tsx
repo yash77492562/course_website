@@ -1,103 +1,47 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/auth/useAuth';
-import { courseApi } from '@/lib/api/course/courseApi';
-import { Course } from '@/types/course/types';
+import { usePublishedCourses } from '@/hooks/course/useCourseQueries';
 import { Program } from '@/types/program/types';
 import { ProgramCard } from '@/ui/ProgramCard/ProgramCard';
 import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { Footer } from '@/components/layout/Footer/Footer';
 import footerLinksData from '@/data/footerLinks/data.json';
 
+// Module-level lookup — no need to reallocate this map on every render.
+const CATEGORY_ICONS: Record<string, string> = {
+  'Data Analytics': '📊',
+  'Data Engineering': '⚙️',
+  'Data Science': '🤖',
+  'Data Science & AI': '🤖',
+  'Machine Learning': '🧠',
+  'Business Intelligence': '📈',
+  'Cloud Computing': '☁️',
+};
+
+const getIconForCategory = (category: string): string =>
+  CATEGORY_ICONS[category] || '📚';
+
 export default function CoursesPage() {
-  const router = useRouter();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
-  const [courses, setCourses] = useState<Program[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // Public page — anyone can browse published courses without logging in.
+  const {
+    data: rawCourses = [],
+    isLoading: loading,
+    error: queryError,
+    refetch,
+  } = usePublishedCourses();
 
-  // Only redirect to login if auth is fully loaded and user is not authenticated
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      console.log('❌ Not authenticated, redirecting to login...');
-      router.push('/login');
-    }
-  }, [isAuthenticated, authLoading, router]);
+  const error = queryError ? 'Failed to load courses' : null;
+  const loadCourses = () => refetch();
 
-  useEffect(() => {
-    // Only load courses if authenticated
-    if (isAuthenticated) {
-      loadCourses();
-    }
-  }, [isAuthenticated]);
-
-  const loadCourses = async () => {
-    try {
-      setLoading(true);
-      const data = await courseApi.getPublishedCourses();
-      
-      // Transform Course data to Program format for compatibility
-      const transformedCourses: Program[] = data.map((course: Course) => ({
-        icon: getIconForCategory(course.category),
-        title: course.title,
-        body: course.description,
-        tags: course.features || [],
-        ctaText: "Learn more",
-        ctaHref: `/course/${course.id}`,
-      }));
-      
-      setCourses(transformedCourses);
-    } catch (err) {
-      console.error('Failed to load courses:', err);
-      setError('Failed to load courses');
-      setCourses([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getIconForCategory = (category: string): string => {
-    const categoryIcons: { [key: string]: string } = {
-      'Data Analytics': '📊',
-      'Data Engineering': '⚙️',
-      'Data Science': '🤖',
-      'Data Science & AI': '🤖',
-      'Machine Learning': '🧠',
-      'Business Intelligence': '📈',
-      'Cloud Computing': '☁️',
-    };
-    
-    return categoryIcons[category] || '📚';
-  };
-
-  // Show loading while auth is initializing
-  if (authLoading) {
-    return (
-      <>
-        <Navbar />
-        <div style={{
-          minHeight: '100vh',
-          background: 'linear-gradient(160deg, #050d1f 0%, #0d1f40 60%, #0a2240 100%)'
-        }}>
-          <div className="h-[68px]" />
-          <div className="flex items-center justify-center py-20">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p style={{ color: 'rgba(255,255,255,0.7)' }}>Checking authentication...</p>
-            </div>
-          </div>
-        </div>
-        <Footer footerData={footerLinksData} />
-      </>
-    );
-  }
-
-  // Don't render anything if not authenticated (will redirect)
-  if (!isAuthenticated) {
-    return null;
-  }
+  // Transform Course data to the Program shape the card expects.
+  const courses: Program[] = rawCourses.map((course) => ({
+    icon: getIconForCategory(course.category),
+    title: course.title,
+    body: course.description,
+    tags: course.features || [],
+    ctaText: 'Learn more',
+    ctaHref: `/course/${course.id}`,
+  }));
 
   // Show loading while courses are loading
   if (loading) {
@@ -221,8 +165,8 @@ export default function CoursesPage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {courses.map((program, index) => (
-                  <ProgramCard key={index} program={program} />
+                {courses.map((program) => (
+                  <ProgramCard key={program.ctaHref} program={program} />
                 ))}
               </div>
             )}

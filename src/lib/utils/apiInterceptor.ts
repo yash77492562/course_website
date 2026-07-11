@@ -1,3 +1,4 @@
+import { logger } from '@/lib/utils/logger';
 /**
  * API Interceptor for automatic token refresh
  * Intercepts 401 errors and automatically refreshes the access token
@@ -51,7 +52,7 @@ export async function fetchWithAuth(
 
   // If 401, try to refresh token and retry
   if (response.status === 401) {
-    console.log('🔄 Got 401, attempting token refresh...');
+    logger.debug('🔄 Got 401, attempting token refresh...');
 
     if (isRefreshing) {
       // Wait for the current refresh to complete
@@ -69,15 +70,10 @@ export async function fetchWithAuth(
     isRefreshing = true;
 
     try {
-      const refreshToken = tokenManager.getRefreshToken();
-      
-      if (!refreshToken) {
-        throw new Error('No refresh token available');
-      }
+      // Refresh token is sent via the httpOnly cookie (authApi uses
+      // credentials: 'include'); nothing to read from storage here.
+      const refreshResponse = await authApi.refreshToken();
 
-      // Refresh the token
-      const refreshResponse = await authApi.refreshToken(refreshToken);
-      
       if (!refreshResponse.success || !refreshResponse.data?.access_token) {
         throw new Error('Token refresh failed');
       }
@@ -85,7 +81,7 @@ export async function fetchWithAuth(
       const newAccessToken = refreshResponse.data.access_token;
       tokenManager.setAccessToken(newAccessToken);
       
-      console.log('✅ Token refreshed successfully');
+      logger.debug('✅ Token refreshed successfully');
       
       // Process queued requests
       processQueue(null, newAccessToken);
@@ -97,7 +93,7 @@ export async function fetchWithAuth(
       response = await fetch(url, options);
       
     } catch (error) {
-      console.error('❌ Token refresh failed:', error);
+      logger.error('❌ Token refresh failed:', error);
       processQueue(error, null);
       
       // Clear tokens and redirect to login

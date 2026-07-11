@@ -94,7 +94,8 @@ export function Footer({ footerData }: FooterProps) {
         <div
           style={{
             display: 'flex',
-            gap: '60px'
+            flexWrap: 'wrap',
+            gap: '40px'
           }}
         >
           {footerData.columns.map((column, index) => (

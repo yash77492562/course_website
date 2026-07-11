@@ -1,9 +1,11 @@
 'use client';
 
+import { logger } from '@/lib/utils/logger';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useCourseAccess } from '@/hooks/course/useCourseAccess';
+import { fetchWithAuth } from '@/lib/utils/apiInterceptor';
 import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { useAlert } from '@/hooks/useAlert';
 
@@ -76,6 +78,11 @@ interface LessonData {
   };
   previousLesson?: { id: string; title: string } | null;
   nextLesson?: { id: string; title: string } | null;
+  // Access flags set by the backend (GET /lessons/:id):
+  // `locked` = paid lesson the viewer hasn't unlocked (media stripped);
+  // `isFree` = the free first-lesson preview.
+  locked?: boolean;
+  isFree?: boolean;
 }
 
 interface VideoPlayerPageProps {
@@ -103,15 +110,16 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
   useEffect(() => {
     const loadLesson = async () => {
       try {
-        // Fetch directly from backend API
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
-        const response = await fetch(`${apiUrl}/lessons/${lessonId}`);
+        // Fetch via fetchWithAuth so the access token (if any) reaches the
+        // backend — it decides whether this lesson is unlocked for the viewer.
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
+        const response = await fetchWithAuth(`${apiUrl}/lessons/${lessonId}`);
         const result = await response.json();
         
-        console.log('API Response:', result);
+        logger.debug('API Response:', result);
         
         if (result.success && result.data) {
-          console.log('Lesson Data Structure:', {
+          logger.debug('Lesson Data Structure:', {
             hasModule: !!result.data.module,
             hasCourse: !!result.data.module?.course,
             hasModules: !!result.data.module?.course?.modules,
@@ -155,7 +163,7 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
   const navigateToLesson = (newLessonId: string) => {
     // Don't block navigation if still checking purchase
     if (checkingPurchase) {
-      console.log('Still checking purchase, please wait...');
+      logger.debug('Still checking purchase, please wait...');
       return;
     }
     
@@ -203,7 +211,7 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
     
     // Don't allow navigation if still checking purchase
     if (checkingPurchase) {
-      console.log('Still checking purchase, please wait...');
+      logger.debug('Still checking purchase, please wait...');
       return;
     }
     
@@ -258,7 +266,7 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
   };
 
   const handleQuizComplete = (score: number, totalQuestions: number) => {
-    console.log(`Quiz completed: ${score}/${totalQuestions} correct`);
+    logger.debug(`Quiz completed: ${score}/${totalQuestions} correct`);
     // TODO: Save quiz results to backend
   };
 
@@ -284,15 +292,69 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
     );
   }
 
-  console.log('Lesson Data:', lessonData);
-  console.log('Content Type:', lessonData.contentType);
+  // Backend-enforced paywall: a locked (paid, un-purchased) lesson comes back
+  // with its media stripped. Show an upgrade prompt instead of a broken player.
+  if (lessonData.locked) {
+    const lockedCourseId = lessonData.module?.course?.id;
+    return (
+      <>
+        <Navbar />
+        <div
+          className="min-h-screen flex items-center justify-center px-4"
+          style={{
+            paddingTop: '68px',
+            background: 'linear-gradient(160deg, #050d1f 0%, #0d1f40 60%, #0a2240 100%)',
+          }}
+        >
+          <div className="text-center max-w-md">
+            <div style={{ fontSize: '64px', marginBottom: '24px' }}>🔒</div>
+            <h1
+              style={{
+                color: 'white',
+                fontFamily: 'Syne, sans-serif',
+                fontSize: '28px',
+                fontWeight: 700,
+                marginBottom: '12px',
+              }}
+            >
+              This lesson is locked
+            </h1>
+            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '15px', marginBottom: '32px', lineHeight: 1.6 }}>
+              Purchase <strong>{lessonData.module?.course?.title || 'this course'}</strong> to unlock all
+              lessons. The first lesson is free to preview.
+            </p>
+            <button
+              onClick={() => router.push(lockedCourseId ? `/course/${lockedCourseId}` : '/courses')}
+              style={{
+                background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
+                color: 'white',
+                padding: '14px 30px',
+                borderRadius: '8px',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: 600,
+                fontSize: '0.95rem',
+                boxShadow: '0 4px 24px rgba(14,165,233,.35)',
+              }}
+            >
+              View course & purchase →
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  logger.debug('Lesson Data:', lessonData);
+  logger.debug('Content Type:', lessonData.contentType);
 
   const contentType = lessonData.contentType || 'VIDEO';
   const hasFullNavigation = !!(lessonData.module?.course?.modules && lessonData.module.course.modules.length > 0);
 
   // Render sidebar for navigation
   const renderSidebar = () => (
-    <div className="w-80 bg-gray-800 border-r border-gray-700 overflow-y-auto">
+    // Hidden on phones so the 320px lesson list doesn't crush the video; shows from md up.
+    <div className="hidden md:block w-80 bg-gray-800 border-r border-gray-700 overflow-y-auto">
       <div className="p-4">
         <h2 className="text-white text-lg font-semibold mb-4">
           {lessonData.module.course.title}

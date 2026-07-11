@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/utils/logger';
 import { useState, useEffect } from 'react';
 import { tokenManager } from '@/lib/utils/tokenManager/tokenManager';
 
@@ -53,28 +54,28 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
   useEffect(() => {
     const initializeQuiz = async () => {
       try {
-        console.log('🎯 ========== QUIZ INITIALIZATION START ==========');
+        logger.debug('🎯 ========== QUIZ INITIALIZATION START ==========');
         setIsInitializing(true);
         setInitError(null);
         
         // Get access token
-        console.log('🔑 Step 1: Getting access token from tokenManager...');
+        logger.debug('🔑 Step 1: Getting access token from tokenManager...');
         const token = tokenManager.getAccessToken();
-        console.log('🔑 Token exists:', !!token);
-        console.log('🔑 Token preview:', token ? `${token.substring(0, 20)}...` : 'NULL');
+        logger.debug('🔑 Token exists:', !!token);
+        logger.debug('🔑 Token preview:', token ? `${token.substring(0, 20)}...` : 'NULL');
         
         if (!token) {
           throw new Error('You must be logged in to take this quiz');
         }
 
         // Call backend API directly
-        const BACKEND_API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+        const BACKEND_API = process.env.NEXT_PUBLIC_API_URL as string;
         const url = `${BACKEND_API}/quiz/start`;
         
-        console.log('📡 Step 2: Calling backend API...');
-        console.log('📡 Backend URL:', BACKEND_API);
-        console.log('📡 Full endpoint:', url);
-        console.log('📡 Request body:', { lessonId, courseId });
+        logger.debug('📡 Step 2: Calling backend API...');
+        logger.debug('📡 Backend URL:', BACKEND_API);
+        logger.debug('📡 Full endpoint:', url);
+        logger.debug('📡 Request body:', { lessonId, courseId });
         
         const response = await fetch(url, {
           method: 'POST',
@@ -85,40 +86,40 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
           body: JSON.stringify({ lessonId, courseId }),
         });
 
-        console.log('📥 Step 3: Response received');
-        console.log('📥 Status:', response.status, response.statusText);
-        console.log('📥 OK:', response.ok);
+        logger.debug('📥 Step 3: Response received');
+        logger.debug('📥 Status:', response.status, response.statusText);
+        logger.debug('📥 OK:', response.ok);
 
         const data = await response.json();
-        console.log('📥 Response data:', data);
+        logger.debug('📥 Response data:', data);
 
         if (!response.ok || !data.success) {
-          console.error('❌ API call failed:', data);
+          logger.error('❌ API call failed:', data);
           throw new Error(data.message || 'Failed to start quiz');
         }
 
-        console.log('✅ Quiz started successfully!');
-        console.log('✅ Attempt number:', data.data.attemptNumber);
-        console.log('✅ Max attempts:', data.data.maxAttempts);
-        console.log('✅ Read-only mode:', data.data.readOnly);
+        logger.debug('✅ Quiz started successfully!');
+        logger.debug('✅ Attempt number:', data.data.attemptNumber);
+        logger.debug('✅ Max attempts:', data.data.maxAttempts);
+        logger.debug('✅ Read-only mode:', data.data.readOnly);
 
         // Set attempt number from response
         setCurrentAttempt(data.data.attemptNumber);
         
         // Check if it's read-only mode (max attempts reached)
         if (data.data.readOnly) {
-          console.log('📖 Quiz opened in READ-ONLY mode');
-          console.log('📖 Last attempt answers:', data.data.lastAttemptAnswers);
+          logger.debug('📖 Quiz opened in READ-ONLY mode');
+          logger.debug('📖 Last attempt answers:', data.data.lastAttemptAnswers);
           setReadOnlyMode(true);
           setReadOnlyMessage(data.data.message || 'You have used all attempts. Viewing in read-only mode.');
           setLastAttemptAnswers(data.data.lastAttemptAnswers || {}); // Store user's previous answers
           setTimerActive(false); // No timer in read-only mode
         } else {
-          console.log('✏️ Quiz opened in INTERACTIVE mode');
+          logger.debug('✏️ Quiz opened in INTERACTIVE mode');
           
           // Check if this is the last attempt
           if (data.data.isLastAttempt) {
-            console.log('⚠️ WARNING: This is the last attempt!');
+            logger.debug('⚠️ WARNING: This is the last attempt!');
             setIsLastAttempt(true);
             setLastAttemptWarning(data.data.message || 'This is your last attempt!');
           }
@@ -127,12 +128,12 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
           setTimerActive(true);
         }
         
-        console.log('🎯 ========== QUIZ INITIALIZATION COMPLETE ==========');
+        logger.debug('🎯 ========== QUIZ INITIALIZATION COMPLETE ==========');
       } catch (error: any) {
-        console.error('❌ ========== QUIZ INITIALIZATION FAILED ==========');
-        console.error('❌ Error:', error);
-        console.error('❌ Error message:', error.message);
-        console.error('❌ Error stack:', error.stack);
+        logger.error('❌ ========== QUIZ INITIALIZATION FAILED ==========');
+        logger.error('❌ Error:', error);
+        logger.error('❌ Error message:', error.message);
+        logger.error('❌ Error stack:', error.stack);
         setInitError(error.message || 'Failed to start quiz. Please try again.');
       } finally {
         setIsInitializing(false);
@@ -170,7 +171,7 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
       if (!token) return;
 
       const timeSpent = Math.floor((Date.now() - quizStartTime) / 1000);
-      const BACKEND_API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+      const BACKEND_API = process.env.NEXT_PUBLIC_API_URL as string;
 
       // Use sendBeacon for reliable data transmission during page unload
       const data = JSON.stringify({
@@ -212,7 +213,7 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
       }
 
       // Call backend API directly
-      const BACKEND_API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+      const BACKEND_API = process.env.NEXT_PUBLIC_API_URL as string;
       
       const response = await fetch(`${BACKEND_API}/quiz/submit`, {
         method: 'POST',
@@ -234,11 +235,11 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
         setShowResults(true);
         onComplete?.(data.data.correctAnswers, data.data.totalQuestions);
       } else {
-        console.error('Failed to submit quiz:', data.message);
+        logger.error('Failed to submit quiz:', data.message);
         setShowResults(true);
       }
     } catch (error) {
-      console.error('Error submitting quiz:', error);
+      logger.error('Error submitting quiz:', error);
       // Still show results locally even if submission fails
       setShowResults(true);
       const correctAnswers = quizData.questions.filter(q => 
@@ -397,7 +398,7 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
       }
 
       // Call backend API directly
-      const BACKEND_API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+      const BACKEND_API = process.env.NEXT_PUBLIC_API_URL as string;
       
       const response = await fetch(`${BACKEND_API}/quiz/submit`, {
         method: 'POST',
@@ -419,11 +420,11 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
         setShowResults(true);
         onComplete?.(data.data.correctAnswers, data.data.totalQuestions);
       } else {
-        console.error('Failed to submit quiz:', data.message);
+        logger.error('Failed to submit quiz:', data.message);
         setShowResults(true);
       }
     } catch (error) {
-      console.error('Error submitting quiz:', error);
+      logger.error('Error submitting quiz:', error);
       // Still show results locally even if submission fails
       setShowResults(true);
       const correctAnswers = quizData.questions.filter(q => 

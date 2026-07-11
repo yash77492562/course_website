@@ -18,14 +18,7 @@ export function WhySection({ data }: WhySectionProps) {
         padding: '100px 5vw'
       }}
     >
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '80px',
-          alignItems: 'center'
-        }}
-      >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-center">
         <div>
           <SectionLabel>Why Riva Data</SectionLabel>
           <SectionTitle style={{ marginBottom: '40px' }}>

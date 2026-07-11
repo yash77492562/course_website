@@ -9,6 +9,7 @@ import { ModuleCard } from '@/components/features/MyCourses/ModuleCard';
 import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { Footer } from '@/components/layout/Footer/Footer';
 import footerLinksData from '@/data/footerLinks/data.json';
+import { logger } from '@/lib/utils/logger';
 
 interface CourseModulesPageProps {
   courseId: string;
@@ -53,7 +54,7 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
         setCurrentModuleIndex(data.modules.length - 1);
       }
     } catch (err) {
-      console.error('Failed to load course:', err);
+      logger.error('Failed to load course:', err);
       setError('Failed to load course details');
     } finally {
       setLoading(false);

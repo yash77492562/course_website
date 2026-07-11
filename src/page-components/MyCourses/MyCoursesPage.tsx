@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/auth/useAuth';
-import { enrollmentApi } from '@/lib/api/enrollment/enrollmentApi';
-import { Course } from '@/types/course/types';
+import { useEnrolledCourses } from '@/hooks/course/useCourseQueries';
 import { EnrolledCourseCard } from '@/components/features/MyCourses/EnrolledCourseCard';
 import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { Footer } from '@/components/layout/Footer/Footer';
@@ -13,35 +12,23 @@ import footerLinksData from '@/data/footerLinks/data.json';
 export function MyCoursesPage() {
   const router = useRouter();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+  // Server state via React Query; only fetch once authenticated.
+  const {
+    data: courses = [],
+    isLoading: loading,
+    error: queryError,
+    refetch,
+  } = useEnrolledCourses(isAuthenticated);
+
+  const error = queryError ? 'Failed to load your courses' : null;
+  const loadEnrolledCourses = () => refetch();
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       router.push('/login');
     }
   }, [isAuthenticated, authLoading, router]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      loadEnrolledCourses();
-    }
-  }, [isAuthenticated]);
-
-  const loadEnrolledCourses = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await enrollmentApi.getEnrolledCourses();
-      setCourses(data);
-    } catch (err) {
-      console.error('Failed to load enrolled courses:', err);
-      setError('Failed to load your courses');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (authLoading) {
     return (

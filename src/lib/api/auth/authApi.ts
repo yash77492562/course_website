@@ -1,3 +1,4 @@
+import { logger } from '@/lib/utils/logger';
 import type {
   LoginRequest,
   RegisterRequest,
@@ -6,7 +7,7 @@ import type {
   User,
 } from '@/types/auth/auth.types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
 class AuthApiClient {
   private baseURL: string;
@@ -19,13 +20,14 @@ class AuthApiClient {
    * Login user
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    console.log('🔐 Calling login API...');
+    logger.debug('🔐 Calling login API...');
     const response = await fetch(`${this.baseURL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(credentials),
+      credentials: 'include', // receive the httpOnly refresh-token cookie
       cache: 'no-store', // Disable caching
     });
 
@@ -33,11 +35,11 @@ class AuthApiClient {
 
     // Check if the response indicates failure
     if (!response.ok || !result.success) {
-      console.error('❌ Login API failed:', result.message);
+      logger.error('❌ Login API failed:', result.message);
       throw new Error(result.message || 'Login failed');
     }
 
-    console.log('✅ Login API successful');
+    logger.debug('✅ Login API successful');
     return result;
   }
 
@@ -51,6 +53,7 @@ class AuthApiClient {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
+      credentials: 'include', // receive the httpOnly refresh-token cookie
     });
 
     const result = await response.json();
@@ -64,44 +67,43 @@ class AuthApiClient {
   }
 
   /**
-   * Refresh access token using refresh token
+   * Refresh the access token.
+   *
+   * The refresh token lives in an httpOnly cookie (set by the backend on login),
+   * so we send no token in the body — `credentials: 'include'` ships the cookie
+   * automatically. The optional arg remains only for non-browser/legacy callers.
    */
-  async refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('🔄 CALLING REFRESH TOKEN API');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    
-    // Decode refresh token to show info
-    try {
-      const payload = JSON.parse(atob(refreshToken.split('.')[1]));
-      const exp = new Date(payload.exp * 1000);
-      console.log('📝 Refresh token JTI:', payload.jti);
-      console.log('⏰ Refresh token expires:', exp.toLocaleString());
-    } catch (e) {
-      console.warn('⚠️ Failed to decode refresh token (non-critical)');
-    }
-    
+  async refreshToken(refreshToken?: string): Promise<RefreshTokenResponse> {
+    logger.debug('🔄 Calling refresh token API...');
+
     const response = await fetch(`${this.baseURL}/auth/refresh`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ refresh_token: refreshToken }), // Use refresh_token with underscore
-      cache: 'no-store', // Disable caching
+      // Body only for legacy/non-cookie callers; browser relies on the cookie.
+      body: JSON.stringify(refreshToken ? { refresh_token: refreshToken } : {}),
+      credentials: 'include', // send the httpOnly refresh-token cookie
+      cache: 'no-store',
     });
 
+    // 401 = there is no valid refresh session. For an anonymous visitor (no
+    // login cookie) this is the normal, expected state — the whole site is
+    // usable logged out — so it is NOT an error. Return a clean "not
+    // authenticated" result instead of logging/throwing.
+    if (response.status === 401) {
+      logger.debug('ℹ️ No active session to refresh (anonymous visitor)');
+      return { success: false, status_code: 401, message: 'Not authenticated' };
+    }
+
+    // Any other non-OK status is a genuine failure worth surfacing.
     if (!response.ok) {
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.error('❌ REFRESH TOKEN API FAILED');
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.error('Status:', response.status);
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      logger.error('❌ Refresh token API failed - status:', response.status);
       throw new Error('Token refresh failed');
     }
 
     const result = await response.json();
-    console.log('✅ Refresh token API successful');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    logger.debug('✅ Refresh token API successful');
     return result;
   }
 
@@ -109,12 +111,12 @@ class AuthApiClient {
    * Get current user profile
    */
   async getProfile(accessToken: string): Promise<any> {
-    console.log('👤 Calling profile API...');
+    logger.debug('👤 Calling profile API...');
     
     // Decode token to show info
     try {
       const payload = JSON.parse(atob(accessToken.split('.')[1]));
-      console.log('📝 Using access token JTI:', payload.jti);
+      logger.debug('📝 Using access token JTI:', payload.jti);
     } catch (e) {}
     
     const response = await fetch(`${this.baseURL}/auth/profile`, {
@@ -125,12 +127,12 @@ class AuthApiClient {
     });
 
     if (!response.ok) {
-      console.error('❌ Profile API failed - Status:', response.status);
+      logger.error('❌ Profile API failed - Status:', response.status);
       throw new Error('Failed to fetch profile');
     }
 
     const result = await response.json();
-    console.log('✅ Profile API successful');
+    logger.debug('✅ Profile API successful');
     return result;
   }
 
@@ -144,10 +146,11 @@ class AuthApiClient {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
         },
+        credentials: 'include', // let the backend clear the httpOnly cookie
       });
     } catch (error) {
       // Logout locally even if backend call fails
-      console.error('Logout API call failed:', error);
+      logger.error('Logout API call failed:', error);
     }
   }
 }

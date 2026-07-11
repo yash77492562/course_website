@@ -60,7 +60,7 @@ export function Alert({
   return (
     <div
       className={cn(
-        'max-w-sm w-full min-w-[400px] ',
+        'w-full max-w-sm sm:min-w-[400px] ',
         className
       )}
       style={{

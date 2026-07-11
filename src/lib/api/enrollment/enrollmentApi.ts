@@ -1,7 +1,8 @@
+import { logger } from '@/lib/utils/logger';
 import { Course } from '@/types/course/types';
 import { tokenManager } from '@/lib/utils/tokenManager/tokenManager';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
 interface ApiResponse<T = any> {
   status: number;
@@ -34,22 +35,22 @@ class EnrollmentApiClient {
     const url = `${this.baseURL}${endpoint}`;
     
     try {
-      console.log('🔵 Enrollment API Request:', url);
+      logger.debug('🔵 Enrollment API Request:', url);
       const response = await fetch(url, {
         headers: this.getAuthHeaders(),
         cache: 'no-store',
       });
       
-      console.log('🔵 Response status:', response.status);
+      logger.debug('🔵 Response status:', response.status);
       
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ API Error Response:', errorText);
+        logger.error('❌ API Error Response:', errorText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const result: ApiResponse<T> = await response.json();
-      console.log('🔵 API Response:', result);
+      logger.debug('🔵 API Response:', result);
       
       if (!result.success) {
         throw new Error(result.message);
@@ -57,37 +58,45 @@ class EnrollmentApiClient {
 
       return result.data as T;
     } catch (error) {
-      console.error('❌ API request failed:', error);
+      logger.error('❌ API request failed:', error);
       throw error;
     }
   }
 
   /**
-   * Get all courses the user is enrolled in
+   * Get all courses the user is enrolled in.
+   *
+   * Was an N+1: it fetched the enrolled ids, then fired one GET /courses/:id
+   * per course. Now it makes ONE batch call (POST /courses/batch) — O(1)
+   * requests regardless of how many courses the user is enrolled in.
    */
   async getEnrolledCourses(): Promise<Course[]> {
-    console.log('📚 Fetching enrolled courses...');
-    
-    // First get the course IDs
+    // First get the enrolled course IDs.
     const enrollmentData = await this.request<EnrolledCoursesResponse>('/courses/access/user/purchased');
-    
-    console.log('📚 Enrollment data:', enrollmentData);
-    
+
     if (!enrollmentData.courseIds || enrollmentData.courseIds.length === 0) {
-      console.log('📚 No enrolled courses found');
       return [];
     }
 
-    console.log(`📚 Found ${enrollmentData.courseIds.length} enrolled courses, fetching details...`);
-    
-    // Then fetch full course details for each enrolled course
-    const coursePromises = enrollmentData.courseIds.map(courseId =>
-      this.request<Course>(`/courses/${courseId}`)
-    );
+    // Then fetch all course details in a single batch request.
+    const url = `${this.baseURL}/courses/batch`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      cache: 'no-store',
+      body: JSON.stringify({ ids: enrollmentData.courseIds }),
+    });
 
-    const courses = await Promise.all(coursePromises);
-    console.log('📚 Courses loaded:', courses.length);
-    return courses;
+    if (!response.ok) {
+      throw new Error(`Failed to fetch enrolled courses: ${response.status}`);
+    }
+
+    const result: ApiResponse<Course[]> = await response.json();
+    if (!result.success) {
+      throw new Error(result.message);
+    }
+
+    return result.data ?? [];
   }
 
   /**

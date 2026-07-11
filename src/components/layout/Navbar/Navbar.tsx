@@ -11,6 +11,7 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -46,9 +47,15 @@ export function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Close the mobile menu whenever the route changes.
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   const handleLogout = async () => {
     await logout();
     setIsDropdownOpen(false);
+    setIsMobileMenuOpen(false);
     router.push('/');
   };
 
@@ -336,6 +343,75 @@ export function Navbar() {
           </li>
         )}
       </ul>
+
+      {/* Mobile hamburger — visible only below md, where the desktop menu is hidden */}
+      <button
+        type="button"
+        aria-label="Toggle menu"
+        aria-expanded={isMobileMenuOpen}
+        onClick={() => setIsMobileMenuOpen((v) => !v)}
+        className="md:hidden flex items-center justify-center text-white"
+        style={{ width: 40, height: 40, background: 'transparent', border: 'none', cursor: 'pointer' }}
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {isMobileMenuOpen ? (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          ) : (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          )}
+        </svg>
+      </button>
+
+      {/* Mobile menu panel */}
+      {isMobileMenuOpen && (
+        <div
+          className="md:hidden absolute left-0 right-0 flex flex-col"
+          style={{
+            top: '68px',
+            background: 'rgba(5,13,31,0.98)',
+            backdropFilter: 'blur(18px)',
+            borderBottom: '1px solid rgba(14,165,233,0.2)',
+            padding: '12px 5vw 20px',
+            gap: '4px',
+          }}
+        >
+          {isHomePage && (
+            <>
+              <a href="#about" onClick={() => setIsMobileMenuOpen(false)} className="text-white/80 hover:text-white py-3 text-[15px]">About</a>
+              <a href="#programs" onClick={() => setIsMobileMenuOpen(false)} className="text-white/80 hover:text-white py-3 text-[15px]">Programs</a>
+              <a href="#consulting" onClick={() => setIsMobileMenuOpen(false)} className="text-white/80 hover:text-white py-3 text-[15px]">Consulting</a>
+            </>
+          )}
+
+          {isAuthenticated && user ? (
+            <>
+              <div className="py-3 border-t border-[rgba(14,165,233,0.2)] mt-1">
+                <p className="text-white font-semibold text-sm">{user.firstName} {user.lastName}</p>
+                <p className="text-white/50 text-xs truncate">{user.email}</p>
+              </div>
+              <Link href="/courses" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-200 hover:text-white py-3 text-[15px]">All Courses</Link>
+              <Link href="/my-courses" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-200 hover:text-white py-3 text-[15px]">My Courses</Link>
+              <Link href="/purchase-history" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-200 hover:text-white py-3 text-[15px]">My History</Link>
+              <button
+                onClick={handleLogout}
+                className="text-red-400 hover:text-red-300 py-3 text-[15px] text-left border-t border-[rgba(14,165,233,0.2)] mt-1"
+                style={{ background: 'transparent', border: 'none', borderTop: '1px solid rgba(14,165,233,0.2)', cursor: 'pointer' }}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-white text-center rounded-md mt-2"
+              style={{ background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)', padding: '12px 20px', fontWeight: 500, fontSize: '15px' }}
+            >
+              Login
+            </Link>
+          )}
+        </div>
+      )}
     </nav>
   );
 }

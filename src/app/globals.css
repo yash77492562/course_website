@@ -96,6 +96,9 @@ html {
   font-size: 16px;
   width: 100%;
   height: 100%;
+  /* iOS Safari lets an over-wide child expand the visual viewport even when
+     body has overflow-x:hidden, so guard the root element too. */
+  overflow-x: hidden;
 }
 
 body {

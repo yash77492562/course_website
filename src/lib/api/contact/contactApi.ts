@@ -1,3 +1,4 @@
+import { logger } from '@/lib/utils/logger';
 export interface ContactFormData {
   name: string;
   email: string;
@@ -15,7 +16,7 @@ export interface ContactResponse {
   };
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
 class ContactApiClient {
   private baseURL: string;
@@ -28,7 +29,7 @@ class ContactApiClient {
    * Submit contact form
    */
   async submitContact(data: ContactFormData): Promise<ContactResponse> {
-    console.log('📧 Submitting contact form...');
+    logger.debug('📧 Submitting contact form...');
     const response = await fetch(`${this.baseURL}/contact`, {
       method: 'POST',
       headers: {
@@ -40,11 +41,11 @@ class ContactApiClient {
     const result = await response.json();
 
     if (!response.ok || !result.success) {
-      console.error('❌ Contact form submission failed:', result.message);
+      logger.error('❌ Contact form submission failed:', result.message);
       throw new Error(result.message || 'Failed to submit contact form');
     }
 
-    console.log('✅ Contact form submitted successfully');
+    logger.debug('✅ Contact form submitted successfully');
     return result;
   }
 }

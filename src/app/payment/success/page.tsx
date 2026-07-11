@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/utils/logger';
 import { Suspense } from 'react';
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -27,39 +28,39 @@ function PaymentSuccessContent() {
       }
 
       setOrderId(pendingOrderId);
-      console.log('🔍 Polling order status for:', pendingOrderId);
+      logger.debug('🔍 Polling order status for:', pendingOrderId);
 
       let pollAttempts = 0;
       const maxAttempts = 15; // 30 seconds (poll every 2 seconds)
       
       const poll = setInterval(async () => {
         pollAttempts++;
-        console.log(`🔄 Poll attempt ${pollAttempts}/${maxAttempts}`);
+        logger.debug(`🔄 Poll attempt ${pollAttempts}/${maxAttempts}`);
 
         try {
           const orderStatus = await paymentApi.getOrderStatus(pendingOrderId);
-          console.log('📊 Order status:', orderStatus);
+          logger.debug('📊 Order status:', orderStatus);
 
           if (orderStatus.status === 'paid') {
             clearInterval(poll);
             setStatus('success');
             localStorage.removeItem('pending_order_id');
-            console.log('✅ Payment confirmed!');
+            logger.debug('✅ Payment confirmed!');
           } else if (orderStatus.status === 'failed') {
             clearInterval(poll);
             setStatus('failed');
             setError('Payment failed');
             localStorage.removeItem('pending_order_id');
-            console.log('❌ Payment failed');
+            logger.debug('❌ Payment failed');
           } else if (pollAttempts >= maxAttempts) {
             // Timeout after 30 seconds
             clearInterval(poll);
             setStatus('timeout');
             setError('Payment verification timeout. Please check your order status.');
-            console.log('⏱️ Polling timeout');
+            logger.debug('⏱️ Polling timeout');
           }
         } catch (err: any) {
-          console.error('❌ Polling error:', err);
+          logger.error('❌ Polling error:', err);
           if (pollAttempts >= maxAttempts) {
             clearInterval(poll);
             setStatus('failed');

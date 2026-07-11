@@ -7,6 +7,7 @@ import { ProgramCard } from '@/ui/ProgramCard/ProgramCard';
 import { courseApi } from '@/lib/api/course/courseApi';
 import { Course } from '@/types/course/types';
 import { Program } from '@/types/program/types';
+import { logger } from '@/lib/utils/logger';
 
 export function CoursesSection() {
   const [courses, setCourses] = useState<Program[]>([]);
@@ -34,7 +35,7 @@ export function CoursesSection() {
       
       setCourses(transformedCourses);
     } catch (err) {
-      console.error('Failed to load courses:', err);
+      logger.error('Failed to load courses:', err);
       setError('Failed to load courses');
       // Fallback to empty array or show error message
       setCourses([]);

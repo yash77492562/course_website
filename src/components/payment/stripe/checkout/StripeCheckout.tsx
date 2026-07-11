@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/utils/logger';
 import { useState, useEffect, FormEvent } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
@@ -223,7 +224,7 @@ export default function StripeCheckout({
       // STEP 3: Store orderId in localStorage for polling after Stripe redirect
       if (response.orderId) {
         localStorage.setItem('pending_order_id', response.orderId);
-        console.log('📦 Stored pending order ID:', response.orderId);
+        logger.debug('📦 Stored pending order ID:', response.orderId);
       }
 
       // Redirect to Stripe Checkout

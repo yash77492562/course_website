@@ -9,6 +9,7 @@ import { LessonCard } from '@/components/features/MyCourses/LessonCard';
 import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { Footer } from '@/components/layout/Footer/Footer';
 import footerLinksData from '@/data/footerLinks/data.json';
+import { logger } from '@/lib/utils/logger';
 
 interface ModuleLessonsPageProps {
   courseId: string;
@@ -50,7 +51,7 @@ export function ModuleLessonsPage({ courseId, moduleId }: ModuleLessonsPageProps
         setError('Module not found');
       }
     } catch (err) {
-      console.error('Failed to load module:', err);
+      logger.error('Failed to load module:', err);
       setError('Failed to load module details');
     } finally {
       setLoading(false);

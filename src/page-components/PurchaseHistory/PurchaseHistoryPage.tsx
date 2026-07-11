@@ -7,6 +7,7 @@ import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { Footer } from '@/components/layout/Footer/Footer';
 import { PurchaseHistoryCard } from '@/components/features/PurchaseHistory/PurchaseHistoryCard';
 import footerLinksData from '@/data/footerLinks/data.json';
+import { logger } from '@/lib/utils/logger';
 
 interface Payment {
   paymentId: string;
@@ -50,7 +51,7 @@ export function PurchaseHistoryPage() {
       setLoading(true);
       setError(null);
       
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
       const response = await fetch(`${apiUrl}/payments/user/all`, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -66,7 +67,7 @@ export function PurchaseHistoryPage() {
       
       setPayments(data.transactions || []);
     } catch (err) {
-      console.error('Failed to load purchase history:', err);
+      logger.error('Failed to load purchase history:', err);
       setError('Failed to load your purchase history');
     } finally {
       setLoading(false);

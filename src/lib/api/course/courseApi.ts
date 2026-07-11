@@ -1,6 +1,7 @@
 import { Course, CourseModule } from '@/types/course/types';
+import { logger } from '@/lib/utils/logger';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
 interface ApiResponse<T = any> {
   status: number;
@@ -50,7 +51,7 @@ class CourseApiClient {
 
       return result.data as T;
     } catch (error) {
-      console.error('API request failed:', error);
+      logger.error('API request failed:', error);
       throw error;
     }
   }

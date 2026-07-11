@@ -1,5 +1,6 @@
 'use client';
 
+import { logger } from '@/lib/utils/logger';
 import { useRouter } from 'next/navigation';
 import { useCourseAccess } from '@/hooks/course/useCourseAccess';
 
@@ -31,7 +32,7 @@ export function CourseHeroSection({ courseId, programData }: CourseHeroSectionPr
   const { hasAccess, isLoading } = useCourseAccess(courseId || null);
 
   // Debug logging
-  console.log('[CourseHeroSection] Render state:', {
+  logger.debug('[CourseHeroSection] Render state:', {
     courseId,
     hasAccess,
     isLoading,
