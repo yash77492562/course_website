@@ -52,10 +52,10 @@ async function fetchCourseAccess(courseId: string): Promise<CourseAccessResponse
 }
 
 export function useCourseAccess(courseId: string | null): UseCourseAccessReturn {
-  const { user, isAuthenticated, accessToken, isLoading: authLoading } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const queryClient = useQueryClient();
 
-  const enabled = !!courseId && !authLoading && isAuthenticated && !!user && !!accessToken;
+  const enabled = !!courseId && !authLoading && isAuthenticated && !!user;
   const queryKey = queryKeys.courseAccess(courseId ?? '', user?.id ?? '');
 
   const query = useQuery<CourseAccessResponse>({
@@ -87,9 +87,9 @@ export function useCourseAccess(courseId: string | null): UseCourseAccessReturn 
  * useUserPurchasedCourses — the set of course IDs the user has purchased.
  */
 export function useUserPurchasedCourses() {
-  const { user, isAuthenticated, accessToken } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
-  const enabled = isAuthenticated && !!user && !!accessToken;
+  const enabled = isAuthenticated && !!user;
 
   const query = useQuery<string[]>({
     queryKey: queryKeys.enrollment.purchasedIds,

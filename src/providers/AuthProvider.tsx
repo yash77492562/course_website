@@ -8,6 +8,11 @@
  * its own 5-minute refresh interval. This provider centralizes all of that:
  * one state, one init fetch, one refresh timer for the whole app. `useAuth`
  * (see hooks/auth/useAuth.ts) is now a thin consumer of this context.
+ *
+ * Token storage: the JWT lives ONLY in httpOnly cookies set by the backend
+ * (`access_token` 1h, `refresh_token` 7d). JS never reads or stores a token —
+ * `isAuthenticated` derives from whether `getProfile()` (cookie-authed)
+ * succeeds. Do NOT reintroduce token state or sessionStorage here.
  */
 
 import {
@@ -25,7 +30,6 @@ import type { User, LoginRequest, RegisterRequest } from '@/types/auth/auth.type
 
 export interface AuthContextValue {
   user: User | null;
-  accessToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (credentials: LoginRequest) => Promise<void>;
@@ -41,13 +45,13 @@ let refreshPromise: Promise<void> | null = null;
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   /**
-   * Refresh the access token. The refresh token is sent automatically via the
-   * httpOnly cookie (credentials: 'include' in authApi), so there is nothing to
-   * read from storage here. Concurrent callers dedupe onto one request.
+   * Refresh the session. The refresh token is sent automatically via the
+   * httpOnly cookie (credentials: 'include' in authApi) and the new access
+   * token comes back as a cookie — nothing to store in JS. Concurrent callers
+   * dedupe onto one request.
    */
   const refreshAccessToken = useCallback(async () => {
     if (refreshPromise) {
@@ -59,22 +63,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       refreshPromise = (async () => {
         const response = await authApi.refreshToken();
 
-        if (response.success && response.data?.access_token) {
-          const newAccessToken = response.data.access_token;
-          setAccessToken(newAccessToken);
-          tokenManager.setAccessToken(newAccessToken);
-          // Refresh token rotation is handled server-side via the httpOnly cookie.
-
-          const profileResponse = await authApi.getProfile(newAccessToken);
+        if (response.success) {
+          const profileResponse = await authApi.getProfile();
           if (profileResponse.success && profileResponse.data) {
             setUser(profileResponse.data);
           }
         } else {
           // No active session (anonymous visitor or expired refresh cookie).
           // This is a normal state, not an error — just settle into logged-out.
-          tokenManager.clearAll();
           setUser(null);
-          setAccessToken(null);
         }
       })();
 
@@ -82,9 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       // Only genuine failures (network down, 5xx) reach here now.
       logger.error('Token refresh failed:', error);
-      tokenManager.clearAll();
       setUser(null);
-      setAccessToken(null);
     } finally {
       refreshPromise = null;
     }
@@ -93,26 +88,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   /** Initialize auth state once on mount. */
   useEffect(() => {
     const initAuth = async () => {
-      const storedAccessToken = tokenManager.getAccessToken();
+      // Clear tokens persisted by pre-cookie builds (one-time hygiene).
+      tokenManager.clearAll();
 
-      // Valid stored access token → use it directly.
-      if (storedAccessToken && !tokenManager.isTokenExpired(storedAccessToken)) {
-        setAccessToken(storedAccessToken);
-        try {
-          const profileResponse = await authApi.getProfile(storedAccessToken);
-          if (profileResponse.success && profileResponse.data) {
-            setUser(profileResponse.data);
-          }
-        } catch (error) {
-          logger.error('Failed to load profile with stored token:', error);
+      // We can't read the httpOnly cookies from JS, so just ask the backend who
+      // we are. Valid access cookie → profile. 401 → try a cookie refresh once.
+      try {
+        const profileResponse = await authApi.getProfile();
+        if (profileResponse.success && profileResponse.data) {
+          setUser(profileResponse.data);
+          setIsLoading(false);
+          return;
         }
-        setIsLoading(false);
-        return;
+      } catch {
+        // Fall through to refresh.
       }
 
-      // No valid access token: attempt a cookie-based refresh. We can't read the
-      // httpOnly refresh cookie from JS, so we just try — if there's no valid
-      // cookie the backend returns 401 and refreshAccessToken clears state.
       try {
         await refreshAccessToken();
       } catch {
@@ -126,29 +117,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [refreshAccessToken]);
 
   /**
-   * Auto-refresh the access token before expiry.
-   * Access token lifetime is ~1h; we refresh when <10min remain.
-   * One interval for the whole app (previously one per useAuth caller).
+   * Auto-refresh the session before the access cookie (1h) expires.
+   * The token is httpOnly so its expiry can't be read from JS — instead we
+   * refresh unconditionally every 45 minutes while logged in. One interval for
+   * the whole app (previously one per useAuth caller).
    */
   useEffect(() => {
-    if (!accessToken) return;
+    if (!user) return;
 
-    const REFRESH_THRESHOLD = 10 * 60 * 1000; // 10 minutes
+    const REFRESH_INTERVAL = 45 * 60 * 1000; // 45 min < 1h cookie lifetime
 
-    const checkInterval = setInterval(() => {
-      try {
-        const payload = JSON.parse(atob(accessToken.split('.')[1]));
-        const timeUntilExpiry = payload.exp * 1000 - Date.now();
-        if (timeUntilExpiry < REFRESH_THRESHOLD) {
-          refreshAccessToken();
-        }
-      } catch (error) {
-        logger.error('Token check failed:', error);
-      }
-    }, 5 * 60 * 1000); // every 5 minutes
+    const interval = setInterval(() => {
+      refreshAccessToken();
+    }, REFRESH_INTERVAL);
 
-    return () => clearInterval(checkInterval);
-  }, [accessToken, refreshAccessToken]);
+    return () => clearInterval(interval);
+  }, [user, refreshAccessToken]);
 
   const login = useCallback(async (credentials: LoginRequest) => {
     const response = await authApi.login(credentials);
@@ -156,13 +140,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error(response.message || 'Login failed');
     }
 
-    // Refresh token now lives in an httpOnly cookie set by the backend; only the
-    // access token is returned in the body.
-    const { access_token } = response.data;
-    setAccessToken(access_token);
-    tokenManager.setAccessToken(access_token);
-
-    const profileResponse = await authApi.getProfile(access_token);
+    // Both tokens now live in httpOnly cookies set by the backend; nothing to
+    // store here. The profile call authenticates via the fresh cookie.
+    const profileResponse = await authApi.getProfile();
     if (profileResponse.success && profileResponse.data) {
       setUser(profileResponse.data);
     }
@@ -174,11 +154,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error(response.message || 'Registration failed');
     }
 
-    const { access_token } = response.data;
-    setAccessToken(access_token);
-    tokenManager.setAccessToken(access_token);
-
-    const profileResponse = await authApi.getProfile(access_token);
+    const profileResponse = await authApi.getProfile();
     if (profileResponse.success && profileResponse.data) {
       setUser(profileResponse.data);
     }
@@ -186,22 +162,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      if (accessToken) {
-        await authApi.logout(accessToken);
-      }
+      await authApi.logout();
     } catch (error) {
       logger.error('Logout error:', error);
     } finally {
       tokenManager.clearAll();
       setUser(null);
-      setAccessToken(null);
     }
-  }, [accessToken]);
+  }, []);
 
   const value: AuthContextValue = {
     user,
-    accessToken,
-    isAuthenticated: !!user && !!accessToken,
+    isAuthenticated: !!user,
     isLoading,
     login,
     register,

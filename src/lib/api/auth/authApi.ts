@@ -71,9 +71,9 @@ class AuthApiClient {
    *
    * The refresh token lives in an httpOnly cookie (set by the backend on login),
    * so we send no token in the body — `credentials: 'include'` ships the cookie
-   * automatically. The optional arg remains only for non-browser/legacy callers.
+   * automatically, and the rotated tokens come back as cookies.
    */
-  async refreshToken(refreshToken?: string): Promise<RefreshTokenResponse> {
+  async refreshToken(): Promise<RefreshTokenResponse> {
     logger.debug('🔄 Calling refresh token API...');
 
     const response = await fetch(`${this.baseURL}/auth/refresh`, {
@@ -81,8 +81,7 @@ class AuthApiClient {
       headers: {
         'Content-Type': 'application/json',
       },
-      // Body only for legacy/non-cookie callers; browser relies on the cookie.
-      body: JSON.stringify(refreshToken ? { refresh_token: refreshToken } : {}),
+      body: JSON.stringify({}),
       credentials: 'include', // send the httpOnly refresh-token cookie
       cache: 'no-store',
     });
@@ -108,21 +107,13 @@ class AuthApiClient {
   }
 
   /**
-   * Get current user profile
+   * Get current user profile. Auth is the httpOnly access-token cookie.
    */
-  async getProfile(accessToken: string): Promise<any> {
+  async getProfile(): Promise<any> {
     logger.debug('👤 Calling profile API...');
-    
-    // Decode token to show info
-    try {
-      const payload = JSON.parse(atob(accessToken.split('.')[1]));
-      logger.debug('📝 Using access token JTI:', payload.jti);
-    } catch (e) {}
-    
+
     const response = await fetch(`${this.baseURL}/auth/profile`, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      },
+      credentials: 'include', // send the httpOnly access-token cookie
       cache: 'no-store', // Disable caching
     });
 
@@ -137,16 +128,13 @@ class AuthApiClient {
   }
 
   /**
-   * Logout (optional backend call if you track sessions)
+   * Logout — the backend clears the httpOnly access + refresh cookies.
    */
-  async logout(accessToken: string): Promise<void> {
+  async logout(): Promise<void> {
     try {
       await fetch(`${this.baseURL}/auth/logout`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        credentials: 'include', // let the backend clear the httpOnly cookie
+        credentials: 'include', // cookie authenticates; backend clears both cookies
       });
     } catch (error) {
       // Logout locally even if backend call fails

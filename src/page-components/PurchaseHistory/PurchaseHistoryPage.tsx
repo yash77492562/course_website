@@ -29,7 +29,7 @@ interface Payment {
 
 export function PurchaseHistoryPage() {
   const router = useRouter();
-  const { isAuthenticated, isLoading: authLoading, accessToken } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,10 +41,10 @@ export function PurchaseHistoryPage() {
   }, [isAuthenticated, authLoading, router]);
 
   useEffect(() => {
-    if (isAuthenticated && accessToken) {
+    if (isAuthenticated) {
       loadPurchaseHistory();
     }
-  }, [isAuthenticated, accessToken]);
+  }, [isAuthenticated]);
 
   const loadPurchaseHistory = async () => {
     try {
@@ -53,9 +53,7 @@ export function PurchaseHistoryPage() {
       
       const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
       const response = await fetch(`${apiUrl}/payments/user/all`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        },
+        credentials: 'include', // httpOnly access-token cookie carries auth
       });
 
       if (!response.ok) {

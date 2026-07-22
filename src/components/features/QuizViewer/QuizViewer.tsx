@@ -2,7 +2,6 @@
 
 import { logger } from '@/lib/utils/logger';
 import { useState, useEffect } from 'react';
-import { tokenManager } from '@/lib/utils/tokenManager/tokenManager';
 
 export interface QuizData {
   questions: QuizQuestion[];
@@ -58,33 +57,28 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
         setIsInitializing(true);
         setInitError(null);
         
-        // Get access token
-        logger.debug('🔑 Step 1: Getting access token from tokenManager...');
-        const token = tokenManager.getAccessToken();
-        logger.debug('🔑 Token exists:', !!token);
-        logger.debug('🔑 Token preview:', token ? `${token.substring(0, 20)}...` : 'NULL');
-        
-        if (!token) {
-          throw new Error('You must be logged in to take this quiz');
-        }
-
+        // Auth is the httpOnly access-token cookie; a 401 below means not logged in.
         // Call backend API directly
         const BACKEND_API = process.env.NEXT_PUBLIC_API_URL as string;
         const url = `${BACKEND_API}/quiz/start`;
-        
+
         logger.debug('📡 Step 2: Calling backend API...');
         logger.debug('📡 Backend URL:', BACKEND_API);
         logger.debug('📡 Full endpoint:', url);
         logger.debug('📡 Request body:', { lessonId, courseId });
-        
+
         const response = await fetch(url, {
           method: 'POST',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
           },
           body: JSON.stringify({ lessonId, courseId }),
         });
+
+        if (response.status === 401) {
+          throw new Error('You must be logged in to take this quiz');
+        }
 
         logger.debug('📥 Step 3: Response received');
         logger.debug('📥 Status:', response.status, response.statusText);
@@ -166,10 +160,6 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
     if (readOnlyMode || submitted || showResults) return;
 
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      // Prepare data to send
-      const token = tokenManager.getAccessToken();
-      if (!token) return;
-
       const timeSpent = Math.floor((Date.now() - quizStartTime) / 1000);
       const BACKEND_API = process.env.NEXT_PUBLIC_API_URL as string;
 
@@ -184,8 +174,9 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
       const blob = new Blob([data], { type: 'application/json' });
       const url = `${BACKEND_API}/quiz/submit`;
 
-      // Note: sendBeacon doesn't support custom headers, so we append token to URL
-      navigator.sendBeacon(`${url}?token=${encodeURIComponent(token)}`, blob);
+      // Auth: sendBeacon can't set headers, but the browser attaches the
+      // httpOnly access-token cookie automatically (same-site) — no ?token= hack.
+      navigator.sendBeacon(url, blob);
 
       // Show confirmation dialog
       e.preventDefault();
@@ -206,20 +197,14 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
     const timeSpent = Math.floor((Date.now() - quizStartTime) / 1000);
     
     try {
-      // Get access token
-      const token = tokenManager.getAccessToken();
-      if (!token) {
-        throw new Error('Authentication required');
-      }
-
-      // Call backend API directly
+      // Call backend API directly — the httpOnly cookie authenticates.
       const BACKEND_API = process.env.NEXT_PUBLIC_API_URL as string;
-      
+
       const response = await fetch(`${BACKEND_API}/quiz/submit`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
           lessonId,
@@ -391,20 +376,14 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
     const timeSpent = Math.floor((Date.now() - quizStartTime) / 1000);
     
     try {
-      // Get access token
-      const token = tokenManager.getAccessToken();
-      if (!token) {
-        throw new Error('Authentication required');
-      }
-
-      // Call backend API directly
+      // Call backend API directly — the httpOnly cookie authenticates.
       const BACKEND_API = process.env.NEXT_PUBLIC_API_URL as string;
-      
+
       const response = await fetch(`${BACKEND_API}/quiz/submit`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
           lessonId,

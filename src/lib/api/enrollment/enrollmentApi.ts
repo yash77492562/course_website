@@ -1,6 +1,5 @@
 import { logger } from '@/lib/utils/logger';
 import { Course } from '@/types/course/types';
-import { tokenManager } from '@/lib/utils/tokenManager/tokenManager';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
@@ -23,21 +22,14 @@ class EnrollmentApiClient {
     this.baseURL = baseURL;
   }
 
-  private getAuthHeaders(): HeadersInit {
-    const token = tokenManager.getAccessToken();
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': token ? `Bearer ${token}` : '',
-    };
-  }
-
   private async request<T>(endpoint: string): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    
+
     try {
       logger.debug('🔵 Enrollment API Request:', url);
       const response = await fetch(url, {
-        headers: this.getAuthHeaders(),
+        credentials: 'include', // httpOnly access-token cookie carries auth
+        headers: { 'Content-Type': 'application/json' },
         cache: 'no-store',
       });
       
@@ -82,7 +74,8 @@ class EnrollmentApiClient {
     const url = `${this.baseURL}/courses/batch`;
     const response = await fetch(url, {
       method: 'POST',
-      headers: this.getAuthHeaders(),
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
       cache: 'no-store',
       body: JSON.stringify({ ids: enrollmentData.courseIds }),
     });
