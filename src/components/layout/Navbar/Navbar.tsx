@@ -134,14 +134,14 @@ export function Navbar() {
               {/* Dropdown Menu */}
               {isDropdownOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-[240px] rounded-lg overflow-hidden z-[110] bg-[rgba(10,15,30,0.98)] border border-[rgba(14,165,233,0.4)] backdrop-blur-[20px] shadow-[0_20px_60px_rgba(0,0,0,0.8),0_0_0_1px_rgba(14,165,233,0.2)]"
+                  className="absolute right-0 mt-2 w-[240px] rounded-xl overflow-hidden z-[110] bg-white/95 border border-slate-200/60 backdrop-blur-xl shadow-xl"
                 >
                   {/* User Info Header */}
-                  <div className="px-4 py-3 border-b border-[rgba(14,165,233,0.2)]">
-                    <p className="text-[14px] font-semibold text-foreground m-0 mb-1">
+                  <div className="px-4 py-3 border-b border-slate-200/60">
+                    <p className="text-[14px] font-semibold text-slate-800 m-0 mb-1">
                       {user.firstName} {user.lastName}
                     </p>
-                    <p className="text-[12px] text-foreground/50 m-0 overflow-hidden text-ellipsis whitespace-nowrap">
+                    <p className="text-[12px] text-slate-500 m-0 overflow-hidden text-ellipsis whitespace-nowrap">
                       {user.email}
                     </p>
                   </div>
@@ -151,7 +151,7 @@ export function Navbar() {
                     <Link
                       href="/courses"
                       onClick={() => setIsDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 text-[14px] text-gray-200 no-underline transition-colors duration-200 hover:bg-blue-600/20"
+                      className="flex items-center gap-3 px-4 py-2.5 text-[14px] text-slate-700 no-underline transition-colors duration-200 hover:bg-slate-50 hover:text-primary"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -162,7 +162,7 @@ export function Navbar() {
                     <Link
                       href="/my-courses"
                       onClick={() => setIsDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 text-[14px] text-gray-200 no-underline transition-colors duration-200 hover:bg-blue-600/20"
+                      className="flex items-center gap-3 px-4 py-2.5 text-[14px] text-slate-700 no-underline transition-colors duration-200 hover:bg-slate-50 hover:text-primary"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -173,7 +173,7 @@ export function Navbar() {
                     <Link
                       href="/purchase-history"
                       onClick={() => setIsDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 text-[14px] text-gray-200 no-underline transition-colors duration-200 hover:bg-blue-600/20"
+                      className="flex items-center gap-3 px-4 py-2.5 text-[14px] text-slate-700 no-underline transition-colors duration-200 hover:bg-slate-50 hover:text-primary"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
@@ -183,10 +183,10 @@ export function Navbar() {
                   </div>
 
                   {/* Logout Section */}
-                  <div className="py-1 border-t border-[rgba(14,165,233,0.2)]">
+                  <div className="py-1 border-t border-slate-200/60">
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-[14px] text-red-400 bg-transparent border-none cursor-pointer text-left transition-colors duration-200 hover:bg-red-600/20"
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-[14px] text-red-500 bg-transparent border-none cursor-pointer text-left transition-colors duration-200 hover:bg-red-50"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

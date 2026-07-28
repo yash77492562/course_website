@@ -84,7 +84,7 @@ export function CoursesSection() {
         </motion.div>
         
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 max-w-[1400px] mx-auto">
             <Skeleton className="h-[380px] w-full rounded-[24px]" />
             <Skeleton className="h-[380px] w-full rounded-[24px] hidden md:block" />
             <Skeleton className="h-[380px] w-full rounded-[24px] hidden lg:block" />
@@ -107,7 +107,7 @@ export function CoursesSection() {
           </div>
         ) : (
           <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 max-w-[1400px] mx-auto"
             initial="initial"
             whileInView="whileInView"
             viewport={{ once: true, margin: "-100px" }}

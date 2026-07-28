@@ -117,10 +117,10 @@ export function PurchaseHistoryCard({ payment }: PurchaseHistoryCardProps) {
 
         <div>
           <p className="text-[11px] text-gray-400 mb-1 uppercase tracking-[0.5px]">
-            Order ID
+            Payment ID
           </p>
           <p className="text-[11px] text-gray-500 font-mono">
-            {payment.orderId.substring(0, 12)}...
+            {payment.paymentId.substring(0, 14)}...
           </p>
         </div>
       </div>

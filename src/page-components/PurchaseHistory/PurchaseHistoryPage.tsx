@@ -128,7 +128,7 @@ export function PurchaseHistoryPage() {
               <h1 style={{
                 fontSize: '42px',
                 fontWeight: 700,
-                color: 'white',
+                color: '#0f172a',
                 marginBottom: '24px',
                 fontFamily: 'Syne, sans-serif',
                 letterSpacing: '-0.5px'
@@ -137,7 +137,7 @@ export function PurchaseHistoryPage() {
               </h1>
               <p style={{
                 fontSize: '17px',
-                color: 'rgba(255,255,255,0.7)',
+                color: '#475569',
                 maxWidth: '600px',
                 margin: '0 auto',
                 lineHeight: '1.6'
@@ -196,14 +196,14 @@ export function PurchaseHistoryPage() {
                     </div>
                     <p style={{
                       fontSize: '18px',
-                      color: 'rgba(255,255,255,0.6)',
+                      color: '#475569',
                       marginBottom: '8px'
                     }}>
                       No purchase history yet
                     </p>
                     <p style={{
                       fontSize: '14px',
-                      color: 'rgba(255,255,255,0.4)',
+                      color: '#94a3b8',
                       marginBottom: '24px'
                     }}>
                       Your course purchases will appear here

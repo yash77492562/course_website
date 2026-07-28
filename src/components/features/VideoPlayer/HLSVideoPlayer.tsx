@@ -109,13 +109,7 @@ export function HLSVideoPlayer({
           // Update button label
           if (parent && typeof parent.updateLabel === 'function') {
             parent.updateLabel();
-            const iconPlaceholder = parent.el().querySelector('.vjs-icon-placeholder');
-            if (iconPlaceholder) {
-              iconPlaceholder.innerHTML = `
-                <span class="quality-icon">⚙</span>
-              `;
-              logger.debug('🏷️ Button label updated to: Auto');
-            }
+            logger.debug('🏷️ Button label updated to: Auto');
           }
           return; // Don't switch source for Auto
         }
@@ -380,11 +374,7 @@ export function HLSVideoPlayer({
           // Update button label
           if (parent && typeof parent.updateLabel === 'function') {
             parent.updateLabel();
-            const iconPlaceholder = parent.el().querySelector('.vjs-icon-placeholder');
-            if (iconPlaceholder) {
-              iconPlaceholder.innerHTML = `<span class="quality-icon">⚙</span>`;
-              logger.debug('🏷️ Button label updated to:', this.options_.label, '(icon only)');
-            }
+            logger.debug('🏷️ Button label updated to:', this.options_.label, '(icon only)');
           }
           
           setCurrentQuality(this.options_.label);
@@ -514,16 +504,9 @@ export function HLSVideoPlayer({
         controlBar.removeChild(existingManualSelector);
       }
       
-      if (existingQualitySelector) {
-        logger.debug('⚠️ QualityMenuButton already exists, removing it before adding ManualQualityMenuButton');
-        controlBar.removeChild(existingQualitySelector);
-      }
-      
-      const fullscreenToggle = controlBar.getChild('fullscreenToggle');
-      const fullscreenIndex = controlBar.children().indexOf(fullscreenToggle);
-      
-      controlBar.addChild('ManualQualityMenuButton', { qualities }, fullscreenIndex);
-      logger.debug('✅ Manual quality selector added to control bar');
+        // Quality selector has been intentionally disabled based on user request.
+        // HLS will automatically manage adaptive bitrate streaming based on network conditions.
+        logger.debug('✅ Using native adaptive bitrate streaming');
     }
   };
 
@@ -872,7 +855,8 @@ export function HLSVideoPlayer({
             constructor(player: any, options: any) {
               super(player, options);
               this.addClass('vjs-quality-selector');
-              (this as any).controlText('⚙');
+              this.addClass('vjs-icon-cog');
+              (this as any).controlText('Quality');
               
               // Update button label when quality changes
               const qualityLevels = (player as any).qualityLevels();
@@ -880,12 +864,8 @@ export function HLSVideoPlayer({
                 this.updateLabel();
               });
               
-              // Set initial HTML structure immediately
+              // Update label accessibility immediately
               setTimeout(() => {
-                const iconPlaceholder = this.el().querySelector('.vjs-icon-placeholder');
-                if (iconPlaceholder) {
-                  iconPlaceholder.innerHTML = `<span class="quality-icon">⚙</span>`;
-                }
                 this.updateLabel();
               }, 100);
             }
@@ -920,15 +900,9 @@ export function HLSVideoPlayer({
                 currentQuality = enabledHeight + 'p';
               }
               
-              // Update button with only the gear icon (no text)
-              const controlTextEl = this.el().querySelector('.vjs-icon-placeholder');
-              if (controlTextEl) {
-                // Show only the gear icon
-                controlTextEl.innerHTML = `<span class="quality-icon">⚙</span>`;
-              }
-              
-              // Also update the button's aria-label
+              // Update aria-label for accessibility
               this.el().setAttribute('aria-label', `Quality: ${currentQuality}`);
+              this.el().setAttribute('title', `Quality: ${currentQuality}`);
             }
             
             createItems() {
@@ -1018,11 +992,8 @@ export function HLSVideoPlayer({
               controlBar.removeChild(existingQualitySelector);
             }
             
-            const fullscreenToggle = controlBar.getChild('fullscreenToggle');
-            const fullscreenIndex = controlBar.children().indexOf(fullscreenToggle);
-            
-            controlBar.addChild('QualityMenuButton', { hlsQualities }, fullscreenIndex);
-            logger.debug('✅ Quality selector added to control bar');
+            // Quality selector disabled
+            logger.debug('✅ Using native HLS adaptive bitrate streaming');
           }
         } else {
           logger.debug('⚠️ No quality levels available');
@@ -1048,11 +1019,8 @@ export function HLSVideoPlayer({
                 controlBar.removeChild(existingQualitySelector);
               }
               
-              const fullscreenToggle = controlBar.getChild('fullscreenToggle');
-              const fullscreenIndex = controlBar.children().indexOf(fullscreenToggle);
-              
-              controlBar.addChild('QualityMenuButton', { hlsQualities }, fullscreenIndex);
-              logger.debug('✅ Quality selector added to control bar (from prop)');
+              // Quality selector disabled
+              logger.debug('✅ Using native adaptive streaming');
             }
           }
         }
