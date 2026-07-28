@@ -614,7 +614,7 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
                 </div>
               </div>
               {lessonData.description && (
-                <div className="bg-white/60 backdrop-blur-xl border-t border-white/60 px-8 py-8 mt-auto z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
+                <div className="bg-transparent border-t border-slate-200/60 px-8 py-8 mt-auto z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
                   <h3 className="text-[#0f172a] font-bold text-lg mb-3 font-display">About this lesson</h3>
                   <p className="text-slate-600 text-[15px] leading-relaxed max-w-4xl">{lessonData.description}</p>
                 </div>
@@ -668,7 +668,7 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
             </div>
           </div>
           {lessonData.description && (
-            <div className="bg-white/60 backdrop-blur-xl border-t border-white/60 px-8 py-8 mt-auto z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
+            <div className="bg-transparent border-t border-slate-200/60 px-8 py-8 mt-auto z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
               <h3 className="text-[#0f172a] font-bold text-lg mb-3 font-display">About this lesson</h3>
               <p className="text-slate-600 text-[15px] leading-relaxed max-w-4xl">{lessonData.description}</p>
             </div>

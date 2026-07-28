@@ -418,7 +418,8 @@ export function HLSVideoPlayer({
         
         this.qualities = qualities;
         this.addClass('vjs-quality-selector');
-        (this as any).controlText('⚙');
+        this.addClass('vjs-icon-cog');
+        (this as any).controlText('Quality');
         
         logger.debug('🎬 ManualQualityMenuButton constructor - qualities:', this.qualities);
         logger.debug('🎬 Number of qualities:', Object.keys(this.qualities).length);
@@ -426,12 +427,8 @@ export function HLSVideoPlayer({
         // Set initial quality to Auto
         this.selectedQualityValue = 'Auto';
         
-        // Set initial HTML structure immediately
+        // Update label accessibility immediately
         setTimeout(() => {
-          const iconPlaceholder = this.el().querySelector('.vjs-icon-placeholder');
-          if (iconPlaceholder) {
-            iconPlaceholder.innerHTML = `<span class="quality-icon">⚙</span>`;
-          }
           this.updateLabel();
         }, 100);
       }
@@ -447,15 +444,9 @@ export function HLSVideoPlayer({
       updateLabel() {
         const currentQuality = this.selectedQualityValue || 'Auto';
         
-        // Update button with only the gear icon (no text)
-        const controlTextEl = this.el().querySelector('.vjs-icon-placeholder');
-        if (controlTextEl) {
-          // Show only the gear icon
-          controlTextEl.innerHTML = `<span class="quality-icon">⚙</span>`;
-        }
-        
         // Update aria-label for accessibility
         this.el().setAttribute('aria-label', `Quality: ${currentQuality}`);
+        this.el().setAttribute('title', `Quality: ${currentQuality}`);
       }
       
       createItems() {
@@ -1165,47 +1156,17 @@ export function HLSVideoPlayer({
       {/* Custom Styles for Quality Selector */}
       <style jsx global>{`
         /* Quality Selector Button Styles */
-        .vjs-quality-selector .vjs-icon-placeholder {
-          font-family: Arial, sans-serif !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          width: 100% !important;
-          height: 100% !important;
-          padding: 0 !important;
-        }
-
-        .vjs-quality-selector .vjs-icon-placeholder::before {
-          content: none !important;
-          display: none !important;
-        }
-
-        .vjs-quality-selector .quality-icon {
-          font-size: 2em !important;
-          line-height: 1 !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-        }
-
         .vjs-quality-selector {
           cursor: pointer !important;
         }
 
-        .vjs-quality-selector button {
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-        }
-
-        /* Hide the vjs-control-text that's causing duplicate icon */
-        .vjs-quality-selector .vjs-control-text {
-          display: none !important;
-          visibility: hidden !important;
+        .vjs-quality-selector .vjs-icon-placeholder::before {
+          font-size: 1.8em !important;
+          line-height: 1.67 !important;
         }
 
         /* Hover effect */
-        .vjs-quality-selector:hover .quality-icon {
+        .vjs-quality-selector:hover .vjs-icon-placeholder::before {
           transform: scale(1.15);
           transition: transform 0.2s ease;
         }
