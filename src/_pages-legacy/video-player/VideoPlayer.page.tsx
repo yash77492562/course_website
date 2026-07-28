@@ -413,7 +413,7 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
 
   // Render navigation header
   const renderHeader = () => (
-    <div className="bg-white/95 backdrop-blur-xl border-b border-slate-200/60 px-8 py-5 flex items-center justify-between z-10 sticky top-0 shadow-sm">
+    <div className="bg-[#e1eae8]/95 backdrop-blur-md border-b border-slate-200/60 px-8 py-5 flex items-center justify-between z-10 sticky top-0 shadow-sm">
       <h1 className="text-[#0f172a] text-xl font-bold font-display italic tracking-tight truncate pr-4">{lessonData.title}</h1>
       <div className="flex items-center gap-3 shrink-0">
         <button
