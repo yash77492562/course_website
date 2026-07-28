@@ -6,6 +6,7 @@ import { ProgramCard } from '@/ui/ProgramCard/ProgramCard';
 import { Navbar } from '@/components/layout/Navbar/Navbar';
 import { Footer } from '@/components/layout/Footer/Footer';
 import footerLinksData from '@/data/footerLinks/data.json';
+import { Skeleton } from '@/ui/skeleton/skeleton';
 
 // Module-level lookup — no need to reallocate this map on every render.
 const CATEGORY_ICONS: Record<string, string> = {
@@ -43,34 +44,12 @@ export default function CoursesPage() {
     ctaHref: `/course/${course.id}`,
   }));
 
-  // Show loading while courses are loading
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <div style={{
-          minHeight: '100vh',
-          background: 'linear-gradient(160deg, #050d1f 0%, #0d1f40 60%, #0a2240 100%)'
-        }}>
-          <div className="h-[68px]" />
-          <div className="flex items-center justify-center py-20">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p style={{ color: 'rgba(255,255,255,0.7)' }}>Loading courses...</p>
-            </div>
-          </div>
-        </div>
-        <Footer footerData={footerLinksData} />
-      </>
-    );
-  }
-
   return (
     <>
       <Navbar />
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(160deg, #050d1f 0%, #0d1f40 60%, #0a2240 100%)'
+        background: 'transparent'
       }}>
         {/* Spacer for fixed navbar */}
         <div className="h-[68px]" />
@@ -85,29 +64,33 @@ export default function CoursesPage() {
                 padding: '6px 14px',
                 borderRadius: '20px',
                 fontSize: '12px',
-                fontWeight: 600,
+                fontWeight: 700,
                 letterSpacing: '0.8px',
                 textTransform: 'uppercase',
-                color: '#0ea5e9',
+                color: 'var(--color-primary)',
                 border: '1px solid rgba(14,165,233,0.3)',
-                backgroundColor: 'rgba(14,165,233,0.1)',
-                marginBottom: '24px'
+                backgroundColor: 'white',
+                marginBottom: '24px',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
               }}>
                 Our Programs
               </div>
-              <h1 style={{
-                fontSize: '42px',
-                fontWeight: 700,
-                color: 'white',
-                marginBottom: '24px',
-                fontFamily: 'Syne, sans-serif',
-                letterSpacing: '-0.5px'
-              }}>
+              <h1 
+                style={{
+                  fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
+                  fontWeight: 800,
+                  color: '#0f172a',
+                  marginBottom: '24px',
+                  fontFamily: '"ivypresto-display", "Playfair Display", serif',
+                  fontStyle: 'italic',
+                  letterSpacing: '-0.5px'
+                }}
+              >
                 All Courses
               </h1>
               <p style={{
-                fontSize: '17px',
-                color: 'rgba(255,255,255,0.7)',
+                fontSize: '1.1rem',
+                color: '#475569',
                 maxWidth: '600px',
                 margin: '0 auto',
                 lineHeight: '1.6'
@@ -116,49 +99,68 @@ export default function CoursesPage() {
               </p>
             </div>
 
-            {/* Error State */}
-            {error && (
+            {/* Loading State */}
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <Skeleton className="h-[380px] w-full rounded-[24px]" />
+                <Skeleton className="h-[380px] w-full rounded-[24px] hidden md:block" />
+                <Skeleton className="h-[380px] w-full rounded-[24px] hidden lg:block" />
+                <Skeleton className="h-[380px] w-full rounded-[24px] hidden lg:block" />
+                <Skeleton className="h-[380px] w-full rounded-[24px] hidden lg:block" />
+                <Skeleton className="h-[380px] w-full rounded-[24px] hidden lg:block" />
+              </div>
+            ) : error ? (
               <div className="text-center mb-8">
                 <div style={{
                   color: '#ef4444',
                   marginBottom: '16px',
-                  padding: '12px',
-                  background: 'rgba(239,68,68,0.1)',
-                  borderRadius: '8px',
-                  border: '1px solid rgba(239,68,68,0.3)'
+                  padding: '16px',
+                  background: 'rgba(239,68,68,0.05)',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(239,68,68,0.2)',
+                  maxWidth: '400px',
+                  margin: '0 auto 16px'
                 }}>
                   {error}
                 </div>
                 <button 
                   onClick={loadCourses}
                   style={{
-                    background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
+                    background: 'var(--color-primary)',
                     color: 'white',
-                    padding: '10px 24px',
-                    borderRadius: '6px',
+                    padding: '12px 28px',
+                    borderRadius: '100px',
                     border: 'none',
                     cursor: 'pointer',
-                    fontWeight: 500
+                    fontWeight: 600,
+                    fontSize: '15px',
+                    transition: 'all 0.2s',
+                    boxShadow: '0 4px 12px rgba(13,148,136,0.2)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 6px 16px rgba(13,148,136,0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(13,148,136,0.2)';
                   }}
                 >
                   Try Again
                 </button>
               </div>
-            )}
-
-            {/* Courses Grid */}
-            {courses.length === 0 ? (
-              <div className="text-center py-12">
+            ) : courses.length === 0 ? (
+              <div className="text-center py-16">
                 <p style={{
                   fontSize: '18px',
-                  color: 'rgba(255,255,255,0.6)',
+                  color: '#475569',
                   marginBottom: '8px'
                 }}>
                   No courses available at the moment.
                 </p>
                 <p style={{
-                  fontSize: '14px',
-                  color: 'rgba(255,255,255,0.4)'
+                  fontSize: '15px',
+                  color: '#64748b'
                 }}>
                   Please check back later.
                 </p>

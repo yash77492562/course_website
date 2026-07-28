@@ -48,7 +48,7 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <Input
         id="email"
         name="email"
@@ -80,55 +80,21 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
       <button
         type="submit"
         disabled={isLoading}
-        style={{
-          width: '100%',
-          height: '52px',
-          background: isLoading ? 'rgba(14, 165, 233, 0.5)' : 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
-          boxShadow: '0 4px 24px rgba(14, 165, 233, 0.35)',
-          border: 'none',
-          borderRadius: '10px',
-          color: '#ffffff',
-          fontSize: '16px',
-          fontWeight: '600',
-          cursor: isLoading ? 'not-allowed' : 'pointer',
-          transition: 'all 0.2s',
-          marginTop: '8px'
-        }}
-        onMouseEnter={(e) => {
-          if (!isLoading) {
-            e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 8px 32px rgba(14, 165, 233, 0.45)';
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (!isLoading) {
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 4px 24px rgba(14, 165, 233, 0.35)';
-          }
-        }}
+        className={`w-full h-[52px] shadow-sm rounded-lg text-foreground text-[16px] font-semibold transition-all duration-200 mt-2 ${
+          isLoading
+            ? 'bg-primary/50 cursor-not-allowed'
+            : 'bg-primary cursor-pointer hover:bg-primary/90 hover:-translate-y-0.5 active:scale-[0.98]'
+        }`}
       >
         {isLoading ? (
-          <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            <span style={{ 
-              width: '16px', 
-              height: '16px', 
-              border: '2px solid rgba(255,255,255,0.3)',
-              borderTopColor: '#ffffff',
-              borderRadius: '50%',
-              animation: 'spin 0.8s linear infinite'
-            }} />
+          <span className="flex items-center justify-center gap-2">
+            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             Signing in...
           </span>
         ) : (
           'Sign in'
         )}
       </button>
-
-      <style jsx>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </form>
   );
 }

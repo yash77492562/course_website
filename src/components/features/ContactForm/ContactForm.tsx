@@ -346,7 +346,7 @@ export function ContactForm() {
       <style jsx global>{`
         .contact-page {
           min-height: 100vh;
-          background: #f7f8fa;
+          background: transparent;
           padding: 120px 5vw 70px;
           display: flex;
           align-items: center;
@@ -409,7 +409,7 @@ export function ContactForm() {
         .icon-circle {
           width: 72px !important;
           height: 72px !important;
-          background: linear-gradient(135deg, #0ea5e9, #06b6d4) !important;
+          background: var(--color-primary) !important;
           border-radius: 16px !important;
           display: flex !important;
           align-items: center !important;
@@ -495,7 +495,7 @@ export function ContactForm() {
 
         .field-input:focus {
           outline: none !important;
-          border-color: #0ea5e9 !important;
+          border-color: var(--color-primary) !important;
           box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1) !important;
         }
 
@@ -514,7 +514,7 @@ export function ContactForm() {
           display: inline-flex !important;
           align-items: center !important;
           gap: 8px !important;
-          background: linear-gradient(135deg, #0ea5e9, #06b6d4) !important;
+          background: var(--color-primary) !important;
           color: white !important;
           padding: 14px 32px !important;
           border: none !important;

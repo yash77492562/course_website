@@ -36,13 +36,13 @@ export function MyCoursesPage() {
         <Navbar />
         <div style={{
           minHeight: '100vh',
-          background: 'linear-gradient(160deg, #050d1f 0%, #0d1f40 60%, #0a2240 100%)'
+          background: 'var(--color-background)'
         }}>
           <div className="h-[68px]" />
           <div className="flex items-center justify-center py-20">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p style={{ color: 'rgba(255,255,255,0.7)' }}>Checking authentication...</p>
+              <p className="text-foreground/70">Checking authentication...</p>
             </div>
           </div>
         </div>
@@ -61,13 +61,13 @@ export function MyCoursesPage() {
         <Navbar />
         <div style={{
           minHeight: '100vh',
-          background: 'linear-gradient(160deg, #050d1f 0%, #0d1f40 60%, #0a2240 100%)'
+          background: 'var(--color-background)'
         }}>
           <div className="h-[68px]" />
           <div className="flex items-center justify-center py-20">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p style={{ color: 'rgba(255,255,255,0.7)' }}>Loading your courses...</p>
+              <p className="text-foreground/70">Loading your courses...</p>
             </div>
           </div>
         </div>
@@ -81,14 +81,14 @@ export function MyCoursesPage() {
       <Navbar />
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(160deg, #050d1f 0%, #0d1f40 60%, #0a2240 100%)'
+        background: 'var(--color-background)'
       }}>
         <div className="h-[68px]" />
         
-        <div style={{ padding: '80px 5vw 80px' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div className="py-[80px] px-[5vw]">
+          <div className="max-w-[1200px] mx-auto">
             {/* Page Header */}
-            <div className="text-center" style={{ marginBottom: '50px' }}>
+            <div className="text-center mb-[50px]">
               <div style={{
                 display: 'inline-block',
                 padding: '6px 14px',
@@ -97,7 +97,7 @@ export function MyCoursesPage() {
                 fontWeight: 600,
                 letterSpacing: '0.8px',
                 textTransform: 'uppercase',
-                color: '#0ea5e9',
+                color: 'var(--color-primary)',
                 border: '1px solid rgba(14,165,233,0.3)',
                 backgroundColor: 'rgba(14,165,233,0.1)',
                 marginBottom: '24px'
@@ -107,7 +107,7 @@ export function MyCoursesPage() {
               <h1 style={{
                 fontSize: '42px',
                 fontWeight: 700,
-                color: 'white',
+                color: '#0f172a',
                 marginBottom: '24px',
                 fontFamily: 'Syne, sans-serif',
                 letterSpacing: '-0.5px'
@@ -116,7 +116,7 @@ export function MyCoursesPage() {
               </h1>
               <p style={{
                 fontSize: '17px',
-                color: 'rgba(255,255,255,0.7)',
+                color: '#334155',
                 maxWidth: '600px',
                 margin: '0 auto',
                 lineHeight: '1.6'
@@ -141,7 +141,7 @@ export function MyCoursesPage() {
                 <button 
                   onClick={loadEnrolledCourses}
                   style={{
-                    background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
+                    background: 'var(--color-primary)',
                     color: 'white',
                     padding: '10px 24px',
                     borderRadius: '6px',
@@ -158,22 +158,19 @@ export function MyCoursesPage() {
             {/* Courses Grid */}
             {courses.length === 0 ? (
               <div className="text-center py-12">
-                <div style={{
-                  fontSize: '64px',
-                  marginBottom: '24px'
-                }}>
+                <div className="text-[64px] mb-[24px]">
                   📚
                 </div>
                 <p style={{
                   fontSize: '18px',
-                  color: 'rgba(255,255,255,0.6)',
+                  color: '#475569',
                   marginBottom: '8px'
                 }}>
                   You haven't enrolled in any courses yet
                 </p>
                 <p style={{
                   fontSize: '14px',
-                  color: 'rgba(255,255,255,0.4)',
+                  color: '#64748b',
                   marginBottom: '24px'
                 }}>
                   Start learning by enrolling in a course
@@ -181,7 +178,7 @@ export function MyCoursesPage() {
                 <button
                   onClick={() => router.push('/courses')}
                   style={{
-                    background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
+                    background: 'var(--color-primary)',
                     color: 'white',
                     padding: '12px 28px',
                     borderRadius: '6px',

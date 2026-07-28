@@ -42,15 +42,7 @@ export function CustomSelect({ name, value, onChange, options, placeholder = 'Se
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="field-input"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          textAlign: 'left',
-          cursor: 'pointer',
-          color: value ? '#0f172a' : '#9ca3af',
-        }}
+        className={`field-input flex items-center justify-between text-left cursor-pointer ${value ? 'text-slate-900' : 'text-gray-400'}`}
       >
         <span>{selectedOption ? selectedOption.label : placeholder}</span>
         <svg
@@ -58,10 +50,7 @@ export function CustomSelect({ name, value, onChange, options, placeholder = 'Se
           height="8"
           viewBox="0 0 12 8"
           fill="none"
-          style={{
-            transition: 'transform 0.2s',
-            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-          }}
+          className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
         >
           <path d="M1 1.5L6 6.5L11 1.5" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -90,33 +79,11 @@ export function CustomSelect({ name, value, onChange, options, placeholder = 'Se
               key={option.value}
               type="button"
               onClick={() => handleSelect(option.value)}
-              style={{
-                width: '100%',
-                padding: '16px 18px',
-                textAlign: 'left',
-                border: 'none',
-                background: value === option.value ? 'linear-gradient(135deg, #0ea5e9, #06b6d4)' : 'white',
-                color: value === option.value ? 'white' : '#0f172a',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                fontFamily: 'DM Sans, sans-serif',
-                transition: 'all 0.2s',
-                borderBottom: index === options.length - 1 ? 'none' : '1px solid #f1f5f9',
-                display: 'block',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-              onMouseEnter={(e) => {
-                if (value !== option.value) {
-                  e.currentTarget.style.background = '#f7f8fa';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (value !== option.value) {
-                  e.currentTarget.style.background = 'white';
-                }
-              }}
+              className={`w-full py-4 px-[18px] text-left border-none cursor-pointer text-[1rem] font-dm-sans transition-all duration-200 block whitespace-nowrap overflow-hidden text-ellipsis ${
+                value === option.value
+                  ? 'bg-primary hover:bg-primary/90 shadow-sm text-foreground'
+                  : 'bg-white text-slate-900 hover:bg-slate-50'
+              } ${index === options.length - 1 ? 'border-b-0' : 'border-b border-slate-100'}`}
             >
               {option.label}
             </button>

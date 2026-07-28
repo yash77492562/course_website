@@ -1,94 +1,182 @@
 'use client';
 
-import { Button } from '@/ui/Button/Button';
+import Link from 'next/link';
 import { ArrowRightIcon } from '@/ui/Icons/Icons';
-import { Reveal } from '@/ui/Animation/Animation';
-import { AnimatedBackground } from '@/ui/AnimatedBackground/AnimatedBackground';
 import { StatusBadge } from '@/ui/StatusBadge/StatusBadge';
 import { HeroTitle, HeroSubtitle, GradientText } from '@/ui/Typography/Typography';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 export function HeroSection() {
+  const { scrollY } = useScroll();
+  // Continuous parallax effects for floating cards
+  const float1 = useTransform(scrollY, [0, 1000], [0, -80]);
+  const float2 = useTransform(scrollY, [0, 1000], [0, -40]);
+  const float3 = useTransform(scrollY, [0, 1000], [0, -120]);
+
+  const springUp = {
+    initial: { opacity: 0, y: 40, scale: 0.95 },
+    whileInView: { opacity: 1, y: 0, scale: 1 },
+    viewport: { once: true, margin: "-50px" },
+    transition: { type: "spring" as const, stiffness: 100, damping: 20 }
+  };
+
+  const containerVariants = {
+    initial: { opacity: 0 },
+    whileInView: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.1 }
+    },
+    viewport: { once: true, margin: "-50px" }
+  };
+
+  const itemVariants = {
+    initial: { opacity: 0, y: 30 },
+    whileInView: { 
+      opacity: 1, 
+      y: 0,
+      transition: { type: "spring" as const, stiffness: 120, damping: 20 }
+    }
+  };
+
   return (
-    <section className="min-h-screen relative flex items-center overflow-hidden" 
-             style={{ 
-               background: 'linear-gradient(160deg, #050d1f 0%, #0d1f40 60%, #0a2240 100%)',
-               paddingTop: '140px',
-               paddingBottom: '80px',
-               paddingLeft: '5vw',
-               paddingRight: '5vw'
-             }}>
-      {/* Animated SVG Background */}
-      <AnimatedBackground className="absolute inset-0 pointer-events-none z-0" />
-
-      {/* Hero Content */}
-      <div className="relative z-10" style={{ maxWidth: '720px' }}>
-        <Reveal>
-          <StatusBadge>
-            UK-Based Data Education & Consulting
-          </StatusBadge>
-        </Reveal>
-
-        <Reveal delay={1}>
-          <HeroTitle>
-            Build Your Future<br />
-            in <GradientText>Data</GradientText> with<br />
-            Riva Data
-          </HeroTitle>
-        </Reveal>
-
-        <Reveal delay={2}>
-          <HeroSubtitle>
-            Reskilling professionals into industry-ready Data Analysts, Data Engineers, and Data Scientists through practical, real-world training and innovation-driven learning.
-          </HeroSubtitle>
-        </Reveal>
-
-        <Reveal delay={3}>
-          <div className="flex gap-4 flex-wrap">
-            <Button href="#programs" variant="primary" size="lg">
-              Explore Programs
-              <ArrowRightIcon size={16} />
-            </Button>
-            <Button href="/partner" variant="ghost" size="lg">
-              Partner With Us
-            </Button>
-          </div>
-        </Reveal>
+    <section className="min-h-[90vh] relative flex items-center overflow-hidden bg-background pt-[140px] pb-[100px] w-full">
+      {/* Background Decorative Mesh - using standard background and primary colors to remain consistent */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 2, ease: "easeOut" }}
+          className="absolute -top-[20%] -right-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/[0.03] blur-3xl"
+        />
+        <motion.div 
+          initial={{ opacity: 0, x: -100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 2, ease: "easeOut", delay: 0.2 }}
+          className="absolute top-[40%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-secondary/[0.04] blur-3xl"
+        />
       </div>
 
-      {/* Hero Stats */}
-      <div className="absolute bottom-12 right-[5vw] z-10 hidden lg:flex gap-12">
-        <Reveal delay={4}>
-          <div className="text-center">
-            <div className="font-syne text-[32px] font-extrabold text-white leading-none mb-1">
-              <span className="bg-gradient-to-r from-[#0ea5e9] to-[#06b6d4] bg-clip-text text-transparent">3</span>
-            </div>
-            <div className="text-[12.48px] tracking-[0.8px] uppercase text-[rgba(255,255,255,0.4)] leading-tight">
-              Specialist<br />Programs
-            </div>
-          </div>
-        </Reveal>
+      <div className="px-6 md:px-12 lg:px-20 relative z-10 w-full max-w-[1600px] mx-auto">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          
+          {/* LEFT COLUMN - TEXT CONTENT */}
+          <motion.div 
+            className="lg:col-span-7 flex flex-col justify-center"
+            variants={containerVariants}
+            initial="initial"
+            whileInView="whileInView"
+            viewport={{ once: true, margin: "-50px" }}
+          >
+            <motion.div variants={itemVariants} className="mb-6">
+              <StatusBadge>
+                UK-Based Data Education & Consulting
+              </StatusBadge>
+            </motion.div>
 
-        <Reveal delay={5}>
-          <div className="text-center">
-            <div className="font-syne text-[32px] font-extrabold text-white leading-none mb-1">
-              <span className="bg-gradient-to-r from-[#0ea5e9] to-[#06b6d4] bg-clip-text text-transparent">100%</span>
-            </div>
-            <div className="text-[12.48px] tracking-[0.8px] uppercase text-[rgba(255,255,255,0.4)] leading-tight">
-              Industry<br />Aligned
-            </div>
-          </div>
-        </Reveal>
+            <motion.div variants={itemVariants} className="mb-6">
+              <HeroTitle>
+                Build Your Future<br />
+                in <GradientText>Data</GradientText> with<br />
+                Riva Data
+              </HeroTitle>
+            </motion.div>
 
-        <Reveal delay={6}>
-          <div className="text-center">
-            <div className="font-syne text-[32px] font-extrabold text-white leading-none mb-1">
-              <span className="bg-gradient-to-r from-[#0ea5e9] to-[#06b6d4] bg-clip-text text-transparent">UK</span>
-            </div>
-            <div className="text-[12.48px] tracking-[0.8px] uppercase text-[rgba(255,255,255,0.4)] leading-tight">
-              Based &<br />Accredited
-            </div>
+            <motion.div variants={itemVariants} className="mb-10 max-w-[600px]">
+              <HeroSubtitle>
+                Reskilling professionals into industry-ready Data Analysts, Data Engineers, and Data Scientists through practical, real-world training and innovation-driven learning.
+              </HeroSubtitle>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <div className="flex gap-4 flex-wrap">
+                <Link 
+                  href="#programs" 
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 text-[1rem] rounded-xl bg-primary text-primary-foreground font-semibold shadow-lg hover:shadow-primary/25 hover:bg-primary/90 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 no-underline"
+                >
+                  Explore Now
+                  <ArrowRightIcon size={18} />
+                </Link>
+                <Link 
+                  href="/partner" 
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 text-[1rem] rounded-xl bg-background text-foreground border-2 border-border font-semibold hover:border-primary hover:text-primary hover:bg-primary/5 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 no-underline"
+                >
+                  Partner With Us
+                </Link>
+              </div>
+            </motion.div>
+          </motion.div>
+          
+          {/* RIGHT COLUMN - BENTO GRID / FLOATING STATS */}
+          <div className="lg:col-span-5 relative mt-16 lg:mt-0 h-[400px] sm:h-[450px] lg:h-[500px] w-full perspective-1000 flex justify-center lg:block">
+            {/* Center abstract circle */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.5, rotate: -45 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 50, damping: 20, delay: 0.4 }}
+              className="absolute inset-0 m-auto w-[260px] sm:w-[320px] h-[260px] sm:h-[320px] rounded-full border border-primary/20 bg-background/50 backdrop-blur-sm shadow-2xl flex items-center justify-center overflow-hidden"
+            >
+              {/* Spinning inner dashed ring */}
+              <motion.div 
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
+                className="absolute inset-4 rounded-full border-[2px] border-dashed border-primary/10"
+              />
+            </motion.div>
+
+            {/* Stat Card 1: Programs */}
+            <motion.div 
+              style={{ y: float1 }}
+              {...springUp}
+              transition={{ ...springUp.transition, delay: 0.5 }}
+              className="absolute top-[5%] lg:top-[10%] left-[5%] lg:-left-[10%] z-20"
+            >
+              <div className="bg-background p-4 sm:p-6 rounded-2xl border border-border shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 w-[180px] sm:w-[220px]">
+                <div className="font-sans text-[32px] sm:text-[42px] font-extrabold text-primary leading-none mb-1 sm:mb-2">
+                  3
+                </div>
+                <div className="text-[11px] sm:text-[13px] tracking-wide uppercase text-muted-foreground font-semibold leading-tight">
+                  Specialist<br />Programs
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Stat Card 2: Industry Aligned */}
+            <motion.div 
+              style={{ y: float2 }}
+              {...springUp}
+              transition={{ ...springUp.transition, delay: 0.7 }}
+              className="absolute top-[40%] right-[0%] lg:-right-[15%] z-30"
+            >
+              <div className="bg-primary text-primary-foreground p-4 sm:p-6 rounded-2xl shadow-xl hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-2 transition-all duration-300 w-[180px] sm:w-[220px]">
+                <div className="font-sans text-[32px] sm:text-[42px] font-extrabold text-primary-foreground leading-none mb-1 sm:mb-2">
+                  100%
+                </div>
+                <div className="text-[11px] sm:text-[13px] tracking-wide uppercase text-primary-foreground/80 font-semibold leading-tight">
+                  Industry<br />Aligned
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Stat Card 3: UK Based */}
+            <motion.div 
+              style={{ y: float3 }}
+              {...springUp}
+              transition={{ ...springUp.transition, delay: 0.9 }}
+              className="absolute bottom-[5%] lg:bottom-[10%] left-[10%] lg:left-[10%] z-20"
+            >
+              <div className="bg-background/80 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-border shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 w-[180px] sm:w-[220px]">
+                <div className="font-sans text-[28px] sm:text-[36px] font-extrabold text-foreground leading-none mb-1 sm:mb-2">
+                  UK
+                </div>
+                <div className="text-[11px] sm:text-[13px] tracking-wide uppercase text-muted-foreground font-semibold leading-tight">
+                  Based &<br />Accredited
+                </div>
+              </div>
+            </motion.div>
+
           </div>
-        </Reveal>
+
+        </div>
       </div>
     </section>
   );

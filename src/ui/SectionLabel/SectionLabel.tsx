@@ -15,14 +15,14 @@ export function SectionLabel({ children, className }: SectionLabelProps) {
       fontWeight: '600',
       letterSpacing: '2px',
       textTransform: 'uppercase',
-      color: '#0ea5e9',
+      color: 'var(--color-primary)',
       marginBottom: '14px'
     }}>
       <div style={{
         display: 'block',
         width: '18px',
         height: '1.5px',
-        background: '#0ea5e9',
+        background: 'var(--color-primary)',
         borderRadius: '2px'
       }} />
       {children}

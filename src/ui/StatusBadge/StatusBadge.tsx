@@ -23,7 +23,7 @@ export function StatusBadge({ children, className }: StatusBadgeProps) {
         style={{ 
           width: '8px', 
           height: '8px',
-          background: '#0ea5e9' 
+          background: 'var(--color-primary)' 
         }} 
       />
       <span 
@@ -32,7 +32,7 @@ export function StatusBadge({ children, className }: StatusBadgeProps) {
           fontSize: '0.78rem',
           fontWeight: 500,
           letterSpacing: '1.2px',
-          color: '#0ea5e9'
+          color: 'var(--color-primary)'
         }}
       >
         {children}

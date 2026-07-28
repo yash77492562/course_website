@@ -27,7 +27,7 @@ export function CourseCard({ course, onEnroll, onViewDetails, className = '' }: 
           </span>
         </div>
         <div className="absolute top-4 right-4">
-          <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+          <span className="bg-green-500 text-foreground px-2 py-1 rounded-full text-xs font-medium">
             {course.category}
           </span>
         </div>
@@ -103,7 +103,7 @@ export function CourseCard({ course, onEnroll, onViewDetails, className = '' }: 
           </div>
           <button
             onClick={handleEnrollClick}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+            className="bg-blue-600 hover:bg-blue-700 text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
           >
             Enroll Now
           </button>

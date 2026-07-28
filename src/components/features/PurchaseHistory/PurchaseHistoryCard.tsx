@@ -40,16 +40,16 @@ export function PurchaseHistoryCard({ payment }: PurchaseHistoryCardProps) {
     }).format(amount);
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColorClass = (status: string) => {
     switch (status.toUpperCase()) {
       case 'SUCCEEDED':
-        return '#10b981';
+        return 'bg-emerald-500';
       case 'PENDING':
-        return '#f59e0b';
+        return 'bg-amber-500';
       case 'FAILED':
-        return '#ef4444';
+        return 'bg-red-500';
       default:
-        return '#6b7280';
+        return 'bg-gray-500';
     }
   };
 
@@ -75,126 +75,62 @@ export function PurchaseHistoryCard({ payment }: PurchaseHistoryCardProps) {
   };
 
   return (
-    <div style={{
-      background: 'white',
-      borderRadius: '12px',
-      padding: '20px',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-      transition: 'box-shadow 0.2s',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%'
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-    }}
-    >
+    <div className="group bg-white rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.1)] transition-shadow duration-200 flex flex-col h-full hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
       {/* Course Title and Instructor */}
-      <div style={{ marginBottom: '16px' }}>
-        <h3 style={{
-          fontSize: '16px',
-          fontWeight: 600,
-          color: '#111827',
-          marginBottom: '6px',
-          fontFamily: 'Syne, sans-serif',
-          lineHeight: '1.4'
-        }}>
+      <div className="mb-4">
+        <h3 className="text-[16px] font-bold text-gray-900 mb-1.5 font-sans leading-snug">
           {payment.course.title}
         </h3>
-        <p style={{
-          fontSize: '13px',
-          color: '#6b7280'
-        }}>
+        <p className="text-[13px] text-gray-500">
           by {payment.course.instructor}
         </p>
       </div>
 
       {/* Payment Details Grid */}
-      <div style={{ 
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '12px',
-        marginBottom: '16px',
-        flex: 1
-      }}>
+      <div className="grid grid-cols-2 gap-3 mb-4 flex-1">
         <div>
-          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          <p className="text-[11px] text-gray-400 mb-1 uppercase tracking-[0.5px]">
             Date
           </p>
-          <p style={{ fontSize: '13px', color: '#374151', fontWeight: 500 }}>
+          <p className="text-[13px] text-gray-700 font-medium">
             {formatDate(payment.createdAt)}
           </p>
         </div>
 
         <div>
-          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          <p className="text-[11px] text-gray-400 mb-1 uppercase tracking-[0.5px]">
             Amount
           </p>
-          <p style={{ fontSize: '13px', color: '#374151', fontWeight: 600 }}>
+          <p className="text-[13px] text-gray-700 font-semibold">
             {formatAmount(payment.amount, payment.currency)}
           </p>
         </div>
 
         <div>
-          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          <p className="text-[11px] text-gray-400 mb-1 uppercase tracking-[0.5px]">
             Status
           </p>
-          <span style={{
-            display: 'inline-block',
-            padding: '3px 10px',
-            borderRadius: '10px',
-            fontSize: '11px',
-            fontWeight: 600,
-            color: 'white',
-            background: getStatusColor(payment.status)
-          }}>
+          <span className={`inline-block px-2.5 py-[3px] rounded-[10px] text-[11px] font-semibold text-foreground ${getStatusColorClass(payment.status)}`}>
             {getStatusText(payment.status)}
           </span>
         </div>
 
         <div>
-          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          <p className="text-[11px] text-gray-400 mb-1 uppercase tracking-[0.5px]">
             Order ID
           </p>
-          <p style={{ fontSize: '11px', color: '#6b7280', fontFamily: 'monospace' }}>
+          <p className="text-[11px] text-gray-500 font-mono">
             {payment.orderId.substring(0, 12)}...
           </p>
         </div>
       </div>
 
       {/* Download Invoice Button */}
-      <div style={{ marginTop: 'auto' }}>
+      <div className="mt-auto">
         {payment.status.toUpperCase() === 'SUCCEEDED' && payment.invoiceUrl ? (
           <button
             onClick={handleDownloadInvoice}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              width: '100%',
-              padding: '10px 16px',
-              background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontSize: '13px',
-              fontWeight: 500,
-              transition: 'transform 0.2s, box-shadow 0.2s',
-              boxShadow: '0 2px 8px rgba(14,165,233,0.3)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(14,165,233,0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 2px 8px rgba(14,165,233,0.3)';
-            }}
+            className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-primary hover:bg-primary/90 shadow-sm text-foreground border-none rounded-lg cursor-pointer text-[13px] font-medium transition-all duration-200 shadow-[0_2px_8px_rgba(14,165,233,0.3)] hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(14,165,233,0.4)]"
           >
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -202,15 +138,7 @@ export function PurchaseHistoryCard({ payment }: PurchaseHistoryCardProps) {
             Download Invoice
           </button>
         ) : (
-          <div style={{
-            padding: '10px 16px',
-            background: '#f3f4f6',
-            color: '#9ca3af',
-            borderRadius: '8px',
-            fontSize: '13px',
-            fontWeight: 500,
-            textAlign: 'center'
-          }}>
+          <div className="py-2.5 px-4 bg-gray-100 text-gray-400 rounded-lg text-[13px] font-medium text-center">
             No Invoice
           </div>
         )}

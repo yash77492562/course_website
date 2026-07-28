@@ -69,17 +69,17 @@ export function AnimatedBackground({ className }: AnimatedBackgroundProps) {
       
       {/* Ambient glow */}
       <defs>
-        <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.25"/>
-          <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0"/>
-        </radialGradient>
-        <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.2"/>
-          <stop offset="100%" stopColor="#06b6d4" stopOpacity="0"/>
-        </radialGradient>
+        <linearGradient id="glow-1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.25"/>
+          <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0"/>
+        </linearGradient>
+        <linearGradient id="glow-2" x1="100%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="var(--color-secondary)" stopOpacity="0.2"/>
+          <stop offset="100%" stopColor="var(--color-secondary)" stopOpacity="0"/>
+        </linearGradient>
       </defs>
-      <circle cx="1100" cy="200" r="300" fill="url(#glow1)" opacity="0.4"/>
-      <circle cx="400" cy="700" r="250" fill="url(#glow2)" opacity="0.25"/>
+      <circle cx="1100" cy="200" r="300" fill="url(#glow-1)" opacity="0.4"/>
+      <circle cx="400" cy="700" r="250" fill="url(#glow-2)" opacity="0.25"/>
     </svg>
   );
 }

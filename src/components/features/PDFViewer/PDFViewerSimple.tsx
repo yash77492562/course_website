@@ -133,7 +133,7 @@ export function PDFViewerSimple({ pdfUrl, password, title }: PDFViewerSimpleProp
                     duration: 3000,
                   });
                 }}
-                className="ml-2 px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium rounded transition-colors"
+                className="ml-2 px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-foreground text-sm font-medium rounded transition-colors"
               >
                 Copy
               </button>

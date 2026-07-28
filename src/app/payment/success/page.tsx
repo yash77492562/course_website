@@ -76,46 +76,58 @@ function PaymentSuccessContent() {
     pollOrderStatus();
   }, []);
 
+  // Shared Animation Styles
+  const animationStyles = (
+    <style dangerouslySetInnerHTML={{__html: `
+      @keyframes popIn {
+        0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      @keyframes checkmarkPop {
+        0% { transform: scale(0); opacity: 0; }
+        60% { transform: scale(1.15); opacity: 1; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .animate-pop-in {
+        animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      .animate-checkmark {
+        animation: checkmarkPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.2s;
+        opacity: 0;
+      }
+    `}} />
+  );
+
   // LOADING STATE
   if (status === 'loading') {
     return (
-      <div style={{ 
-        minHeight: '100vh', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-      }}>
-        <div style={{ 
-          background: 'white', 
-          padding: '3rem', 
-          borderRadius: '1rem', 
-          textAlign: 'center',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-          maxWidth: '500px'
-        }}>
+      <div className="min-h-screen flex items-center justify-center p-4 bg-transparent relative overflow-hidden">
+        {animationStyles}
+        <div 
+          className="w-full max-w-[500px] backdrop-blur-xl border border-white/60 rounded-[24px] p-12 flex flex-col items-center text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] animate-pop-in"
+          style={{ backgroundColor: 'lab(92 -3.12 -0.26 / 0.9)' }}
+        >
           <div style={{ 
-            width: '60px', 
-            height: '60px', 
-            border: '4px solid #f3f3f3',
-            borderTop: '4px solid #667eea',
+            width: '64px', 
+            height: '64px', 
+            border: '4px solid rgba(13, 148, 136, 0.1)',
+            borderTop: '4px solid #0d9488',
             borderRadius: '50%',
             animation: 'spin 1s linear infinite',
-            margin: '0 auto 1rem'
+            marginBottom: '1.5rem'
           }}></div>
-          <p style={{ fontSize: '1.2rem', color: '#333', marginBottom: '0.5rem' }}>
+          
+          <h2 className="font-display italic text-[#0f172a] text-[1.75rem] font-bold tracking-tight mb-2">
             Verifying your payment...
-          </p>
-          <p style={{ fontSize: '0.9rem', color: '#666' }}>
-            Please wait while we confirm your payment with our server
+          </h2>
+          <p className="text-slate-500 text-[1rem] leading-[1.6]">
+            Please wait while we confirm your transaction securely.
           </p>
         </div>
-        <style jsx>{`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}</style>
       </div>
     );
   }
@@ -123,71 +135,50 @@ function PaymentSuccessContent() {
   // ERROR/FAILED STATE
   if (status === 'failed' || status === 'timeout') {
     return (
-      <div style={{ 
-        minHeight: '100vh', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
-      }}>
-        <div style={{ 
-          background: 'white', 
-          padding: '3rem', 
-          borderRadius: '1rem', 
-          textAlign: 'center',
-          maxWidth: '500px',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-        }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>⚠️</div>
-          <h1 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#333' }}>
-            {status === 'timeout' ? 'Payment Verification Timeout' : 'Payment Error'}
+      <div className="min-h-screen flex items-center justify-center p-4 bg-transparent relative overflow-hidden">
+        {animationStyles}
+        <div 
+          className="w-full max-w-[500px] backdrop-blur-xl border border-white/60 rounded-[24px] p-12 flex flex-col items-center text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] animate-pop-in"
+          style={{ backgroundColor: 'lab(92 -3.12 -0.26 / 0.9)' }}
+        >
+          <div className="w-20 h-20 bg-rose-100 rounded-full flex items-center justify-center mb-6 shadow-sm animate-checkmark">
+            <svg className="w-10 h-10 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+          </div>
+          
+          <h1 className="font-display italic text-[#0f172a] text-[2rem] font-bold tracking-tight mb-3">
+            {status === 'timeout' ? 'Verification Timeout' : 'Payment Error'}
           </h1>
-          <p style={{ color: '#666', marginBottom: '2rem' }}>
-            {error || 'Something went wrong with your payment'}
+          <p className="text-slate-500 text-[1rem] leading-[1.6] mb-8">
+            {error || 'Something went wrong with your payment. Please try again.'}
           </p>
-          {orderId && (
-            <div style={{ 
-              background: '#f8f9fa', 
-              padding: '1rem', 
-              borderRadius: '0.5rem',
-              marginBottom: '2rem'
-            }}>
-              <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>
-                Order ID:
-              </p>
-              <p style={{ fontSize: '0.8rem', color: '#999', wordBreak: 'break-all' }}>
-                {orderId}
-              </p>
+          
+          {(orderId || sessionId) && (
+            <div className="w-full bg-white/60 backdrop-blur-sm border border-rose-100 p-4 rounded-[16px] mb-8 flex flex-col items-center gap-3">
+              {orderId && (
+                <div className="flex flex-col items-center">
+                  <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-rose-500 mb-1">Order ID</span>
+                  <span className="text-[0.8rem] text-slate-500 font-mono break-all text-center">{orderId}</span>
+                </div>
+              )}
+              {sessionId && (
+                <div className="flex flex-col items-center">
+                  <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-rose-500 mb-1">Payment ID</span>
+                  <span className="text-[0.8rem] text-slate-500 font-mono break-all text-center">{sessionId}</span>
+                </div>
+              )}
             </div>
           )}
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+          
+          <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
             <button 
               onClick={() => router.push('/my-courses')}
-              style={{
-                background: '#667eea',
-                color: 'white',
-                padding: '0.75rem 2rem',
-                borderRadius: '0.5rem',
-                border: 'none',
-                fontSize: '1rem',
-                cursor: 'pointer',
-                fontWeight: '600'
-              }}
+              className="bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-[1rem] px-8 py-3.5 transition-all duration-300 shadow-[0_4px_20px_rgba(13,148,136,0.25)] hover:shadow-[0_8px_30px_rgba(13,148,136,0.35)] hover:-translate-y-[2px]"
             >
               Check My Courses
             </button>
             <button 
               onClick={() => router.push('/')}
-              style={{
-                background: 'transparent',
-                color: '#667eea',
-                padding: '0.75rem 2rem',
-                borderRadius: '0.5rem',
-                border: '2px solid #667eea',
-                fontSize: '1rem',
-                cursor: 'pointer',
-                fontWeight: '600'
-              }}
+              className="bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 rounded-xl font-semibold text-[1rem] px-8 py-3.5 transition-all duration-300 hover:-translate-y-[2px] shadow-sm hover:border-slate-300"
             >
               Go Home
             </button>
@@ -199,65 +190,50 @@ function PaymentSuccessContent() {
 
   // SUCCESS STATE
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-    }}>
-      <div style={{ 
-        background: 'white', 
-        padding: '3rem', 
-        borderRadius: '1rem', 
-        textAlign: 'center',
-        maxWidth: '600px',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-      }}>
-        <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>✅</div>
-        <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#333' }}>Payment Successful!</h1>
-        <p style={{ fontSize: '1.2rem', color: '#666', marginBottom: '2rem' }}>
-          Thank you for your purchase. Your course access has been activated.
+    <div className="min-h-screen flex items-center justify-center p-4 bg-transparent relative overflow-hidden">
+      {animationStyles}
+      <div 
+        className="w-full max-w-[600px] backdrop-blur-xl border border-white/60 rounded-[24px] p-12 flex flex-col items-center text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] animate-pop-in"
+        style={{ backgroundColor: 'lab(92 -3.12 -0.26 / 0.9)' }}
+      >
+        <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mb-6 shadow-sm animate-checkmark">
+          <svg className="w-12 h-12 text-[#059669]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+        </div>
+        
+        <h1 className="font-display italic text-[#0f172a] text-[2.5rem] font-bold tracking-tight mb-4">
+          Payment Successful!
+        </h1>
+        <p className="text-slate-500 text-[1.1rem] leading-[1.6] mb-10 max-w-sm">
+          Thank you for your purchase. Your course access has been permanently activated.
         </p>
-        {orderId && (
-          <div style={{ 
-            background: '#f8f9fa', 
-            padding: '1.5rem', 
-            borderRadius: '0.5rem',
-            marginBottom: '2rem'
-          }}>
-            <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.5rem' }}>Order ID:</p>
-            <p style={{ fontSize: '0.85rem', color: '#999', wordBreak: 'break-all' }}>{orderId}</p>
+        
+        {(orderId || sessionId) && (
+          <div className="w-full bg-white/60 backdrop-blur-sm border border-emerald-100 p-5 rounded-[16px] mb-10 flex flex-col items-center gap-4">
+            {orderId && (
+              <div className="flex flex-col items-center">
+                <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-primary mb-1">Order ID</span>
+                <span className="text-[0.8rem] text-slate-500 font-mono break-all text-center">{orderId}</span>
+              </div>
+            )}
+            {sessionId && (
+              <div className="flex flex-col items-center">
+                <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-primary mb-1">Payment ID</span>
+                <span className="text-[0.8rem] text-slate-500 font-mono break-all text-center">{sessionId}</span>
+              </div>
+            )}
           </div>
         )}
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+        
+        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
           <button 
             onClick={() => router.push('/my-courses')}
-            style={{
-              background: '#667eea',
-              color: 'white',
-              padding: '0.75rem 2rem',
-              borderRadius: '0.5rem',
-              border: 'none',
-              fontSize: '1rem',
-              cursor: 'pointer',
-              fontWeight: '600'
-            }}
+            className="bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-[1.05rem] px-8 py-4 transition-all duration-300 shadow-[0_4px_20px_rgba(13,148,136,0.25)] hover:shadow-[0_8px_30px_rgba(13,148,136,0.35)] hover:-translate-y-[2px]"
           >
             View My Courses
           </button>
           <button 
             onClick={() => router.push('/')}
-            style={{
-              background: 'transparent',
-              color: '#667eea',
-              padding: '0.75rem 2rem',
-              borderRadius: '0.5rem',
-              border: '2px solid #667eea',
-              fontSize: '1rem',
-              cursor: 'pointer',
-              fontWeight: '600'
-            }}
+            className="bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 rounded-xl font-semibold text-[1.05rem] px-8 py-4 transition-all duration-300 hover:-translate-y-[2px] shadow-sm hover:border-slate-300"
           >
             Go Home
           </button>
@@ -270,14 +246,8 @@ function PaymentSuccessContent() {
 export default function PaymentSuccessPage() {
   return (
     <Suspense fallback={
-      <div style={{ 
-        minHeight: '100vh', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-      }}>
-        <div style={{ color: 'white', fontSize: '1.5rem' }}>Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
+        <div className="text-slate-500 text-[1.1rem]">Loading securely...</div>
       </div>
     }>
       <PaymentSuccessContent />

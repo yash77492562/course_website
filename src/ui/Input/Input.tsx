@@ -21,58 +21,26 @@ export function Input({
       {label && (
         <label
           htmlFor={props.id || props.name}
-          style={{
-            display: 'block',
-            fontSize: '14px',
-            fontWeight: '500',
-            color: 'rgba(255, 255, 255, 0.8)',
-            marginBottom: '12px'
-          }}
+          className="block text-[14px] font-semibold text-foreground mb-2"
         >
           {label}
         </label>
       )}
       <input
-        style={{
-          width: '100%',
-          padding: '12px 0',
-          background: 'transparent',
-          border: 'none',
-          borderBottom: error ? '2px solid #ef4444' : '2px solid rgba(255, 255, 255, 0.2)',
-          borderRadius: '0',
-          color: 'rgba(255, 255, 255, 0.95)',
-          fontSize: '15px',
-          transition: 'all 0.3s',
-          outline: 'none'
-        }}
-        onFocus={(e) => {
-          e.currentTarget.style.borderBottomColor = error ? '#ef4444' : '#0ea5e9';
-        }}
-        onBlur={(e) => {
-          e.currentTarget.style.borderBottomColor = error ? '#ef4444' : 'rgba(255, 255, 255, 0.2)';
-        }}
-        className={className}
+        className={cn(
+          "w-full px-4 py-3 bg-white border-2 text-foreground text-[15px] font-medium transition-all duration-200 outline-none placeholder:text-muted-foreground/60 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg shadow-sm focus:shadow-md",
+          error 
+            ? "border-destructive focus:border-destructive" 
+            : "border-border focus:border-primary",
+          className
+        )}
         {...props}
       />
       {error && (
-        <p style={{ 
-          marginTop: '8px', 
-          fontSize: '13px', 
-          color: '#ef4444' 
-        }}>
+        <p className="mt-2 text-[13px] text-red-500">
           {error}
         </p>
       )}
-      
-      <style jsx>{`
-        input::placeholder {
-          color: rgba(255, 255, 255, 0.4);
-        }
-        input:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-      `}</style>
     </div>
   );
 }

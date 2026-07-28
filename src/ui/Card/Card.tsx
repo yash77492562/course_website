@@ -21,7 +21,7 @@ export function Card({ children, className, hover = false, onClick }: CardProps)
       onClick={onClick}
     >
       {hover && (
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-sky-500 to-cyan-500 transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
+        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
       )}
       {children}
     </div>
@@ -52,7 +52,7 @@ interface CardTitleProps {
 export function CardTitle({ children, className }: CardTitleProps) {
   return (
     <h3 className={cn(
-      'font-syne text-xl font-bold text-slate-900 mb-2.5 tracking-tight',
+      'font-sans text-xl font-extrabold text-slate-900 mb-2.5 tracking-tight',
       className
     )}>
       {children}

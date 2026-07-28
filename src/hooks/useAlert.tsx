@@ -34,11 +34,9 @@ export function AlertProvider({ children }: { children: ReactNode }) {
       {alerts.map((alert, index) => (
         <div
           key={alert.id}
+          className="fixed right-6 z-[9999]"
           style={{
-            position: 'fixed',
             top: `${80 + index * 120}px`,
-            right: '24px',
-            zIndex: 9999,
             // animation: 'slideInFromRight 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         >

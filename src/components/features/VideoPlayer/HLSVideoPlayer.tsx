@@ -3,7 +3,6 @@
 import { logger } from '@/lib/utils/logger';
 import { useEffect, useRef, useState } from 'react';
 import videojs from 'video.js';
-import 'video.js/dist/video-js.css';
 
 // Register quality levels plugin only once
 if (typeof window !== 'undefined' && !videojs.getPlugin('qualityLevels')) {
@@ -1127,7 +1126,7 @@ export function HLSVideoPlayer({
       <div data-vjs-player className="w-full" style={{ minHeight: '500px' }}>
         <video
           ref={videoRef}
-          className="video-js vjs-big-play-centered vjs-theme-city w-full h-full"
+          className="video-js vjs-big-play-centered vjs-theme-default w-full h-full custom-vjs-theme"
           playsInline
           muted
           autoPlay
@@ -1141,7 +1140,7 @@ export function HLSVideoPlayer({
           {onPrevious && (
             <button
               onClick={onPrevious}
-              className="bg-black bg-opacity-70 hover:bg-opacity-90 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2"
+              className="bg-black bg-opacity-70 hover:bg-opacity-90 text-foreground px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z" />
@@ -1152,7 +1151,7 @@ export function HLSVideoPlayer({
           {onNext && (
             <button
               onClick={onNext}
-              className="bg-black bg-opacity-70 hover:bg-opacity-90 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2"
+              className="bg-black bg-opacity-70 hover:bg-opacity-90 text-foreground px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2"
             >
               Next
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">

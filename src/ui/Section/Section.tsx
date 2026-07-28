@@ -73,8 +73,8 @@ interface SectionTitleProps {
 export function SectionTitle({ children, className, light = false }: SectionTitleProps) {
   return (
     <h2 className={cn(
-      'font-syne text-5xl font-bold leading-tight tracking-tight mb-4',
-      light ? 'text-white' : 'text-slate-900',
+      'font-sans text-5xl font-extrabold leading-tight tracking-tight mb-4',
+      light ? 'text-foreground' : 'text-slate-900',
       className
     )}>
       {children}
@@ -92,7 +92,7 @@ export function SectionSubtitle({ children, className, light = false }: SectionS
   return (
     <p className={cn(
       'text-lg leading-relaxed max-w-2xl',
-      light ? 'text-white/60' : 'text-slate-600',
+      light ? 'text-foreground/60' : 'text-slate-600',
       className
     )}>
       {children}

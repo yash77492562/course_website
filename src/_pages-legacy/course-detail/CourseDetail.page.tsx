@@ -212,16 +212,16 @@ export function CourseDetailPage({ courseId = '1' }: CourseDetailPageProps) {
 
   if (!p) {
     return (
-      <div style={{ padding: '120px 5vw', textAlign: 'center' }}>
-        <h1 className="section-title">Program not found</h1>
-        <p className="section-sub">Please go back to the home page.</p>
+      <div className="py-[120px] px-[5vw] text-center">
+        <h1 className="font-display text-[clamp(1.9rem,3.5vw,2.8rem)] font-bold leading-[1.2] tracking-[-0.3px] text-slate-900 mb-4">Program not found</h1>
+        <p className="text-[1.05rem] leading-[1.7] text-slate-500 max-w-[540px]">Please go back to the home page.</p>
         <a className="btn-primary" href="/">Back to home</a>
       </div>
     );
   }
 
   return (
-    <div style={{ paddingTop: '0px' }}>
+    <div className="pt-0">
       {/* 1. Course Program Hero Section */}
       <CourseHeroSection 
         courseId={actualCourseId}

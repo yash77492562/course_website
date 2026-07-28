@@ -6,134 +6,57 @@ import type { ProgramCardProps } from '@/types/program/types';
 
 export function ProgramCard({ program }: ProgramCardProps) {
   return (
-    <div 
-      style={{
-        background: '#ffffff',
-        border: '1px solid #e2e8f0',
-        borderRadius: '14px',
-        padding: '20px',
-        position: 'relative',
-        overflow: 'hidden',
-        transition: 'transform 0.28s, box-shadow 0.28s, border-color 0.28s',
-        cursor: 'pointer',
-        height: '320px',
-        display: 'flex',
-        flexDirection: 'column'
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-6px)';
-        e.currentTarget.style.boxShadow = '0 20px 48px rgba(14,165,233,0.12)';
-        e.currentTarget.style.borderColor = 'rgba(14,165,233,0.4)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = 'none';
-        e.currentTarget.style.borderColor = '#e2e8f0';
-      }}
+    <Link 
+      href={program.ctaHref}
+      className="group relative flex flex-col h-full bg-gradient-to-br from-primary to-[#0d264a] rounded-[32px] p-8 sm:p-10 border border-white/20 hover:border-white/50 shadow-xl transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_20px_40px_-15px_rgba(13,148,136,0.5)] overflow-hidden"
     >
-      {/* Bottom accent line */}
-      <div style={{
-        content: '',
-        position: 'absolute',
-        bottom: '0',
-        left: '0',
-        right: '0',
-        height: '3px',
-        background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
-        transform: 'scaleX(0)',
-        transformOrigin: 'left',
-        transition: 'transform 0.3s ease'
-      }} />
+      {/* Dynamic Background Noise */}
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-overlay pointer-events-none" />
       
-      {/* Icon */}
-      <div style={{
-        width: '44px',
-        height: '44px',
-        borderRadius: '10px',
-        background: 'rgba(6,182,212,0.15)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '18px',
-        marginBottom: '14px',
-        border: '1px solid rgba(6,182,212,0.2)',
-        flexShrink: 0
-      }}>
-        {program.icon}
+      {/* Decorative blurry orbs for inner glow */}
+      <div className="absolute -right-20 -top-20 w-64 h-64 bg-secondary/40 rounded-full blur-[80px] group-hover:bg-secondary/60 group-hover:scale-110 transition-all duration-700 pointer-events-none" />
+      <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-white/10 rounded-full blur-[80px] group-hover:bg-white/20 group-hover:scale-110 transition-all duration-700 pointer-events-none" />
+      
+      {/* Icon Area */}
+      <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-xl flex items-center justify-center text-3xl mb-8 border border-white/30 shrink-0 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-[0_8px_16px_rgba(0,0,0,0.15)] relative z-10">
+        <span className="opacity-100 transition-opacity drop-shadow-md">
+          {program.icon}
+        </span>
       </div>
       
-      {/* Title */}
-      <h3 style={{
-        fontFamily: 'Syne, sans-serif',
-        fontSize: '1.1rem',
-        fontWeight: '700',
-        color: '#0f172a',
-        marginBottom: '10px',
-        letterSpacing: '-0.2px',
-        flexShrink: 0,
-        lineHeight: '1.3'
-      }}>
-        {program.title}
-      </h3>
-      
-      {/* Description - Scrollable */}
-      <div style={{
-        fontSize: '0.85rem',
-        lineHeight: '1.55',
-        color: '#64748b',
-        marginBottom: '12px',
-        flex: '1',
-        overflow: 'auto',
-        maxHeight: '110px',
-        paddingRight: '8px'
-      }}>
-        {program.body}
+      {/* Content */}
+      <div className="flex-1 flex flex-col relative z-10">
+        <h3 className="font-sans text-[24px] font-extrabold text-white leading-tight mb-3 group-hover:text-secondary transition-colors duration-300 drop-shadow-sm">
+          {program.title}
+        </h3>
+        
+        <p className="text-[15px] text-white/80 leading-relaxed line-clamp-4 mb-8 font-medium drop-shadow-sm">
+          {program.body}
+        </p>
       </div>
       
-      {/* Tags */}
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '5px',
-        marginBottom: '14px',
-        flexShrink: 0
-      }}>
-        {program.tags.slice(0, 3).map((tag) => (
-          <span 
-            key={tag}
-            style={{
-              fontSize: '0.68rem',
-              fontWeight: '500',
-              letterSpacing: '0.3px',
-              padding: '3px 9px',
-              background: '#eef0f5',
-              color: '#64748b',
-              borderRadius: '100px'
-            }}
-          >
-            {tag}
-          </span>
-        ))}
+      {/* Footer Area */}
+      <div className="mt-auto relative z-10 flex flex-col gap-6 pt-6 border-t border-white/20">
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2">
+          {program.tags.slice(0, 3).map((tag) => (
+            <span 
+              key={tag}
+              className="text-[12px] font-bold tracking-wider px-3 py-1.5 bg-white/10 border border-white/20 text-white rounded-full uppercase shadow-sm backdrop-blur-sm"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+        
+        {/* CTA */}
+        <div className="flex items-center gap-2 text-[15px] font-bold text-white transition-all duration-300 group-hover:gap-4">
+          <span className="text-white/90 group-hover:text-white transition-colors drop-shadow-sm">Explore Program</span>
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-primary transition-colors shadow-sm backdrop-blur-sm border border-white/30">
+            <Icons.ArrowRight className="w-4 h-4 text-white group-hover:text-primary transition-colors" />
+          </div>
+        </div>
       </div>
-      
-      {/* CTA Link */}
-      <Link 
-        href={program.ctaHref}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-          fontSize: '0.85rem',
-          fontWeight: '500',
-          color: '#0ea5e9',
-          textDecoration: 'none',
-          transition: 'gap 0.2s',
-          flexShrink: 0
-        }}
-      >
-        {program.ctaText}
-        <Icons.ArrowRight />
-      </Link>
-    </div>
+    </Link>
   );
 }

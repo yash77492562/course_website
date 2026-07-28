@@ -59,9 +59,9 @@ export function CourseHeroSection({ courseId, programData }: CourseHeroSectionPr
       <section className="program-hero">
         <div className="program-hero-inner">
           <div className="program-hero-left">
-            <span className="section-label">{escapeHtml(programData.badge)}</span>
-            <h1 className="section-title">{escapeHtml(programData.headline)}</h1>
-            <p className="section-sub">{escapeHtml(programData.subheadline)}</p>
+            <span className="inline-flex items-center gap-[6px] text-[0.72rem] font-semibold tracking-[2px] uppercase text-sky-500 mb-[14px] before:content-['_'] before:block before:w-[18px] before:h-[1.5px] before:bg-sky-500 before:rounded-[2px] before:text-transparent">{escapeHtml(programData.badge)}</span>
+            <h1 className="font-display text-[clamp(1.9rem,3.5vw,2.8rem)] font-bold leading-[1.2] tracking-[-0.3px] text-slate-900 mb-4">{escapeHtml(programData.headline)}</h1>
+            <p className="text-[1.05rem] leading-[1.7] text-slate-500 max-w-[540px]">{escapeHtml(programData.subheadline)}</p>
 
             <div className="program-meta">
               <div className="program-meta-box">

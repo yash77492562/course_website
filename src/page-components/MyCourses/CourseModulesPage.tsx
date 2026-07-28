@@ -67,13 +67,13 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
         <Navbar />
         <div style={{
           minHeight: '100vh',
-          background: 'linear-gradient(160deg, #050d1f 0%, #0d1f40 60%, #0a2240 100%)'
+          background: 'var(--color-background)'
         }}>
           <div className="h-[68px]" />
           <div className="flex items-center justify-center py-20">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p style={{ color: 'rgba(255,255,255,0.7)' }}>Loading course...</p>
+              <p className="text-foreground/70">Loading course...</p>
             </div>
           </div>
         </div>
@@ -99,12 +99,12 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
       <Navbar />
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(160deg, #050d1f 0%, #0d1f40 60%, #0a2240 100%)'
+        background: 'var(--color-background)'
       }}>
         <div className="h-[68px]" />
         
-        <div style={{ padding: '80px 5vw 80px' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div className="py-[80px] px-[5vw]">
+          <div className="max-w-[1200px] mx-auto">
             {/* Back Button */}
             <button
               onClick={() => router.push('/my-courses')}
@@ -112,7 +112,7 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                color: 'rgba(255,255,255,0.7)',
+                color: '#475569',
                 background: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
@@ -121,8 +121,8 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
                 padding: '8px 0',
                 transition: 'color 0.2s'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
-              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#0f172a'}
+              onMouseLeave={(e) => e.currentTarget.style.color = '#475569'}
             >
               <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M19 12H5M12 19l-7-7 7-7"></path>
@@ -131,7 +131,7 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
             </button>
 
             {/* Page Header */}
-            <div className="text-center" style={{ marginBottom: '50px' }}>
+            <div className="text-center mb-[50px]">
               <div style={{
                 display: 'inline-block',
                 padding: '6px 14px',
@@ -140,7 +140,7 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
                 fontWeight: 600,
                 letterSpacing: '0.8px',
                 textTransform: 'uppercase',
-                color: '#0ea5e9',
+                color: 'var(--color-primary)',
                 border: '1px solid rgba(14,165,233,0.3)',
                 backgroundColor: 'rgba(14,165,233,0.1)',
                 marginBottom: '24px'
@@ -150,7 +150,7 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
               <h1 style={{
                 fontSize: '42px',
                 fontWeight: 700,
-                color: 'white',
+                color: '#0f172a',
                 marginBottom: '24px',
                 fontFamily: 'Syne, sans-serif',
                 letterSpacing: '-0.5px'
@@ -159,7 +159,7 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
               </h1>
               <p style={{
                 fontSize: '17px',
-                color: 'rgba(255,255,255,0.7)',
+                color: '#334155',
                 maxWidth: '600px',
                 margin: '0 auto',
                 lineHeight: '1.6'
@@ -170,11 +170,11 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
 
             {/* Current Module Section - Show on top */}
             {currentModule && (
-              <div style={{ marginBottom: '48px' }}>
+              <div className="mb-[48px]">
                 <h2 style={{
                   fontSize: '24px',
                   fontWeight: 700,
-                  color: 'white',
+                  color: '#0f172a',
                   marginBottom: '24px',
                   fontFamily: 'Syne, sans-serif',
                   display: 'flex',
@@ -185,7 +185,7 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
-                    background: '#0ea5e9',
+                    background: 'var(--color-primary)',
                     display: 'inline-block'
                   }}></span>
                   Current Module
@@ -201,11 +201,11 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
 
             {/* Past Modules Section (Completed) - Show in reverse order below current */}
             {pastModules.length > 0 && (
-              <div style={{ marginBottom: '48px' }}>
+              <div className="mb-[48px]">
                 <h2 style={{
                   fontSize: '24px',
                   fontWeight: 700,
-                  color: 'white',
+                  color: '#0f172a',
                   marginBottom: '24px',
                   fontFamily: 'Syne, sans-serif',
                   display: 'flex',
@@ -241,7 +241,7 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
                 <h2 style={{
                   fontSize: '24px',
                   fontWeight: 700,
-                  color: 'white',
+                  color: '#0f172a',
                   marginBottom: '24px',
                   fontFamily: 'Syne, sans-serif',
                   display: 'flex',

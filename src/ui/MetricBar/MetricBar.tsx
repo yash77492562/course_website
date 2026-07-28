@@ -8,52 +8,17 @@ interface MetricBarProps {
 
 export function MetricBar({ metric }: MetricBarProps) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '14px'
-      }}
-    >
-      <span
-        style={{
-          fontSize: '0.8rem',
-          color: 'rgba(255,255,255,0.55)',
-          minWidth: '120px'
-        }}
-      >
+    <div className="flex items-center gap-3.5">
+      <span className="text-[0.8rem] text-foreground/55 min-w-[120px]">
         {metric.name}
       </span>
-      <div
-        style={{
-          flex: 1,
-          height: '6px',
-          background: 'rgba(255,255,255,0.08)',
-          borderRadius: '100px',
-          overflow: 'hidden'
-        }}
-      >
+      <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
         <div
-          style={{
-            height: '100%',
-            background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
-            borderRadius: '100px',
-            width: `${metric.value}%`,
-            transformOrigin: 'left',
-            animation: 'growBar 1.2s ease forwards'
-          }}
+          className="h-full bg-primary rounded-full origin-left [animation:growBar_1.2s_ease_forwards]"
+          style={{ width: `${metric.value}%` }}
         />
       </div>
-      <span
-        style={{
-          fontFamily: 'Syne, sans-serif',
-          fontSize: '0.9rem',
-          fontWeight: 700,
-          color: '#ffffff',
-          minWidth: '38px',
-          textAlign: 'right'
-        }}
-      >
+      <span className="font-sans text-[0.9rem] font-bold text-foreground min-w-[38px] text-right">
         {metric.display}
       </span>
     </div>

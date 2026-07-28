@@ -17,7 +17,7 @@ export function HighlightBox({ icon, children, className }: HighlightBoxProps) {
         padding: '20px 24px',
         background: '#ffffff',
         borderRadius: '10px',
-        borderLeft: '3px solid #0ea5e9',
+        borderLeft: '3px solid var(--color-primary)',
         boxShadow: '0 2px 16px rgba(0,0,0,0.06)'
       }}
     >

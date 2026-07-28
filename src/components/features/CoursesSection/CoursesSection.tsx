@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Section } from '@/ui/Section/Section';
-import { SectionLabel } from '@/ui/SectionLabel/SectionLabel';
 import { ProgramCard } from '@/ui/ProgramCard/ProgramCard';
+import { Icons } from '@/ui/Icons/Icons';
 import { courseApi } from '@/lib/api/course/courseApi';
 import { Course } from '@/types/course/types';
 import { Program } from '@/types/program/types';
 import { logger } from '@/lib/utils/logger';
+import { motion } from 'framer-motion';
+import { Skeleton } from '@/ui/skeleton/skeleton';
 
 export function CoursesSection() {
   const [courses, setCourses] = useState<Program[]>([]);
@@ -58,101 +59,103 @@ export function CoursesSection() {
     return categoryIcons[category] || '📚';
   };
 
-  if (loading) {
-    return (
-      <Section>
-        <div className="text-center">
-          <SectionLabel>Our Programs</SectionLabel>
-          <h2 className="text-3xl font-bold text-gray-900 mt-4 mb-8">
-            Loading Courses...
-          </h2>
-          <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          </div>
-        </div>
-      </Section>
-    );
-  }
-
-  if (error) {
-    return (
-      <Section>
-        <div className="text-center">
-          <SectionLabel>Our Programs</SectionLabel>
-          <h2 className="text-3xl font-bold text-gray-900 mt-4 mb-8">
-            Specialist Programs
-          </h2>
-          <div className="text-red-600 mb-4">{error}</div>
-          <button 
-            onClick={loadCourses}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-          >
-            Try Again
-          </button>
-        </div>
-      </Section>
-    );
-  }
-
   return (
-    <Section id="programs">
-      <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-        <SectionLabel>Our Programs</SectionLabel>
-        <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', marginTop: '16px', marginBottom: '32px' }}>
-          Specialist Programs
-        </h2>
-      </div>
-      
-      {courses.length === 0 ? (
-        <div className="text-center text-gray-600">
-          <p>No courses available at the moment.</p>
-          <p className="text-sm mt-2">Please check back later.</p>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {courses.slice(0, 3).map((program, index) => (
-              <ProgramCard key={index} program={program} />
-            ))}
+    <section id="programs" className="relative py-24 bg-transparent overflow-hidden w-full">
+      <div className="px-6 md:px-12 lg:px-20 relative z-10 w-full max-w-[1600px] mx-auto">
+        <motion.div 
+          className="text-center max-w-3xl mx-auto mb-20"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-primary/20 shadow-sm mb-6">
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-sm font-bold tracking-widest text-primary uppercase">Our Programs</span>
           </div>
           
-          {/* View All Courses Button */}
-          {courses.length > 3 && (
-            <div style={{ textAlign: 'center', marginTop: '56px' }}>
-              <a
-                href="/courses"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '12px 32px',
-                  background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
-                  color: 'white',
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  fontWeight: 500,
-                  fontSize: '15px',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  boxShadow: '0 4px 12px rgba(14,165,233,0.3)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(14,165,233,0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(14,165,233,0.3)';
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
+            Specialist <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Programs</span>
+          </h2>
+          
+          <p className="text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
+            Master the most in-demand skills with our specialized, project-driven curricula designed by industry experts.
+          </p>
+        </motion.div>
+        
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+            <Skeleton className="h-[380px] w-full rounded-[24px]" />
+            <Skeleton className="h-[380px] w-full rounded-[24px] hidden md:block" />
+            <Skeleton className="h-[380px] w-full rounded-[24px] hidden lg:block" />
+          </div>
+        ) : error ? (
+          <div className="p-6 bg-red-50 text-red-600 rounded-2xl border border-red-100 flex flex-col items-center text-center max-w-md mx-auto">
+            <p className="font-bold text-lg mb-2">Something went wrong</p>
+            <p className="text-sm opacity-80 mb-6">{error}</p>
+            <button 
+              onClick={loadCourses}
+              className="px-6 py-2.5 bg-red-600 text-white rounded-full text-sm font-bold hover:bg-red-700 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : courses.length === 0 ? (
+          <div className="text-center text-slate-500 py-12">
+            <p className="text-lg">No courses available at the moment.</p>
+            <p className="text-sm mt-2">Please check back later.</p>
+          </div>
+        ) : (
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto"
+            initial="initial"
+            whileInView="whileInView"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={{
+              initial: { opacity: 0 },
+              whileInView: {
+                opacity: 1,
+                transition: { staggerChildren: 0.15, delayChildren: 0.1 }
+              }
+            }}
+          >
+            {courses.slice(0, 3).map((program, index) => (
+              <motion.div 
+                key={index} 
+                variants={{
+                  initial: { opacity: 0, y: 50, scale: 0.9 },
+                  whileInView: { 
+                    opacity: 1, 
+                    y: 0, 
+                    scale: 1,
+                    transition: { type: "spring", stiffness: 100, damping: 15 }
+                  }
                 }}
               >
-                View All Courses
-                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </a>
-            </div>
-          )}
-        </>
-      )}
-    </Section>
+                <ProgramCard program={program} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+
+        {!loading && !error && courses.length > 4 && (
+          <motion.div 
+            className="text-center mt-20"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <a
+              href="/courses"
+              className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-slate-900 text-white font-bold text-[15px] transition-all duration-300 hover:bg-primary hover:shadow-[0_8px_30px_rgb(13,148,136,0.3)] hover:-translate-y-1 group"
+            >
+              View All Programs
+              <Icons.ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            </a>
+          </motion.div>
+        )}
+      </div>
+    </section>
   );
 }

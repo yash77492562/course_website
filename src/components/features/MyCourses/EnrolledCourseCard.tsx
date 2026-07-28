@@ -72,7 +72,7 @@ export function EnrolledCourseCard({ course }: EnrolledCourseCardProps) {
         left: '0',
         right: '0',
         height: '3px',
-        background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
+        background: 'var(--color-primary)',
         transform: 'scaleX(0)',
         transformOrigin: 'left',
         transition: 'transform 0.3s ease'
@@ -129,11 +129,11 @@ export function EnrolledCourseCard({ course }: EnrolledCourseCardProps) {
         fontSize: '0.85rem',
         color: '#64748b'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div className="flex items-center gap-[6px]">
           <span>📚</span>
           <span>{moduleCount} Modules</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div className="flex items-center gap-[6px]">
           <span>📝</span>
           <span>{lessonCount} Lessons</span>
         </div>
@@ -146,7 +146,7 @@ export function EnrolledCourseCard({ course }: EnrolledCourseCardProps) {
         gap: '6px',
         fontSize: '0.9rem',
         fontWeight: '500',
-        color: '#0ea5e9',
+        color: 'var(--color-primary)',
         transition: 'gap 0.2s',
       }}>
         Continue Learning

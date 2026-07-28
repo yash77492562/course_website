@@ -230,7 +230,7 @@ export function PartnerPage() {
       <style jsx global>{`
         .contact-page {
           min-height: 100vh;
-          background: #f7f8fa;
+          background: transparent;
           padding: 120px 5vw 70px;
           display: flex;
           align-items: center;
@@ -276,7 +276,8 @@ export function PartnerPage() {
         }
 
         .card {
-          background: #ffffff !important;
+          background: lab(92 -3.12 -0.26 / 0.9) !important;
+          backdrop-filter: blur(16px) !important;
           border: 1px solid #e2e8f0 !important;
           border-radius: 16px !important;
           padding: 48px 40px !important;
@@ -293,7 +294,7 @@ export function PartnerPage() {
         .icon-circle {
           width: 72px !important;
           height: 72px !important;
-          background: linear-gradient(135deg, #0ea5e9, #06b6d4) !important;
+          background: var(--color-primary) !important;
           border-radius: 16px !important;
           display: flex !important;
           align-items: center !important;
@@ -404,7 +405,7 @@ export function PartnerPage() {
 
         select.field-input option:checked,
         select.field-input option:focus {
-          background: linear-gradient(135deg, #0ea5e9, #06b6d4) !important;
+          background: var(--color-primary) !important;
           color: white !important;
         }
 
@@ -421,7 +422,7 @@ export function PartnerPage() {
 
         .field-input:focus {
           outline: none !important;
-          border-color: #0ea5e9 !important;
+          border-color: var(--color-primary) !important;
           box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1) !important;
         }
 
@@ -440,7 +441,7 @@ export function PartnerPage() {
           display: inline-flex !important;
           align-items: center !important;
           gap: 8px !important;
-          background: linear-gradient(135deg, #0ea5e9, #06b6d4) !important;
+          background: var(--color-primary) !important;
           color: white !important;
           padding: 14px 32px !important;
           border: none !important;

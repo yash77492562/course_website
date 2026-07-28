@@ -28,78 +28,32 @@ export function LessonCard({ lesson, isCompleted = false }: LessonCardProps) {
   return (
     <Link
       href={`/video-player/${lesson.id}`}
-      style={{
-        background: '#ffffff',
-        border: `1px solid ${isCompleted ? '#10b981' : '#e2e8f0'}`,
-        borderRadius: '10px',
-        padding: '16px',
-        position: 'relative',
-        overflow: 'hidden',
-        transition: 'transform 0.2s, box-shadow 0.2s, border-color 0.2s',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '16px',
-        textDecoration: 'none',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateX(4px)';
-        e.currentTarget.style.boxShadow = '0 8px 24px rgba(14,165,233,0.1)';
-        e.currentTarget.style.borderColor = '#0ea5e9';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateX(0)';
-        e.currentTarget.style.boxShadow = 'none';
-        e.currentTarget.style.borderColor = isCompleted ? '#10b981' : '#e2e8f0';
-      }}
+      className={`group bg-white border rounded-[10px] p-4 relative overflow-hidden transition-all duration-200 cursor-pointer flex items-center gap-4 no-underline hover:translate-x-1 hover:shadow-[0_8px_24px_rgba(14,165,233,0.1)] hover:border-sky-500 ${
+        isCompleted ? 'border-emerald-500' : 'border-slate-200'
+      }`}
     >
       {/* Lesson Number */}
-      <div style={{
-        width: '40px',
-        height: '40px',
-        borderRadius: '8px',
-        background: isCompleted 
-          ? 'linear-gradient(135deg, #10b981, #059669)'
-          : 'rgba(14,165,233,0.1)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '0.9rem',
-        fontWeight: '700',
-        color: isCompleted ? 'white' : '#0ea5e9',
-        flexShrink: 0,
-      }}>
+      <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-[0.9rem] font-bold shrink-0 ${
+        isCompleted 
+          ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-foreground'
+          : 'bg-sky-500/10 text-sky-500'
+      }`}>
         {lesson.order}
       </div>
       
       {/* Content */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <h4 style={{
-          fontFamily: 'Syne, sans-serif',
-          fontSize: '1rem',
-          fontWeight: '600',
-          color: '#0f172a',
-          marginBottom: '4px',
-          letterSpacing: '-0.1px',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-        }}>
+      <div className="flex-1 min-w-0">
+        <h4 className="font-sans text-[1rem] font-bold text-slate-900 mb-1 tracking-[-0.1px] overflow-hidden text-ellipsis whitespace-nowrap">
           {lesson.title}
         </h4>
         
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          fontSize: '0.8rem',
-          color: '#64748b',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div className="flex gap-3 text-[0.8rem] text-slate-500">
+          <div className="flex items-center gap-1">
             <span>{getContentIcon(lesson.contentType)}</span>
             <span>{lesson.contentType || 'LESSON'}</span>
           </div>
           {lesson.duration && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <div className="flex items-center gap-1">
               <span>⏱️</span>
               <span>{lesson.duration}</span>
             </div>
@@ -109,18 +63,7 @@ export function LessonCard({ lesson, isCompleted = false }: LessonCardProps) {
       
       {/* Status Icon */}
       {isCompleted && (
-        <div style={{
-          width: '24px',
-          height: '24px',
-          borderRadius: '50%',
-          background: '#10b981',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          fontSize: '0.75rem',
-          flexShrink: 0,
-        }}>
+        <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-foreground text-[0.75rem] shrink-0">
           ✓
         </div>
       )}
@@ -131,10 +74,10 @@ export function LessonCard({ lesson, isCompleted = false }: LessonCardProps) {
           width="20" 
           height="20" 
           fill="none" 
-          stroke="#0ea5e9" 
+          stroke="currentColor" 
           strokeWidth="2" 
           viewBox="0 0 24 24"
-          style={{ flexShrink: 0 }}
+          className="shrink-0 text-sky-500"
         >
           <path d="M5 12h14M12 5l7 7-7 7"></path>
         </svg>

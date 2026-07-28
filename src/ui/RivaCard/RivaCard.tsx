@@ -12,7 +12,7 @@ export function RivaCard({ className }: RivaCardProps) {
       <div 
         className="relative overflow-hidden"
         style={{
-          background: '#050d1f',
+          background: 'var(--color-background)',
           borderRadius: '16px',
           padding: '40px 36px',
           border: '1px solid rgba(14,165,233,0.15)'
@@ -26,7 +26,7 @@ export function RivaCard({ className }: RivaCardProps) {
             left: 0,
             right: 0,
             height: '3px',
-            background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)'
+            background: 'var(--color-primary)'
           }}
         />
         
@@ -45,7 +45,7 @@ export function RivaCard({ className }: RivaCardProps) {
                 fontFamily: "'Syne', sans-serif",
                 fontSize: '1.6rem',
                 fontWeight: 800,
-                background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
+                background: 'var(--color-primary)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -72,7 +72,7 @@ export function RivaCard({ className }: RivaCardProps) {
                 fontFamily: "'Syne', sans-serif",
                 fontSize: '1.6rem',
                 fontWeight: 800,
-                background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
+                background: 'var(--color-primary)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -99,7 +99,7 @@ export function RivaCard({ className }: RivaCardProps) {
                 fontFamily: "'Syne', sans-serif",
                 fontSize: '1.6rem',
                 fontWeight: 800,
-                background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
+                background: 'var(--color-primary)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -126,7 +126,7 @@ export function RivaCard({ className }: RivaCardProps) {
                 fontFamily: "'Syne', sans-serif",
                 fontSize: '1.6rem',
                 fontWeight: 800,
-                background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
+                background: 'var(--color-primary)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',

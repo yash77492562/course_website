@@ -5,19 +5,10 @@ interface HeroTitleProps {
   className?: string;
 }
 
-export function HeroTitle({ children, className }: HeroTitleProps) {
+export function HeroTitle({ children, className = '' }: HeroTitleProps) {
   return (
     <h1 
-      className={className}
-      style={{
-        fontFamily: 'var(--font-syne), Syne, sans-serif',
-        fontSize: 'clamp(2.6rem, 5.5vw, 4.2rem)',
-        fontWeight: 800,
-        lineHeight: '1.1',
-        color: '#ffffff',
-        letterSpacing: '-0.5px',
-        marginBottom: '24px'
-      }}
+      className={`font-sans text-[clamp(2.6rem,5.5vw,4.2rem)] font-extrabold leading-[1.1] text-foreground tracking-tight mb-6 ${className}`}
     >
       {children}
     </h1>
@@ -29,18 +20,10 @@ interface HeroSubtitleProps {
   className?: string;
 }
 
-export function HeroSubtitle({ children, className }: HeroSubtitleProps) {
+export function HeroSubtitle({ children, className = '' }: HeroSubtitleProps) {
   return (
     <p 
-      className={className}
-      style={{
-        fontSize: '1.1rem',
-        lineHeight: '1.75',
-        color: 'rgba(255,255,255,0.6)',
-        maxWidth: '580px',
-        marginBottom: '44px',
-        fontWeight: 300
-      }}
+      className={`text-lg md:text-xl leading-relaxed text-muted-foreground/80 max-w-[580px] mb-11 font-normal ${className}`}
     >
       {children}
     </p>
@@ -52,17 +35,12 @@ interface GradientTextProps {
   className?: string;
 }
 
-export function GradientText({ children, className }: GradientTextProps) {
+// Renamed internally but keeping the export name to avoid breaking imports. 
+// Uses solid block colors (Primary Teal) to match the new design system.
+export function GradientText({ children, className = '' }: GradientTextProps) {
   return (
     <em 
-      className={className}
-      style={{
-        fontStyle: 'normal',
-        background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text'
-      }}
+      className={`not-italic text-primary font-bold ${className}`}
     >
       {children}
     </em>

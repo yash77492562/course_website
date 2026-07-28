@@ -1,5 +1,7 @@
 'use client';
 
+import { cn } from '@/lib/utils/utils';
+
 interface SectionTitleProps {
   children: React.ReactNode;
   className?: string;
@@ -7,18 +9,18 @@ interface SectionTitleProps {
   style?: React.CSSProperties;
 }
 
-export function SectionTitle({ children, className, color = '#0f172a', style }: SectionTitleProps) {
+export function SectionTitle({ children, className, color = 'currentColor', style }: SectionTitleProps) {
   return (
-    <h2 style={{
-      fontFamily: 'Syne, sans-serif',
-      fontSize: 'clamp(1.9rem, 3.5vw, 2.8rem)',
-      fontWeight: '700',
-      lineHeight: '1.2',
-      letterSpacing: '-0.3px',
-      color,
-      marginBottom: '16px',
-      ...style
-    }}>
+    <h2 
+      className={cn(
+        "font-sans text-[clamp(1.9rem,3.5vw,2.8rem)] font-extrabold leading-[1.2] tracking-tight mb-4",
+        className
+      )}
+      style={{
+        color,
+        ...style
+      }}
+    >
       {children}
     </h2>
   );

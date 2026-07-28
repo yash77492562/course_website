@@ -257,7 +257,7 @@ export default function StripeCheckout({
             height: 56px;
             margin: 0 auto 24px;
             border: 4px solid rgba(14, 165, 233, 0.15);
-            border-top-color: #0ea5e9;
+            border-top-color: var(--color-primary);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
           }
@@ -321,7 +321,7 @@ export default function StripeCheckout({
 
           .retry-button {
             padding: 14px 32px;
-            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            background: var(--color-primary);
             color: white;
             border: none;
             border-radius: 10px;

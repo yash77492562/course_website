@@ -118,7 +118,11 @@ class AuthApiClient {
     });
 
     if (!response.ok) {
-      logger.error('❌ Profile API failed - Status:', response.status);
+      if (response.status === 401) {
+        logger.debug('👤 No active session (401)');
+      } else {
+        logger.error('❌ Profile API failed - Status:', response.status);
+      }
       throw new Error('Failed to fetch profile');
     }
 

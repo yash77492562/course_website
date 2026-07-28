@@ -252,39 +252,15 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
   // Show loading state while initializing
   if (isInitializing) {
     return (
-      <div style={{ 
-        minHeight: '100%', 
-        backgroundColor: '#f3f4f6',
-        padding: '2rem 1.5rem',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <div style={{
-          maxWidth: '32rem',
-          width: '100%',
-          backgroundColor: 'white',
-          borderRadius: '0.75rem',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-          padding: '3rem 2.5rem',
-          textAlign: 'center'
-        }}>
-          <div style={{ 
-            fontSize: '3rem', 
-            marginBottom: '1.5rem',
-            animation: 'spin 1s linear infinite'
-          }}>
+      <div className="min-h-full bg-gray-100 py-8 px-6 flex items-center justify-center">
+        <div className="max-w-2xl w-full bg-white rounded-xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] py-12 px-10 text-center">
+          <div className="text-5xl mb-6 animate-spin">
             ⏳
           </div>
-          <h3 style={{ 
-            fontSize: '1.5rem', 
-            fontWeight: '600', 
-            color: '#111827',
-            marginBottom: '0.75rem'
-          }}>
+          <h3 className="text-2xl font-semibold text-gray-900 mb-3">
             Starting Quiz...
           </h3>
-          <p style={{ color: '#6b7280', fontSize: '1rem' }}>
+          <p className="text-gray-500 text-base">
             Please wait while we prepare your quiz attempt
           </p>
         </div>
@@ -295,51 +271,20 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
   // Show error state if initialization failed
   if (initError) {
     return (
-      <div style={{ 
-        minHeight: '100%', 
-        backgroundColor: '#f3f4f6',
-        padding: '2rem 1.5rem',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <div style={{
-          maxWidth: '32rem',
-          width: '100%',
-          backgroundColor: 'white',
-          borderRadius: '0.75rem',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-          padding: '3rem 2.5rem',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>
+      <div className="min-h-full bg-gray-100 py-8 px-6 flex items-center justify-center">
+        <div className="max-w-2xl w-full bg-white rounded-xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] py-12 px-10 text-center">
+          <div className="text-5xl mb-6">
             ❌
           </div>
-          <h3 style={{ 
-            fontSize: '1.5rem', 
-            fontWeight: '600', 
-            color: '#991b1b',
-            marginBottom: '0.75rem'
-          }}>
+          <h3 className="text-2xl font-semibold text-red-800 mb-3">
             Failed to Start Quiz
           </h3>
-          <p style={{ color: '#6b7280', fontSize: '1rem', marginBottom: '1.5rem' }}>
+          <p className="text-gray-500 text-base mb-6">
             {initError}
           </p>
           <button
             onClick={() => window.location.reload()}
-            style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#2563eb',
-              color: 'white',
-              fontWeight: '600',
-              borderRadius: '0.5rem',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s'
-            }}
-            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'}
-            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
+            className="py-3 px-6 bg-blue-600 text-foreground font-semibold rounded-lg border-none cursor-pointer transition-colors duration-200 hover:bg-blue-700"
           >
             Try Again
           </button>
@@ -437,142 +382,79 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
     const passed = quizData.passingScore ? score >= quizData.passingScore : true;
 
     return (
-      <div style={{ 
-        minHeight: '100%', 
-        backgroundColor: '#f3f4f6',
-        padding: '2rem 1.5rem'
-      }}>
-        <div style={{
-          maxWidth: '56rem',
-          margin: '0 auto',
-          backgroundColor: 'white',
-          borderRadius: '0.75rem',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-          padding: '2.5rem'
-        }}>
-          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <h2 style={{ fontSize: '1.875rem', fontWeight: '700', color: '#111827', marginBottom: '1rem' }}>
+      <div className="min-h-full bg-gray-100 py-8 px-6">
+        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] p-10">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Quiz Results
             </h2>
-            <div style={{ 
-              fontSize: '3.75rem', 
-              fontWeight: '700', 
-              marginBottom: '1rem',
-              color: passed ? '#059669' : '#dc2626'
-            }}>
+            <div className={`text-6xl font-bold mb-4 ${passed ? 'text-emerald-600' : 'text-red-600'}`}>
               {score}%
             </div>
-            <p style={{ fontSize: '1.25rem', color: '#374151', marginBottom: '0.5rem' }}>
+            <p className="text-xl text-gray-700 mb-2">
               You got {correctCount} out of {totalQuestions} questions correct
             </p>
             {quizData.passingScore && (
-              <p style={{ color: '#6b7280' }}>
+              <p className="text-gray-500">
                 Passing score: {quizData.passingScore}%
               </p>
             )}
             {passed ? (
-              <div style={{ 
-                marginTop: '1rem', 
-                padding: '1rem', 
-                backgroundColor: '#d1fae5', 
-                border: '1px solid #6ee7b7',
-                borderRadius: '0.5rem'
-              }}>
-                <p style={{ color: '#065f46', fontWeight: '600' }}>🎉 Congratulations! You passed!</p>
+              <div className="mt-4 p-4 bg-emerald-100 border border-emerald-300 rounded-lg">
+                <p className="text-emerald-800 font-semibold">🎉 Congratulations! You passed!</p>
               </div>
             ) : (
-              <div style={{ 
-                marginTop: '1rem', 
-                padding: '1rem', 
-                backgroundColor: '#fee2e2', 
-                border: '1px solid #fca5a5',
-                borderRadius: '0.5rem'
-              }}>
-                <p style={{ color: '#991b1b', fontWeight: '600' }}>Keep trying! You can retake the quiz.</p>
+              <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded-lg">
+                <p className="text-red-800 font-semibold">Keep trying! You can retake the quiz.</p>
               </div>
             )}
           </div>
 
-          <div style={{ marginBottom: '2rem' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#111827', marginBottom: '1rem' }}>
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">
               Review Your Answers
             </h3>
             {quizData.questions.map((question, index) => {
               const selectedOptionId = selectedAnswers[question.id];
               const isAnswered = !!selectedOptionId;
               const isCorrect = selectedOptionId === question.correctAnswer;
-              const correctOption = question.options.find(opt => opt.id === question.correctAnswer);
 
               return (
-                <div key={question.id} style={{ 
-                  border: '1px solid #e5e7eb', 
-                  borderRadius: '0.5rem', 
-                  padding: '1.5rem',
-                  marginBottom: '1.5rem'
-                }}>
-                  <div style={{ display: 'flex', gap: '0.75rem' }}>
-                    <span style={{
-                      flexShrink: 0,
-                      width: '2rem',
-                      height: '2rem',
-                      backgroundColor: '#f3f4f6',
-                      borderRadius: '9999px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: '600',
-                      color: '#374151'
-                    }}>
+                <div key={question.id} className="border border-gray-200 rounded-lg p-6 mb-6">
+                  <div className="flex gap-3">
+                    <span className="shrink-0 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center font-semibold text-gray-700">
                       {index + 1}
                     </span>
-                    <div style={{ flex: 1 }}>
-                      <p style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', marginBottom: '1rem' }}>
+                    <div className="flex-1">
+                      <p className="text-lg font-medium text-gray-900 mb-4">
                         {question.question}
                       </p>
                       
                       {/* Show status message */}
                       {!isAnswered && (
-                        <div style={{ 
-                          padding: '0.75rem', 
-                          backgroundColor: '#dbeafe', 
-                          border: '1px solid #93c5fd',
-                          borderRadius: '0.5rem',
-                          marginBottom: '1rem'
-                        }}>
-                          <p style={{ fontSize: '0.875rem', color: '#1e40af', fontWeight: '500' }}>
+                        <div className="p-3 bg-blue-100 border border-blue-300 rounded-lg mb-4">
+                          <p className="text-sm text-blue-800 font-medium">
                             ℹ️ You didn't answer this question
                           </p>
                         </div>
                       )}
                       {isAnswered && isCorrect && (
-                        <div style={{ 
-                          padding: '0.75rem', 
-                          backgroundColor: '#d1fae5', 
-                          border: '1px solid #6ee7b7',
-                          borderRadius: '0.5rem',
-                          marginBottom: '1rem'
-                        }}>
-                          <p style={{ fontSize: '0.875rem', color: '#065f46', fontWeight: '500' }}>
+                        <div className="p-3 bg-emerald-100 border border-emerald-300 rounded-lg mb-4">
+                          <p className="text-sm text-emerald-800 font-medium">
                             ✓ Correct!
                           </p>
                         </div>
                       )}
                       {isAnswered && !isCorrect && (
-                        <div style={{ 
-                          padding: '0.75rem', 
-                          backgroundColor: '#fee2e2', 
-                          border: '1px solid #fca5a5',
-                          borderRadius: '0.5rem',
-                          marginBottom: '1rem'
-                        }}>
-                          <p style={{ fontSize: '0.875rem', color: '#991b1b', fontWeight: '500' }}>
+                        <div className="p-3 bg-red-100 border border-red-300 rounded-lg mb-4">
+                          <p className="text-sm text-red-800 font-medium">
                             ✗ Incorrect
                           </p>
                         </div>
                       )}
                       
                       {/* Show options */}
-                      <div style={{ marginBottom: '1rem' }}>
+                      <div className="mb-4">
                         {question.options.map(option => {
                           const isSelected = option.id === selectedOptionId;
                           const isCorrectOption = option.id === question.correctAnswer;
@@ -581,53 +463,38 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
                           const shouldShow = isCorrectOption || isSelected;
                           if (!shouldShow) return null;
                           
-                          // Color coding logic
-                          let bgColor = '#f9fafb';
-                          let borderColor = '#e5e7eb';
-                          let textColor = '#374151';
+                          let bgClass = 'bg-gray-50';
+                          let borderClass = 'border-gray-200';
+                          let textClass = 'text-gray-700';
                           let label = '';
                           
                           if (!isAnswered && isCorrectOption) {
-                            // Not answered - show correct in BLUE
-                            bgColor = '#dbeafe';
-                            borderColor = '#3b82f6';
-                            textColor = '#1e40af';
+                            bgClass = 'bg-blue-100';
+                            borderClass = 'border-blue-500';
+                            textClass = 'text-blue-800';
                             label = '✓ Correct Answer';
                           } else if (isCorrectOption) {
-                            // Correct answer - show in GREEN
-                            bgColor = '#d1fae5';
-                            borderColor = '#10b981';
-                            textColor = '#065f46';
+                            bgClass = 'bg-emerald-100';
+                            borderClass = 'border-emerald-500';
+                            textClass = 'text-emerald-800';
                             label = '✓ Correct Answer';
                           } else if (isSelected && !isCorrect) {
-                            // Wrong answer - show in RED
-                            bgColor = '#fee2e2';
-                            borderColor = '#ef4444';
-                            textColor = '#991b1b';
+                            bgClass = 'bg-red-100';
+                            borderClass = 'border-red-500';
+                            textClass = 'text-red-800';
                             label = '✗ Your Answer';
                           }
 
                           return (
                             <div
                               key={option.id}
-                              style={{
-                                padding: '0.75rem 1rem',
-                                border: `2px solid ${borderColor}`,
-                                borderRadius: '0.5rem',
-                                backgroundColor: bgColor,
-                                marginBottom: '0.5rem'
-                              }}
+                              className={`p-3 px-4 border-2 rounded-lg mb-2 ${bgClass} ${borderClass}`}
                             >
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <span style={{ color: textColor, fontWeight: '500', flex: 1 }}>
+                              <div className="flex items-center justify-between">
+                                <span className={`${textClass} font-medium flex-1`}>
                                   {option.text}
                                 </span>
-                                <span style={{ 
-                                  color: textColor, 
-                                  fontWeight: '600',
-                                  fontSize: '0.875rem',
-                                  marginLeft: '1rem'
-                                }}>
+                                <span className={`${textClass} font-semibold text-sm ml-4`}>
                                   {label}
                                 </span>
                               </div>
@@ -638,16 +505,11 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
 
                       {/* Always show explanation */}
                       {question.explanation && (
-                        <div style={{ 
-                          backgroundColor: '#f3f4f6', 
-                          border: '1px solid #d1d5db', 
-                          borderRadius: '0.5rem', 
-                          padding: '1rem'
-                        }}>
-                          <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.25rem' }}>
+                        <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
+                          <p className="text-sm font-semibold text-gray-700 mb-1">
                             💡 Explanation:
                           </p>
-                          <p style={{ fontSize: '0.875rem', color: '#4b5563' }}>{question.explanation}</p>
+                          <p className="text-sm text-gray-600">{question.explanation}</p>
                         </div>
                       )}
                     </div>
@@ -657,34 +519,18 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
             })}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+          <div className="flex justify-center gap-4">
             {(quizData.maxAttempts === 0 || currentAttempt < quizData.maxAttempts) && (
               <button
                 onClick={handleRetake}
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: '#2563eb',
-                  color: 'white',
-                  fontWeight: '600',
-                  borderRadius: '0.5rem',
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.2s'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
+                className="py-3 px-6 bg-blue-600 text-foreground font-semibold rounded-lg border-none cursor-pointer transition-colors duration-200 hover:bg-blue-700"
               >
                 Retake Quiz {quizData.maxAttempts > 0 && `(${currentAttempt}/${quizData.maxAttempts})`}
               </button>
             )}
             {quizData.maxAttempts > 0 && currentAttempt >= quizData.maxAttempts && (
-              <div style={{ 
-                textAlign: 'center', 
-                padding: '1rem', 
-                backgroundColor: '#f3f4f6', 
-                borderRadius: '0.5rem' 
-              }}>
-                <p style={{ color: '#374151', fontWeight: '500' }}>
+              <div className="text-center p-4 bg-gray-100 rounded-lg">
+                <p className="text-gray-700 font-medium">
                   Maximum attempts reached ({quizData.maxAttempts})
                 </p>
               </div>
@@ -699,60 +545,36 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
   const hasAnswered = !!selectedAnswer;
 
   return (
-    <div style={{ 
-      minHeight: '100%', 
-      backgroundColor: '#f3f4f6',
-      padding: '2rem 1.5rem'
-    }}>
-      <div style={{
-        maxWidth: '56rem',
-        margin: '0 auto',
-        backgroundColor: 'white',
-        borderRadius: '0.75rem',
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-        padding: '2.5rem'
-      }}>
+    <div className="min-h-full bg-gray-100 py-8 px-6">
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] p-10">
         {/* Header */}
-        <div style={{ marginBottom: '2rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#111827', marginBottom: '0.25rem' }}>{title}</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-1">{title}</h2>
               {quizData.maxAttempts > 0 && (
-                <p style={{ fontSize: '0.875rem', color: '#6b7280', fontWeight: '500' }}>
+                <p className="text-sm text-gray-500 font-medium">
                   Attempt {currentAttempt}/{quizData.maxAttempts}
                 </p>
               )}
               {quizData.maxAttempts === 0 && (
-                <p style={{ fontSize: '0.875rem', color: '#6b7280', fontWeight: '500' }}>
+                <p className="text-sm text-gray-500 font-medium">
                   Attempt {currentAttempt} (Unlimited attempts)
                 </p>
               )}
             </div>
             {!readOnlyMode && (
-              <div style={{ 
-                fontSize: '1.125rem', 
-                fontFamily: 'monospace',
-                fontWeight: '700',
-                padding: '0.5rem 1rem',
-                borderRadius: '0.5rem',
-                backgroundColor: timeRemaining < 300 ? '#fee2e2' : '#dbeafe',
-                color: timeRemaining < 300 ? '#991b1b' : '#1e40af'
-              }}>
+              <div className={`text-lg font-mono font-bold py-2 px-4 rounded-lg ${timeRemaining < 300 ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}>
                 ⏱️ {formatTime(timeRemaining)}
               </div>
             )}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.875rem', color: '#6b7280' }}>
+          <div className="flex items-center gap-4 text-sm text-gray-500">
             <span>Question {currentQuestionIndex + 1} of {totalQuestions}</span>
-            <div style={{ flex: 1, backgroundColor: '#e5e7eb', borderRadius: '9999px', height: '0.5rem' }}>
+            <div className="flex-1 bg-gray-200 rounded-full h-2">
               <div
-                style={{
-                  backgroundColor: '#2563eb',
-                  height: '0.5rem',
-                  borderRadius: '9999px',
-                  transition: 'width 0.3s',
-                  width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%`
-                }}
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%` }}
               />
             </div>
             <span>{Math.round(((currentQuestionIndex + 1) / totalQuestions) * 100)}%</span>
@@ -761,24 +583,15 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
 
         {/* Last Attempt Warning Banner */}
         {!readOnlyMode && isLastAttempt && lastAttemptWarning && (
-          <div style={{
-            marginBottom: '1.5rem',
-            padding: '1rem',
-            backgroundColor: '#fef3c7',
-            border: '2px solid #f59e0b',
-            borderRadius: '0.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem'
-          }}>
-            <div style={{ fontSize: '1.5rem' }}>
+          <div className="mb-6 p-4 bg-amber-50 border-2 border-amber-500 rounded-lg flex items-center gap-3">
+            <div className="text-2xl">
               ⚠️
             </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontWeight: '600', color: '#92400e', marginBottom: '0.25rem' }}>
+            <div className="flex-1">
+              <p className="font-semibold text-amber-900 mb-1">
                 Last Attempt Warning
               </p>
-              <p style={{ fontSize: '0.875rem', color: '#78350f' }}>
+              <p className="text-sm text-amber-900">
                 {lastAttemptWarning}
               </p>
             </div>
@@ -787,22 +600,13 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
 
         {/* Read-Only Mode Banner */}
         {readOnlyMode && (
-          <div style={{
-            padding: '1rem 1.5rem',
-            backgroundColor: '#fef3c7',
-            border: '2px solid #f59e0b',
-            borderRadius: '0.5rem',
-            marginBottom: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem'
-          }}>
-            <span style={{ fontSize: '1.5rem' }}>📖</span>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontWeight: '600', color: '#92400e', marginBottom: '0.25rem' }}>
+          <div className="p-4 bg-amber-50 border-2 border-amber-500 rounded-lg mb-6 flex items-center gap-3">
+            <span className="text-2xl">📖</span>
+            <div className="flex-1">
+              <p className="font-semibold text-amber-900 mb-1">
                 Read-Only Mode
               </p>
-              <p style={{ fontSize: '0.875rem', color: '#78350f' }}>
+              <p className="text-sm text-amber-900">
                 {readOnlyMessage}
               </p>
             </div>
@@ -810,23 +614,12 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
         )}
 
         {/* Question */}
-        <div style={{ marginBottom: '2rem' }}>
-          <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem' }}>
-            <span style={{
-              flexShrink: 0,
-              width: '2.5rem',
-              height: '2.5rem',
-              backgroundColor: '#dbeafe',
-              borderRadius: '9999px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: '700',
-              color: '#1d4ed8'
-            }}>
+        <div className="mb-8">
+          <div className="flex gap-3 mb-6">
+            <span className="shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-700">
               {currentQuestionIndex + 1}
             </span>
-            <p style={{ fontSize: '1.25rem', fontWeight: '500', color: '#111827', paddingTop: '0.25rem' }}>
+            <p className="text-xl font-medium text-gray-900 pt-1">
               {currentQuestion.question}
             </p>
           </div>
@@ -836,63 +629,42 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
             {currentQuestion.options.map(option => {
               const isSelected = selectedAnswer === option.id;
               const isCorrect = option.id === currentQuestion.correctAnswer;
-              const userAnswer = lastAttemptAnswers[currentQuestion.id]; // What user selected in last attempt
-              const userSelectedThis = userAnswer === option.id; // Did user select this option?
+              const userAnswer = lastAttemptAnswers[currentQuestion.id];
+              const userSelectedThis = userAnswer === option.id;
               
-              // In read-only mode, determine styling based on correctness
-              let optionStyle = {
-                width: '100%',
-                padding: '1rem',
-                textAlign: 'left' as const,
-                border: '2px solid #e5e7eb',
-                borderRadius: '0.5rem',
-                backgroundColor: 'white',
-                marginBottom: '0.75rem',
-                cursor: 'not-allowed',
-                opacity: 1,
-                transition: 'all 0.2s'
-              };
-
+              let baseClass = "w-full p-4 text-left border-2 rounded-lg mb-3 opacity-100 transition-all duration-200 ";
+              let extraClass = "";
               let labelText = '';
-              let labelColor = '#374151';
+              let labelClass = 'text-gray-700';
 
               if (readOnlyMode) {
-                // Read-only mode: show color coding
+                baseClass += "cursor-not-allowed ";
                 if (!userAnswer) {
-                  // User didn't answer - show correct answer in BLUE
                   if (isCorrect) {
-                    optionStyle.backgroundColor = '#dbeafe';
-                    optionStyle.border = '2px solid #3b82f6';
+                    extraClass = "bg-blue-100 border-blue-500 text-blue-800";
                     labelText = '✓ Correct Answer';
-                    labelColor = '#1e40af';
+                    labelClass = 'text-blue-800';
                   } else {
-                    // Hide other options when user didn't answer
                     return null;
                   }
                 } else if (isCorrect) {
-                  // Correct answer - always show in GREEN
-                  optionStyle.backgroundColor = '#d1fae5';
-                  optionStyle.border = '2px solid #10b981';
+                  extraClass = "bg-emerald-100 border-emerald-500 text-emerald-800";
                   labelText = '✓ Correct Answer';
-                  labelColor = '#065f46';
+                  labelClass = 'text-emerald-800';
                 } else if (userSelectedThis) {
-                  // User's wrong answer - show in RED
-                  optionStyle.backgroundColor = '#fee2e2';
-                  optionStyle.border = '#ef4444';
+                  extraClass = "bg-red-100 border-red-500 text-red-800";
                   labelText = '✗ Your Answer';
-                  labelColor = '#991b1b';
+                  labelClass = 'text-red-800';
                 } else {
-                  // Other options - hide them
                   return null;
                 }
               } else {
-                // Interactive mode
+                baseClass += submitted ? "cursor-not-allowed " : "cursor-pointer hover:bg-blue-50 hover:border-blue-300 ";
                 if (isSelected) {
-                  optionStyle.backgroundColor = '#eff6ff';
-                  optionStyle.border = '#2563eb';
+                  extraClass = "bg-blue-50 border-blue-600";
+                } else {
+                  extraClass = "bg-white border-gray-200";
                 }
-                optionStyle.cursor = submitted ? 'not-allowed' : 'pointer';
-                optionStyle.opacity = readOnlyMode ? 0.6 : 1;
               }
               
               return (
@@ -900,48 +672,22 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
                   key={option.id}
                   onClick={() => handleSelectAnswer(currentQuestion.id, option.id)}
                   disabled={submitted || readOnlyMode}
-                  style={optionStyle}
-                  onMouseOver={(e) => {
-                    if (!submitted && !readOnlyMode && !isSelected) {
-                      e.currentTarget.style.border = '2px solid #93c5fd';
-                      e.currentTarget.style.backgroundColor = '#eff6ff';
-                    }
-                  }}
-                  onMouseOut={(e) => {
-                    if (!submitted && !readOnlyMode && !isSelected) {
-                      e.currentTarget.style.border = '2px solid #e5e7eb';
-                      e.currentTarget.style.backgroundColor = 'white';
-                    }
-                  }}
+                  className={`${baseClass} ${extraClass}`}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <div className="flex items-center gap-3">
                     {!readOnlyMode && (
-                      <div style={{
-                        width: '1.25rem',
-                        height: '1.25rem',
-                        borderRadius: '9999px',
-                        border: `2px solid ${isSelected ? '#2563eb' : '#d1d5db'}`,
-                        backgroundColor: isSelected ? '#2563eb' : 'transparent',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}>
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-blue-600 bg-blue-600' : 'border-gray-300 bg-transparent'}`}>
                         {isSelected && (
-                          <div style={{ width: '0.5rem', height: '0.5rem', backgroundColor: 'white', borderRadius: '9999px' }} />
+                          <div className="w-2 h-2 bg-white rounded-full" />
                         )}
                       </div>
                     )}
-                    <div style={{ flex: 1 }}>
-                      <span style={{ fontWeight: '500', color: readOnlyMode ? labelColor : (isSelected ? '#1e3a8a' : '#374151') }}>
+                    <div className="flex-1">
+                      <span className={`font-medium ${readOnlyMode ? labelClass : (isSelected ? 'text-blue-900' : 'text-gray-700')}`}>
                         {option.text}
                       </span>
                       {readOnlyMode && labelText && (
-                        <span style={{ 
-                          marginLeft: '0.75rem', 
-                          fontSize: '0.875rem', 
-                          fontWeight: '600',
-                          color: labelColor 
-                        }}>
+                        <span className={`ml-3 text-sm font-semibold ${labelClass}`}>
                           {labelText}
                         </span>
                       )}
@@ -953,14 +699,8 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
             
             {/* Show message if user didn't answer this question in read-only mode */}
             {readOnlyMode && !lastAttemptAnswers[currentQuestion.id] && (
-              <div style={{
-                padding: '0.75rem 1rem',
-                backgroundColor: '#dbeafe',
-                border: '2px solid #3b82f6',
-                borderRadius: '0.5rem',
-                marginTop: '0.5rem'
-              }}>
-                <p style={{ fontSize: '0.875rem', color: '#1e40af', fontWeight: '500', margin: 0 }}>
+              <div className="p-3 px-4 bg-blue-100 border-2 border-blue-500 rounded-lg mt-2">
+                <p className="text-sm text-blue-800 font-medium m-0">
                   ℹ️ You didn't answer this question in your last attempt
                 </p>
               </div>
@@ -968,17 +708,11 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
             
             {/* Show explanation in read-only mode */}
             {readOnlyMode && currentQuestion.explanation && (
-              <div style={{
-                marginTop: '1rem',
-                padding: '1rem',
-                backgroundColor: '#f3f4f6',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.5rem'
-              }}>
-                <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>
+              <div className="mt-4 p-4 bg-gray-100 border border-gray-300 rounded-lg">
+                <p className="text-sm font-semibold text-gray-700 mb-2">
                   💡 Explanation:
                 </p>
-                <p style={{ fontSize: '0.875rem', color: '#4b5563', margin: 0 }}>
+                <p className="text-sm text-gray-600 m-0">
                   {currentQuestion.explanation}
                 </p>
               </div>
@@ -987,109 +721,51 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
         </div>
 
         {/* Navigation */}
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between', 
-          paddingTop: '1.5rem', 
-          borderTop: '1px solid #e5e7eb'
-        }}>
+        <div className="flex items-center justify-between pt-6 border-t border-gray-200">
           <button
             onClick={handlePrevious}
             disabled={currentQuestionIndex === 0}
-            style={{
-              padding: '0.5rem 1.5rem',
-              borderRadius: '0.5rem',
-              fontWeight: '500',
-              backgroundColor: currentQuestionIndex === 0 ? '#f3f4f6' : '#e5e7eb',
-              color: currentQuestionIndex === 0 ? '#9ca3af' : '#374151',
-              border: 'none',
-              cursor: currentQuestionIndex === 0 ? 'not-allowed' : 'pointer',
-              transition: 'background-color 0.2s'
-            }}
-            onMouseOver={(e) => {
-              if (currentQuestionIndex !== 0) e.currentTarget.style.backgroundColor = '#d1d5db';
-            }}
-            onMouseOut={(e) => {
-              if (currentQuestionIndex !== 0) e.currentTarget.style.backgroundColor = '#e5e7eb';
-            }}
+            className={`py-2 px-6 rounded-lg font-medium transition-colors duration-200 border-none ${currentQuestionIndex === 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700 cursor-pointer hover:bg-gray-300'}`}
           >
             ← Previous
           </button>
 
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            {quizData.questions.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentQuestionIndex(index)}
-                style={{
-                  width: '2rem',
-                  height: '2rem',
-                  borderRadius: '9999px',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  backgroundColor: 
-                    index === currentQuestionIndex ? '#2563eb' :
-                    selectedAnswers[quizData.questions[index].id] ? '#d1fae5' : '#f3f4f6',
-                  color: 
-                    index === currentQuestionIndex ? 'white' :
-                    selectedAnswers[quizData.questions[index].id] ? '#065f46' : '#6b7280',
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-                onMouseOver={(e) => {
-                  if (index !== currentQuestionIndex) {
-                    e.currentTarget.style.backgroundColor = selectedAnswers[quizData.questions[index].id] ? '#a7f3d0' : '#e5e7eb';
-                  }
-                }}
-                onMouseOut={(e) => {
-                  if (index !== currentQuestionIndex) {
-                    e.currentTarget.style.backgroundColor = selectedAnswers[quizData.questions[index].id] ? '#d1fae5' : '#f3f4f6';
-                  }
-                }}
-              >
-                {index + 1}
-              </button>
-            ))}
+          <div className="flex gap-2">
+            {quizData.questions.map((_, index) => {
+              const isCurrent = index === currentQuestionIndex;
+              const isAnswered = selectedAnswers[quizData.questions[index].id];
+              let btnClass = "w-8 h-8 rounded-full text-sm font-medium border-none cursor-pointer transition-all duration-200 ";
+              
+              if (isCurrent) {
+                btnClass += "bg-blue-600 text-foreground";
+              } else if (isAnswered) {
+                btnClass += "bg-emerald-100 text-emerald-800 hover:bg-emerald-200";
+              } else {
+                btnClass += "bg-gray-100 text-gray-500 hover:bg-gray-200";
+              }
+              
+              return (
+                <button
+                  key={index}
+                  onClick={() => setCurrentQuestionIndex(index)}
+                  className={btnClass}
+                >
+                  {index + 1}
+                </button>
+              );
+            })}
           </div>
 
           {isLastQuestion ? (
             readOnlyMode ? (
-              <div style={{
-                padding: '0.5rem 1.5rem',
-                borderRadius: '0.5rem',
-                fontWeight: '500',
-                backgroundColor: '#f3f4f6',
-                color: '#9ca3af',
-                textAlign: 'center'
-              }}>
+              <div className="py-2 px-6 rounded-lg font-medium bg-gray-100 text-gray-400 text-center">
                 View Only
               </div>
             ) : (
               <button
                 onClick={handleSubmit}
                 disabled={Object.keys(selectedAnswers).length !== totalQuestions}
-                style={{
-                  padding: '0.5rem 1.5rem',
-                  borderRadius: '0.5rem',
-                  fontWeight: '500',
-                  backgroundColor: Object.keys(selectedAnswers).length === totalQuestions ? '#16a34a' : '#f3f4f6',
-                  color: Object.keys(selectedAnswers).length === totalQuestions ? 'white' : '#9ca3af',
-                  border: 'none',
-                  cursor: Object.keys(selectedAnswers).length === totalQuestions ? 'pointer' : 'not-allowed',
-                  transition: 'background-color 0.2s'
-                }}
-                onMouseOver={(e) => {
-                  if (Object.keys(selectedAnswers).length === totalQuestions) {
-                    e.currentTarget.style.backgroundColor = '#15803d';
-                  }
-                }}
-                onMouseOut={(e) => {
-                  if (Object.keys(selectedAnswers).length === totalQuestions) {
-                    e.currentTarget.style.backgroundColor = '#16a34a';
-                  }
-                }}
+                className={`py-2 px-6 rounded-lg font-medium border-none transition-colors duration-200 ${Object.keys(selectedAnswers).length === totalQuestions ? 'bg-green-600 text-foreground cursor-pointer hover:bg-green-700' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
               >
                 Submit Quiz
               </button>
@@ -1098,22 +774,7 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
             <button
               onClick={handleNext}
               disabled={!hasAnswered}
-              style={{
-                padding: '0.5rem 1.5rem',
-                borderRadius: '0.5rem',
-                fontWeight: '500',
-                backgroundColor: hasAnswered ? '#2563eb' : '#f3f4f6',
-                color: hasAnswered ? 'white' : '#9ca3af',
-                border: 'none',
-                cursor: hasAnswered ? 'pointer' : 'not-allowed',
-                transition: 'background-color 0.2s'
-              }}
-              onMouseOver={(e) => {
-                if (hasAnswered) e.currentTarget.style.backgroundColor = '#1d4ed8';
-              }}
-              onMouseOut={(e) => {
-                if (hasAnswered) e.currentTarget.style.backgroundColor = '#2563eb';
-              }}
+              className={`py-2 px-6 rounded-lg font-medium border-none transition-colors duration-200 ${hasAnswered ? 'bg-blue-600 text-foreground cursor-pointer hover:bg-blue-700' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
             >
               Next →
             </button>
@@ -1121,7 +782,7 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
         </div>
 
         {/* Answer count indicator */}
-        <div style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.875rem', color: '#6b7280' }}>
+        <div className="mt-4 text-center text-sm text-gray-500">
           {Object.keys(selectedAnswers).length} of {totalQuestions} questions answered
         </div>
       </div>

@@ -29,28 +29,52 @@ export function Alert({
     switch (variant) {
       case 'success':
         return {
-          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.98), rgba(5, 150, 105, 0.98))',
-          borderColor: 'rgba(16, 185, 129, 0.4)',
-          icon: '✓',
+          container: 'bg-white/80 border-emerald-200 shadow-[0_8px_30px_rgba(16,185,129,0.12)]',
+          iconBg: 'bg-emerald-100/80 text-emerald-600',
+          icon: (
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          ),
+          title: 'text-emerald-800',
+          text: 'text-emerald-600/90'
         };
       case 'error':
         return {
-          background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.98), rgba(220, 38, 38, 0.98))',
-          borderColor: 'rgba(239, 68, 68, 0.4)',
-          icon: '✕',
+          container: 'bg-white/80 border-red-200 shadow-[0_8px_30px_rgba(239,68,68,0.12)]',
+          iconBg: 'bg-red-100/80 text-red-600',
+          icon: (
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          ),
+          title: 'text-red-800',
+          text: 'text-red-600/90'
         };
       case 'warning':
         return {
-          background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.98), rgba(217, 119, 6, 0.98))',
-          borderColor: 'rgba(245, 158, 11, 0.4)',
-          icon: '⚠',
+          container: 'bg-white/80 border-amber-200 shadow-[0_8px_30px_rgba(245,158,11,0.12)]',
+          iconBg: 'bg-amber-100/80 text-amber-600',
+          icon: (
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          ),
+          title: 'text-amber-800',
+          text: 'text-amber-600/90'
         };
       case 'info':
       default:
         return {
-          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.98), rgba(37, 99, 235, 0.98))',
-          borderColor: 'rgba(59, 130, 246, 0.4)',
-          icon: 'ℹ',
+          container: 'bg-white/80 border-blue-200 shadow-[0_8px_30px_rgba(59,130,246,0.12)]',
+          iconBg: 'bg-blue-100/80 text-blue-600',
+          icon: (
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          ),
+          title: 'text-blue-800',
+          text: 'text-blue-600/90'
         };
     }
   };
@@ -60,38 +84,25 @@ export function Alert({
   return (
     <div
       className={cn(
-        'w-full max-w-sm sm:min-w-[400px] ',
+        'w-full max-w-sm sm:min-w-[400px] rounded-2xl border backdrop-blur-xl p-4 transition-all duration-300',
+        styles.container,
         className
       )}
-      style={{
-        background: styles.background,
-        borderRadius: '16px',
-        border: `1px solid ${styles.borderColor}`,
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(14, 165, 233, 0.15)',
-        backdropFilter: 'blur(12px)',
-        padding: '16px',
-      }}
     >
-      <div className=" flex items-start gap-4">
+      <div className="flex items-start gap-4">
         {/* Icon */}
-        <div
-          className="flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-xl"
-          style={{
-            background: 'rgba(255, 255, 255, 0.25)',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-          }}
-        >
+        <div className={cn("flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center font-bold shadow-sm", styles.iconBg)}>
           {styles.icon}
         </div>
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 pt-1">
           {title && (
-            <h4 className="text-white font-bold text-lg mb-2 leading-tight">
+            <h4 className={cn("font-bold text-[17px] mb-1 leading-tight mt-0 font-display", styles.title)}>
               {title}
             </h4>
           )}
-          <p className="text-white/95 text-[15px] leading-relaxed">
+          <p className={cn("text-[14.5px] leading-relaxed m-0 font-medium", styles.text)}>
             {message}
           </p>
         </div>
@@ -100,22 +111,11 @@ export function Alert({
         {onClose && (
           <button
             onClick={onClose}
-            className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white/70 hover:text-white hover:bg-white/25 transition-all duration-200"
+            className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all duration-200 border-none bg-transparent cursor-pointer"
             aria-label="Close alert"
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M2 2L14 14M2 14L14 2"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 2L14 14M2 14L14 2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
             </svg>
           </button>
         )}
@@ -123,12 +123,9 @@ export function Alert({
 
       {/* Progress Bar - DISABLED: Alert only closes on X click */}
        {autoClose && (
-        <div
-          className="h-1.5 bg-white/20 rounded-b-[16px] overflow-hidden"
-          style={{ width: '100%' }}
-        >
+        <div className="h-1 bg-slate-100 rounded-b-2xl overflow-hidden w-full mt-4 -mb-4 -mx-4" style={{ width: 'calc(100% + 32px)' }}>
           <div
-            className="h-full bg-white/50"
+            className={cn("h-full opacity-60", styles.iconBg.split(' ')[0])}
             style={{
               animation: `shrink ${duration}ms linear forwards`,
             }}

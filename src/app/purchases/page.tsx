@@ -59,7 +59,7 @@ export default function PurchasesPage() {
                 fontWeight: 600,
                 letterSpacing: '0.8px',
                 textTransform: 'uppercase',
-                color: '#0ea5e9',
+                color: 'var(--color-primary)',
                 border: '1px solid rgba(14,165,233,0.2)',
                 backgroundColor: 'rgba(14,165,233,0.05)',
                 marginBottom: '16px'

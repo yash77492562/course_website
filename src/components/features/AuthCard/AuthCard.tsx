@@ -12,10 +12,10 @@ interface AuthCardProps {
 
 export function AuthCard({ children, title, subtitle, className }: AuthCardProps) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
       <div className={cn('max-w-md w-full', className)}>
         <div className="text-center mb-8">
-          <h2 className="font-syne text-3xl font-bold text-slate-900 mb-2">
+          <h2 className="font-sans text-3xl font-extrabold text-foreground mb-2">
             {title}
           </h2>
           {subtitle && (

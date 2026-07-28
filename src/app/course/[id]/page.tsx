@@ -61,93 +61,151 @@ function CourseContent({ course, courseId }: { course: Course; courseId: string 
   return (
     <>
       {/* Program Hero Section */}
-      <section className="program-hero">
-        <div className="program-hero-inner">
-          <div className="program-hero-left">
-            <span className="section-label">{programData.badge}</span>
-            <h1 className="section-title">{programData.headline}</h1>
-            <p className="section-sub">{programData.subheadline}</p>
+      <section className="pt-[140px] pb-[80px] px-[5vw] bg-transparent relative overflow-hidden">
+        {/* Subtle decorative background blur */}
+        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+        
+        <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-10 md:gap-[60px] items-start max-w-7xl mx-auto relative z-10">
+          
+          {/* Left Column: Course Details */}
+          <div className="min-w-0 flex flex-col pt-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-sm border border-white/80 shadow-sm mb-6 self-start">
+              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <span className="text-[0.75rem] font-bold tracking-[0.15em] uppercase text-primary">{programData.badge}</span>
+            </div>
+            
+            <h1 className="font-display italic text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.1] tracking-[-0.02em] text-[#0f172a] mb-6">
+              {programData.headline}
+            </h1>
+            
+            <p className="text-[1.15rem] leading-[1.7] text-[#475569] max-w-[600px] mb-10">
+              {programData.subheadline}
+            </p>
 
-            <div className="program-meta">
-              <div className="program-meta-box">
-                <div className="meta-k">Spots left</div>
-                <div className="meta-v">{programData.spotsLeft}</div>
+            <div className="flex gap-4 flex-wrap mb-10">
+              <div className="bg-white/60 backdrop-blur-md border border-white/80 rounded-2xl p-5 min-w-[170px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-transform hover:-translate-y-1">
+                <div className="text-[0.75rem] font-semibold tracking-[0.1em] uppercase text-slate-500 mb-2">Spots left</div>
+                <div className="font-sans font-extrabold text-[#0f172a] text-[1.5rem] flex items-center gap-2">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                  </span>
+                  {programData.spotsLeft}
+                </div>
               </div>
-              <div className="program-meta-box">
-                <div className="meta-k">Next cohort</div>
-                <div className="meta-v">{programData.nextCohort}</div>
+              <div className="bg-white/60 backdrop-blur-md border border-white/80 rounded-2xl p-5 min-w-[170px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-transform hover:-translate-y-1">
+                <div className="text-[0.75rem] font-semibold tracking-[0.1em] uppercase text-slate-500 mb-2">Next cohort</div>
+                <div className="font-sans font-bold text-[#0f172a] text-[1.15rem] leading-tight">{programData.nextCohort}</div>
               </div>
-              <div className="program-meta-box">
-                <div className="meta-k">Price</div>
-                <div className="meta-v">{programData.price}</div>
+              <div className="bg-white/60 backdrop-blur-md border border-white/80 rounded-2xl p-5 min-w-[170px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-transform hover:-translate-y-1">
+                <div className="text-[0.75rem] font-semibold tracking-[0.1em] uppercase text-slate-500 mb-2">Investment</div>
+                <div className="font-sans font-extrabold text-primary text-[1.5rem]">{programData.price}</div>
               </div>
             </div>
 
-            <div className="program-tags">
-              {programData.highlights.map((tech, index) => (
-                <span key={index} className="tag">{tech}</span>
-              ))}
+            <div className="mb-8">
+              <div className="text-[0.8rem] font-semibold text-slate-500 uppercase tracking-widest mb-3">Key Technologies</div>
+              <div className="flex gap-2.5 flex-wrap">
+                {programData.highlights.map((tech, index) => (
+                  <span key={index} className="text-[0.8rem] font-medium tracking-wide py-1.5 px-4 bg-white/80 border border-slate-200/60 text-[#334155] rounded-full shadow-sm">
+                    {tech}
+                  </span>
+                ))}
+              </div>
             </div>
 
             {showPaymentButtons && (
               <>
-                <div className="program-cta-row">
-                  <PayNowButton className="btn-primary">Pay Now</PayNowButton>
+                <div className="flex gap-4 flex-wrap items-center mt-4">
+                  <PayNowButton className="inline-flex justify-center min-w-[160px] items-center gap-2 bg-primary hover:bg-primary/90 text-white py-[15px] px-[32px] rounded-full font-bold text-[1rem] no-underline transition-all duration-300 shadow-[0_4px_20px_rgba(13,148,136,0.25)] hover:shadow-[0_8px_30px_rgba(13,148,136,0.35)] hover:-translate-y-1 border-none cursor-pointer">
+                    Enroll Now
+                  </PayNowButton>
                   {programData.modules[0]?.lessons?.[0]?.id && (
                     <a
-                      className="btn-outline-dark"
+                      className="inline-flex justify-center items-center gap-2 bg-white text-[#0f172a] py-[15px] px-[32px] rounded-full border border-slate-200 font-semibold text-[1rem] no-underline transition-all duration-300 hover:border-primary hover:text-primary hover:shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:-translate-y-1"
                       href={`/video-player/${programData.modules[0].lessons[0].id}`}
                     >
-                      Watch free preview →
+                      Watch free preview
                     </a>
                   )}
-                  <a className="btn-outline-dark" href="/contact">Talk to us first</a>
+                  <a className="inline-flex justify-center items-center gap-2 bg-transparent text-slate-500 py-[15px] px-[24px] rounded-full font-medium text-[0.95rem] no-underline transition-colors duration-200 hover:text-primary" href="/contact">
+                    Have questions?
+                  </a>
                 </div>
-                <p className="trust-note">Secure checkout • Seat reserved after payment • Limited cohort size</p>
+                <div className="mt-5 flex items-center gap-3 text-slate-500 text-[0.85rem] font-medium">
+                  <span className="flex items-center gap-1.5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Secure checkout</span>
+                  <span className="text-slate-300">•</span>
+                  <span>Instant access</span>
+                  <span className="text-slate-300">•</span>
+                  <span>Limited cohort size</span>
+                </div>
               </>
             )}
 
             {!showPaymentButtons && (
-              <div className="program-cta-row">
-                <a href={`/video-player/${programData.modules[0]?.lessons?.[0]?.id}`} className="btn-primary">
-                  Start Learning →
+              <div className="flex gap-4 flex-wrap mt-4 items-center p-6 bg-emerald-50/50 border border-emerald-100 rounded-2xl">
+                <div className="flex-1">
+                  <div className="font-bold text-emerald-800 text-lg mb-1">✅ You're Enrolled</div>
+                  <p className="text-emerald-600 text-sm m-0">You have full lifetime access to this program.</p>
+                </div>
+                <a href={`/video-player/${programData.modules[0]?.lessons?.[0]?.id}`} className="inline-flex justify-center min-w-[160px] items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-[15px] px-[32px] rounded-full font-bold text-[1rem] no-underline transition-all duration-300 shadow-[0_4px_20px_rgba(5,150,105,0.25)] hover:shadow-[0_8px_30px_rgba(5,150,105,0.35)] hover:-translate-y-1 border-none cursor-pointer">
+                  Continue Learning →
                 </a>
-                <p className="access-granted">✅ You have full access to this course</p>
               </div>
             )}
           </div>
 
-          <div className="program-hero-right">
-            <div className="pricing-card reveal">
+          {/* Right Column: Floating Checkout Card */}
+          <div className="min-w-0">
+            <div 
+              className="border border-slate-100 rounded-[24px] p-8 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] relative md:sticky md:top-[120px] w-full mt-5 md:mt-0"
+              style={{ backgroundColor: 'lab(92 -3.12 -0.26 / 0.9)' }}
+            >
               {showPaymentButtons ? (
                 <>
-                  <div className="pricing-card-top">
-                    <div className="pricing-title">Reserve your seat</div>
-                    <div className="pricing-price">{programData.price}</div>
-                    <div className="pricing-small">Seats are limited to keep mentoring quality high.</div>
+                  <div className="mb-6">
+                    <div className="text-[0.75rem] font-bold tracking-[0.15em] uppercase text-primary mb-3">Reserve your seat</div>
+                    <div className="font-sans text-[2.75rem] font-extrabold my-2 tracking-tight text-[#0f172a]">{programData.price}</div>
+                    <div className="text-slate-500 text-[0.95rem] leading-relaxed">Seats are strictly limited to ensure high-quality mentoring for every student.</div>
                   </div>
-                  <PayNowButton className="btn-primary pricing-pay">Pay Now</PayNowButton>
-                  <div className="pricing-badges">
-                    <div className="badge-pill">✅ Career support included</div>
-                    <div className="badge-pill">✅ Portfolio projects</div>
-                    <div className="badge-pill">✅ Interview prep</div>
+                  
+                  <PayNowButton className="w-full justify-center flex text-decoration-none items-center gap-2 bg-[#0f172a] hover:bg-black shadow-md text-white py-[16px] px-[30px] rounded-xl font-bold text-[1.05rem] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(15,23,42,0.2)] border-none cursor-pointer">
+                    Enroll Now
+                  </PayNowButton>
+                  
+                  <div className="flex flex-col gap-3.5 mt-8 pt-6 border-t border-slate-100">
+                    <div className="font-semibold text-[#0f172a] text-sm mb-1">What's included:</div>
+                    <div className="flex items-start gap-3 text-[0.95rem] text-slate-600">
+                      <div className="mt-0.5 text-emerald-500"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                      <span>Comprehensive Career Support</span>
+                    </div>
+                    <div className="flex items-start gap-3 text-[0.95rem] text-slate-600">
+                      <div className="mt-0.5 text-emerald-500"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                      <span>Real-world Portfolio Projects</span>
+                    </div>
+                    <div className="flex items-start gap-3 text-[0.95rem] text-slate-600">
+                      <div className="mt-0.5 text-emerald-500"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                      <span>1-on-1 Interview Preparation</span>
+                    </div>
+                    <div className="flex items-start gap-3 text-[0.95rem] text-slate-600">
+                      <div className="mt-0.5 text-emerald-500"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                      <span>Lifetime Access to Content</span>
+                    </div>
                   </div>
                 </>
               ) : (
                 <>
-                  <div className="pricing-card-top">
-                    <div className="pricing-title">You're Enrolled!</div>
-                    <div className="pricing-enrolled">✅ Full Access</div>
-                    <div className="pricing-small">Start learning and build your portfolio.</div>
+                  <div className="mb-6 text-center">
+                    <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="text-emerald-600" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <div className="text-[0.75rem] font-bold tracking-[0.15em] uppercase text-emerald-600 mb-2">Status</div>
+                    <div className="font-sans text-[2rem] font-extrabold my-2 text-[#0f172a]">Enrolled</div>
+                    <div className="text-slate-500 text-[0.95rem] leading-relaxed">You have full lifetime access to this program's materials and updates.</div>
                   </div>
-                  <a href={`/video-player/${programData.modules[0]?.lessons?.[0]?.id}`} className="btn-primary pricing-pay">
+                  <a href={`/video-player/${programData.modules[0]?.lessons?.[0]?.id}`} className="w-full justify-center flex text-decoration-none items-center gap-2 bg-emerald-600 hover:bg-emerald-700 shadow-md text-white py-[16px] px-[30px] rounded-xl font-bold text-[1.05rem] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(5,150,105,0.2)] border-none cursor-pointer">
                     Continue Learning
                   </a>
-                  <div className="pricing-badges">
-                    <div className="badge-pill">✅ Career support included</div>
-                    <div className="badge-pill">✅ Portfolio projects</div>
-                    <div className="badge-pill">✅ Interview prep</div>
-                  </div>
                 </>
               )}
             </div>
@@ -167,59 +225,18 @@ function CourseContent({ course, courseId }: { course: Course; courseId: string 
 
       {/* Sticky Pay Bar - only show if payment buttons are visible */}
       {showPaymentButtons && (
-        <div className="sticky-pay">
-          <div className="sticky-pay-inner">
-            <div className="sticky-left">
-              <div className="sticky-title">{programData.badge}</div>
-              <div className="sticky-sub">Spots left: {programData.spotsLeft} • {programData.price}</div>
+        <div className="fixed left-0 right-0 bottom-0 bg-white/90 backdrop-blur-md border-t border-slate-200 z-[999]">
+          <div className="max-w-7xl mx-auto py-3 px-[5vw] flex justify-between items-center gap-3.5">
+            <div className="">
+              <div className="font-sans font-bold text-base text-slate-900">{programData.badge}</div>
+              <div className="font-sans font-normal text-sm text-slate-500">Spots left: {programData.spotsLeft} • {programData.price}</div>
             </div>
-            <PayNowButton className="btn-primary">Pay Now</PayNowButton>
+            <PayNowButton className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 shadow-sm text-foreground py-3.5 px-[30px] rounded-lg font-medium text-[0.95rem] no-underline transition-all duration-200 shadow-[0_4px_24px_rgba(14,165,233,0.35)] hover:shadow-[0_8px_32px_rgba(14,165,233,0.45)] hover:-translate-y-[2px] border-none cursor-pointer">Pay Now</PayNowButton>
           </div>
         </div>
       )}
 
-      <style jsx>{`
-        .program-hero{padding:120px 5vw 70px;background:var(--grey-50)}
-        .program-hero-inner{display:grid;grid-template-columns:1.4fr 0.8fr;gap:34px;align-items:start;max-width:1200px;margin:0 auto}
-        .program-hero-left{min-width:0}
-        .program-hero-right{min-width:0}
-        .program-meta{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0 16px}
-        .program-meta-box{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 14px;min-width:160px}
-        .meta-k{font-size:.72rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px}
-        .meta-v{font-family:'DM Sans',sans-serif;font-weight:700;color:var(--text-primary);font-size:1.05rem}
-        .pricing-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:22px;position:sticky;top:92px;width:100%}
-        .pricing-card-top{margin-bottom:14px}
-        .pricing-title{font-size:.85rem;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
-        .pricing-price{font-family:'DM Sans',sans-serif;font-size:2.2rem;font-weight:800;margin:8px 0 6px;letter-spacing:-0.5px;color:var(--text-primary)}
-        .pricing-enrolled{font-family:'DM Sans',sans-serif;font-size:1.8rem;font-weight:700;margin:8px 0 6px;color:#10b981}
-        .pricing-small{color:var(--text-muted);font-size:.9rem;line-height:1.5}
-        .pricing-pay{width:100%;justify-content:center;margin:14px 0;display:flex;text-decoration:none}
-        .pricing-badges{display:flex;flex-direction:column;gap:12px;margin-top:20px}
-        .badge-pill{font-size:.85rem;color:var(--text-primary);background:var(--grey-50);border:1px solid #e2e8f0;border-radius:999px;padding:8px 10px}
-        .program-tags{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 22px}
-        .program-cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;align-items:center}
-        .trust-note{margin-top:14px;color:var(--text-muted);font-size:.9rem}
-        .access-granted{margin:0;color:#10b981;font-size:.95rem;font-weight:500}
-        .sticky-pay{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-top:1px solid #e2e8f0;z-index:999}
-        .sticky-pay-inner{max-width:1200px;margin:0 auto;padding:12px 5vw;display:flex;justify-content:space-between;align-items:center;gap:14px}
-        .sticky-title{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0;color:var(--text-primary)}
-        .sticky-sub{font-family:'DM Sans',sans-serif;font-weight:400;font-size:.9rem;color:var(--text-muted)}
-        .tag{font-size:.72rem;font-weight:500;letter-spacing:.4px;padding:3px 10px;background:var(--grey-100);color:var(--text-muted);border-radius:100px}
-        .btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--grad-blue);color:#fff;padding:14px 30px;border-radius:8px;font-weight:500;font-size:.95rem;text-decoration:none;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 24px rgba(14,165,233,.35);border:none;cursor:pointer}
-        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,165,233,.45)}
-        .btn-outline-dark{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text-primary);padding:13px 28px;border-radius:8px;border:1.5px solid #d1d5db;font-weight:400;font-size:.95rem;text-decoration:none;transition:border-color .2s,color .2s}
-        .btn-outline-dark:hover{border-color:var(--electric);color:var(--electric)}
-        .section-label{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--electric);margin-bottom:14px}
-        .section-label::before{content:'';display:block;width:18px;height:1.5px;background:var(--electric);border-radius:2px}
-        .section-title{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:700;line-height:1.2;letter-spacing:-0.3px;color:var(--text-primary);margin-bottom:16px}
-        .section-sub{font-size:1.05rem;line-height:1.7;color:var(--text-muted);max-width:540px}
-        .reveal{opacity:1;transform:translateY(0)}
-        :root{--navy:#050d1f;--navy-mid:#0b1a35;--navy-light:#112247;--electric:#0ea5e9;--teal:#06b6d4;--teal-dim:rgba(6,182,212,0.15);--white:#ffffff;--grey-50:#f7f8fa;--grey-100:#eef0f5;--grey-400:#94a3b8;--grey-600:#64748b;--text-primary:#0f172a;--text-muted:#64748b;--grad-blue:linear-gradient(135deg,#0ea5e9,#06b6d4);--grad-dark:linear-gradient(160deg,#050d1f 0%,#0d1f40 60%,#0a2240 100%)}
-        @media(max-width:900px){
-          .program-hero-inner{grid-template-columns:1fr;gap:24px}
-          .pricing-card{position:relative;top:auto;margin-top:20px}
-        }
-      `}</style>
+      
     </>
   );
 }
@@ -275,7 +292,7 @@ export default function CourseDetailPage() {
           <p className="text-gray-600 mb-4">{error || 'The requested course could not be found.'}</p>
           <a 
             href="/" 
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
+            className="bg-blue-600 text-foreground px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
           >
             Back to Home
           </a>
@@ -293,7 +310,7 @@ export default function CourseDetailPage() {
           <p className="text-gray-600 mb-4">This course is currently being prepared and will be available soon.</p>
           <a 
             href="/" 
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
+            className="bg-blue-600 text-foreground px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
           >
             Back to Home
           </a>

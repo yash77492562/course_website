@@ -122,105 +122,41 @@ export function CourseAccessControl({
       {/* Login Prompt Modal */}
       {showLoginPrompt && (
         <div 
-          className="fixed inset-0 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 flex items-center justify-center z-[100] p-4"
           style={{
-            background: 'rgba(5, 13, 31, 0.75)',
+            background: 'rgba(255, 255, 255, 0.4)',
             backdropFilter: 'blur(8px)'
           }}
         >
           <div 
-            style={{
-              width: '420px',
-              minHeight: '420px',
-              background: 'linear-gradient(160deg, rgba(17, 34, 64, 0.95) 0%, rgba(13, 31, 64, 0.95) 60%, rgba(10, 34, 64, 0.95) 100%)',
-              border: '1px solid rgba(14, 165, 233, 0.2)',
-              backdropFilter: 'blur(20px)',
-              borderRadius: '20px',
-              padding: '48px 40px 56px',
-              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center'
-            }}
+            className="w-full max-w-[420px] backdrop-blur-xl border border-white/60 rounded-[24px] p-10 flex flex-col items-center text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] relative"
+            style={{ backgroundColor: 'lab(92 -3.12 -0.26 / 0.9)' }}
           >
-            <div className="text-center">
-              <div style={{ fontSize: '64px', marginBottom: '24px' }}>🔐</div>
-              <h2 
-                style={{ 
-                  color: 'rgba(255, 255, 255, 0.95)',
-                  fontFamily: 'Syne, sans-serif',
-                  fontSize: '28px',
-                  fontWeight: '700',
-                  letterSpacing: '-0.5px',
-                  marginBottom: '16px'
-                }}
+            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-6 shadow-sm">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            
+            <h2 className="font-display italic text-[#0f172a] text-[2rem] font-bold tracking-tight mb-3">
+              Login Required
+            </h2>
+            
+            <p className="text-slate-500 text-[1rem] leading-[1.6] mb-8 px-4">
+              Please login to your account to purchase this course.
+            </p>
+            
+            <div className="flex flex-col w-full gap-3">
+              <button
+                onClick={() => router.push(`/login?redirect=/course/${courseId}`)}
+                className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-[1rem] py-3.5 transition-all duration-300 shadow-[0_4px_20px_rgba(13,148,136,0.25)] hover:shadow-[0_8px_30px_rgba(13,148,136,0.35)] hover:-translate-y-[2px]"
               >
-                Login Required
-              </h2>
-              <p 
-                style={{ 
-                  color: 'rgba(255, 255, 255, 0.65)',
-                  fontSize: '15px',
-                  lineHeight: '1.6',
-                  marginBottom: '36px'
-                }}
+                Login to Continue
+              </button>
+              <button
+                onClick={() => setShowLoginPrompt(false)}
+                className="w-full bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 rounded-xl font-semibold text-[1rem] py-3.5 transition-all duration-300 hover:-translate-y-[2px] shadow-sm hover:border-slate-300"
               >
-                Please login to your account to purchase this course
-              </p>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
-                <button
-                  onClick={() => router.push(`/login?redirect=/course/${courseId}`)}
-                  style={{
-                    width: '200px',
-                    height: '52px',
-                    background: 'linear-gradient(135deg, #0ea5e9, #06b6d4)',
-                    boxShadow: '0 4px 24px rgba(14, 165, 233, 0.35)',
-                    border: 'none',
-                    borderRadius: '10px',
-                    color: '#ffffff',
-                    fontSize: '15px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 8px 32px rgba(14, 165, 233, 0.45)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 24px rgba(14, 165, 233, 0.35)';
-                  }}
-                >
-                  Login to Continue
-                </button>
-                <button
-                  onClick={() => setShowLoginPrompt(false)}
-                  style={{
-                    width: '200px',
-                    height: '52px',
-                    border: '1.5px solid rgba(255, 255, 255, 0.2)',
-                    borderRadius: '10px',
-                    background: 'transparent',
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    fontSize: '15px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-                    e.currentTarget.style.borderColor = 'rgba(14, 165, 233, 0.5)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
+                Cancel
+              </button>
             </div>
           </div>
         </div>
@@ -229,83 +165,42 @@ export function CourseAccessControl({
       {/* Checkout Modal Overlay */}
       {showCheckout && isAuthenticated && user && (
         <div 
-          className="fixed inset-0 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 flex items-center justify-center z-[100] p-4"
           style={{
-            background: 'rgba(5, 13, 31, 0.75)',
+            background: 'rgba(255, 255, 255, 0.4)',
             backdropFilter: 'blur(8px)'
           }}
         >
           <div 
-            className="rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-            style={{
-              background: 'linear-gradient(160deg, rgba(17, 34, 64, 0.98) 0%, rgba(13, 31, 64, 0.98) 60%, rgba(10, 34, 64, 0.98) 100%)',
-              border: '1px solid rgba(14, 165, 233, 0.2)',
-              backdropFilter: 'blur(20px)'
-            }}
+            className="rounded-[24px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/60 relative"
+            style={{ backgroundColor: 'lab(92 -3.12 -0.26 / 0.9)' }}
           >
             {/* Modal Header */}
             <div 
-              className="sticky top-0 flex items-center justify-between rounded-t-2xl z-10 border-b"
-              style={{
-                background: 'rgba(17, 34, 64, 0.95)',
-                borderColor: 'rgba(14, 165, 233, 0.15)',
-                padding: '28px 32px 24px'
-              }}
+              className="sticky top-0 flex items-center justify-between rounded-t-[24px] z-10 border-b border-slate-100 backdrop-blur-md px-8 py-6"
+              style={{ backgroundColor: 'lab(92 -3.12 -0.26 / 0.9)' }}
             >
               <div>
-                <h2 
-                  style={{ 
-                    color: 'rgba(255, 255, 255, 0.95)',
-                    fontFamily: 'Syne, sans-serif',
-                    fontSize: '24px',
-                    fontWeight: '700',
-                    letterSpacing: '-0.5px',
-                    marginBottom: '8px'
-                  }}
-                >
+                <h2 className="font-display italic text-[#0f172a] text-[1.75rem] font-bold tracking-tight mb-1">
                   Complete Your Purchase
                 </h2>
-                <p 
-                  style={{ 
-                    color: 'rgba(255, 255, 255, 0.6)',
-                    fontSize: '15px',
-                    margin: 0
-                  }}
-                >
+                <p className="text-slate-500 text-[0.95rem] font-medium m-0">
                   {courseTitle}
                 </p>
               </div>
               <button
                 onClick={() => setShowCheckout(false)}
-                className="rounded-lg transition-all duration-200"
+                className="w-10 h-10 rounded-full flex items-center justify-center bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors border border-slate-200/60"
                 aria-label="Close"
-                style={{
-                  color: 'rgba(255, 255, 255, 0.5)',
-                  background: 'transparent',
-                  padding: '10px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.9)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.5)';
-                }}
               >
-                <svg style={{ width: '24px', height: '24px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
             {/* Modal Body */}
-            <div style={{ padding: '32px' }}>
+            <div className="p-8">
               <StripeCheckout
                 courseId={courseId}
                 userId={user.id}
