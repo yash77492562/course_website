@@ -13,9 +13,10 @@ interface CustomSelectProps {
   onChange: (e: { target: { name: string; value: string } }) => void;
   options: Option[];
   placeholder?: string;
+  required?: boolean;
 }
 
-export function CustomSelect({ name, value, onChange, options, placeholder = 'Select an option' }: CustomSelectProps) {
+export function CustomSelect({ name, value, onChange, options, placeholder = 'Select an option', required = false }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -38,52 +39,54 @@ export function CustomSelect({ name, value, onChange, options, placeholder = 'Se
   };
 
   return (
-    <div ref={dropdownRef} style={{ position: 'relative', width: '100%', maxWidth: '400px' }}>
+    <div ref={dropdownRef} className="relative w-full">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`field-input flex items-center justify-between text-left cursor-pointer ${value ? 'text-slate-900' : 'text-gray-400'}`}
+        className={`w-full px-4 py-3 rounded-xl border flex items-center justify-between text-left cursor-pointer transition-all ${
+          isOpen ? 'border-blue-600 ring-2 ring-blue-600/30' : 'border-slate-200 hover:border-blue-600'
+        } ${value ? 'text-slate-900 bg-white' : 'text-slate-400 bg-white'}`}
       >
-        <span>{selectedOption ? selectedOption.label : placeholder}</span>
+        <span className="block truncate">{selectedOption ? selectedOption.label : placeholder}</span>
         <svg
           width="12"
           height="8"
           viewBox="0 0 12 8"
           fill="none"
-          className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
+          className={`transition-transform duration-200 flex-shrink-0 ml-2 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
         >
-          <path d="M1 1.5L6 6.5L11 1.5" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
 
+      {/* Hidden input to make sure the value is submitted and required validation works */}
+      {required && (
+        <input 
+          tabIndex={-1} 
+          className="absolute opacity-0 w-0 h-0 bottom-0 left-1/2"
+          required 
+          value={value} 
+          onChange={() => {}} 
+        />
+      )}
+
       {isOpen && (
         <div
+          className="absolute z-50 w-full mt-2 bg-white/95 backdrop-blur-xl border border-slate-200 rounded-xl shadow-lg max-h-60 overflow-y-auto custom-select-dropdown"
           style={{
-            position: 'absolute',
-            top: 'calc(100% + 2px)',
-            left: 0,
-            right: 0,
-            background: 'white',
-            border: '2px solid #e2e8f0',
-            borderRadius: '10px',
-            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.15)',
-            maxHeight: '320px',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            zIndex: 1000,
+            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.08)',
           }}
-          className="custom-select-dropdown"
         >
           {options.map((option, index) => (
             <button
               key={option.value}
               type="button"
               onClick={() => handleSelect(option.value)}
-              className={`w-full py-4 px-[18px] text-left border-none cursor-pointer text-[1rem] font-dm-sans transition-all duration-200 block whitespace-nowrap overflow-hidden text-ellipsis ${
+              className={`w-full py-3 px-4 text-left border-none cursor-pointer text-sm md:text-base font-medium transition-colors block whitespace-nowrap overflow-hidden text-ellipsis ${
                 value === option.value
-                  ? 'bg-primary hover:bg-primary/90 shadow-sm text-foreground'
-                  : 'bg-white text-slate-900 hover:bg-slate-50'
-              } ${index === options.length - 1 ? 'border-b-0' : 'border-b border-slate-100'}`}
+                  ? 'bg-blue-50 text-blue-600'
+                  : 'bg-transparent text-slate-700 hover:bg-slate-50'
+              }`}
             >
               {option.label}
             </button>
@@ -94,16 +97,15 @@ export function CustomSelect({ name, value, onChange, options, placeholder = 'Se
       <style jsx>{`
         .custom-select-dropdown {
           scrollbar-width: thin;
-          scrollbar-color: #cbd5e1 #f1f5f9;
+          scrollbar-color: #cbd5e1 transparent;
         }
         
         .custom-select-dropdown::-webkit-scrollbar {
-          width: 8px;
+          width: 6px;
         }
         
         .custom-select-dropdown::-webkit-scrollbar-track {
-          background: #f1f5f9;
-          border-radius: 10px;
+          background: transparent;
         }
         
         .custom-select-dropdown::-webkit-scrollbar-thumb {

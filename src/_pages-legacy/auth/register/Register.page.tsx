@@ -32,9 +32,12 @@ export default function RegisterPage() {
     <>
       {/* Simple navbar with logo only */}
       <nav className="fixed top-0 left-0 right-0 z-[100] bg-background/90 backdrop-blur-[18px] border-b border-border h-[68px] flex items-center px-[5vw]">
-        <Link href="/" className="flex items-center gap-2.5 no-underline">
-          <span className="font-sans text-[17px] font-bold text-foreground tracking-[0.3px]">
+        <Link href="/" className="flex flex-col items-center justify-center no-underline gap-0">
+          <span className="font-bold text-slate-900 text-[18px] tracking-[0.3px] font-display leading-[1.1]">
             Riva Data
+          </span>
+          <span className="font-sans font-semibold text-primary text-[10px] tracking-[0.25em] uppercase leading-none pl-[1px]">
+            Academy
           </span>
         </Link>
       </nav>

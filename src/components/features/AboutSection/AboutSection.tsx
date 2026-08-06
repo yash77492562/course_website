@@ -53,7 +53,7 @@ export function AboutSection() {
                 transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.1 }}
                 className="aspect-square bg-primary rounded-[32px] p-6 sm:p-8 relative overflow-hidden group hover:scale-[1.02] hover:-translate-y-2 transition-all duration-300 shadow-xl"
               >
-                <div className="absolute -bottom-6 -right-2 text-[140px] font-black text-white/10 group-hover:text-white/20 transition-colors duration-300 leading-none select-none">
+                <div className="absolute -bottom-6 -right-2 text-[100px] sm:text-[140px] font-black text-white/30 group-hover:text-white/50 transition-colors duration-300 leading-none select-none">
                   R
                 </div>
                 <div className="relative z-10 flex flex-col h-full justify-between">
@@ -74,7 +74,7 @@ export function AboutSection() {
                 transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 }}
                 className="aspect-square bg-background border-2 border-border/60 rounded-[32px] p-6 sm:p-8 relative overflow-hidden group hover:scale-[1.02] hover:-translate-y-2 hover:border-primary/40 hover:shadow-xl transition-all duration-300 shadow-sm"
               >
-                <div className="absolute -bottom-6 -right-2 text-[140px] font-black text-primary/[0.05] group-hover:text-primary/[0.1] transition-colors duration-300 leading-none select-none">
+                <div className="absolute -bottom-6 -right-2 text-[100px] sm:text-[140px] font-black text-primary/20 group-hover:text-primary/30 transition-colors duration-300 leading-none select-none">
                   V
                 </div>
                 <div className="relative z-10 flex flex-col h-full justify-between">
@@ -100,7 +100,7 @@ export function AboutSection() {
                 transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
                 className="aspect-square bg-background border-2 border-border/60 rounded-[32px] p-6 sm:p-8 relative overflow-hidden group hover:scale-[1.02] hover:-translate-y-2 hover:border-secondary/40 hover:shadow-xl transition-all duration-300 shadow-sm"
               >
-                <div className="absolute -bottom-6 -right-2 text-[140px] font-black text-secondary/[0.05] group-hover:text-secondary/[0.1] transition-colors duration-300 leading-none select-none">
+                <div className="absolute -bottom-6 -right-2 text-[100px] sm:text-[140px] font-black text-secondary/30 group-hover:text-secondary/50 transition-colors duration-300 leading-none select-none">
                   I
                 </div>
                 <div className="relative z-10 flex flex-col h-full justify-between">
@@ -119,9 +119,9 @@ export function AboutSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.4 }}
-                className="aspect-square bg-secondary rounded-[32px] p-6 sm:p-8 relative overflow-hidden group hover:scale-[1.02] hover:-translate-y-2 transition-all duration-300 shadow-xl"
+                className="aspect-square bg-gradient-to-r from-[#505FDC] to-[#1371FF] rounded-[32px] p-6 sm:p-8 relative overflow-hidden group hover:scale-[1.02] hover:-translate-y-2 transition-all duration-300 shadow-xl"
               >
-                <div className="absolute -bottom-6 -right-2 text-[140px] font-black text-white/10 group-hover:text-white/20 transition-colors duration-300 leading-none select-none">
+                <div className="absolute -bottom-6 -right-2 text-[100px] sm:text-[140px] font-black text-white/30 group-hover:text-white/50 transition-colors duration-300 leading-none select-none">
                   A
                 </div>
                 <div className="relative z-10 flex flex-col h-full justify-between">

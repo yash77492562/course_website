@@ -39,7 +39,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="min-h-[90vh] relative flex items-center overflow-hidden bg-background pt-[140px] pb-[100px] w-full">
+    <section className="min-h-[90vh] relative flex items-center overflow-hidden bg-background pt-[110px] md:pt-[140px] pb-[70px] md:pb-[100px] w-full">
       {/* Background Decorative Mesh - using standard background and primary colors to remain consistent */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <motion.div 
@@ -77,28 +77,28 @@ export function HeroSection() {
               <HeroTitle>
                 Build Your Future<br />
                 in <GradientText>Data</GradientText> with<br />
-                Riva Data
+                <GradientText>Riva Data</GradientText>
               </HeroTitle>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="mb-10 max-w-[600px]">
+            <motion.div variants={itemVariants} className="mb-6 sm:mb-10 max-w-[600px]">
               <HeroSubtitle>
                 Reskilling professionals into industry-ready Data Analysts, Data Engineers, and Data Scientists through practical, real-world training and innovation-driven learning.
               </HeroSubtitle>
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <div className="flex gap-4 flex-wrap">
+              <div className="flex gap-2 sm:gap-4 flex-wrap">
                 <Link 
                   href="#programs" 
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 text-[1rem] rounded-xl bg-primary text-primary-foreground font-semibold shadow-lg hover:shadow-primary/25 hover:bg-primary/90 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 no-underline"
+                  className="inline-flex items-center justify-center gap-1.5 md:gap-2 px-4 py-2.5 md:px-8 md:py-4 text-[0.85rem] md:text-[1rem] rounded-lg md:rounded-xl bg-primary text-white font-semibold shadow-lg hover:shadow-primary/25 hover:bg-primary/90 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 no-underline flex-1 sm:flex-none text-center"
                 >
                   Explore Now
-                  <ArrowRightIcon size={18} />
+                  <ArrowRightIcon size={16} className="md:w-[18px] md:h-[18px]" />
                 </Link>
                 <Link 
                   href="/partner" 
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 text-[1rem] rounded-xl bg-background text-foreground border-2 border-border font-semibold hover:border-primary hover:text-primary hover:bg-primary/5 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 no-underline"
+                  className="inline-flex items-center justify-center gap-1.5 md:gap-2 px-4 py-2.5 md:px-8 md:py-4 text-[0.85rem] md:text-[1rem] rounded-lg md:rounded-xl bg-background text-foreground border-2 border-border font-semibold hover:border-primary hover:text-primary hover:bg-primary/5 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 no-underline flex-1 sm:flex-none text-center whitespace-nowrap"
                 >
                   Partner With Us
                 </Link>
@@ -107,13 +107,13 @@ export function HeroSection() {
           </motion.div>
           
           {/* RIGHT COLUMN - BENTO GRID / FLOATING STATS */}
-          <div className="lg:col-span-5 relative mt-16 lg:mt-0 h-[400px] sm:h-[450px] lg:h-[500px] w-full perspective-1000 flex justify-center lg:block">
+          <div className="lg:col-span-5 relative mt-8 sm:mt-12 lg:mt-16 h-[360px] sm:h-[450px] lg:h-[500px] w-full max-w-[280px] sm:max-w-[440px] lg:max-w-none mx-auto perspective-1000 flex justify-center lg:block">
             {/* Center abstract circle */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.5, rotate: -45 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 50, damping: 20, delay: 0.4 }}
-              className="absolute inset-0 m-auto w-[260px] sm:w-[320px] h-[260px] sm:h-[320px] rounded-full border border-primary/20 bg-background/50 backdrop-blur-sm shadow-2xl flex items-center justify-center overflow-hidden"
+              className="absolute inset-0 m-auto w-[240px] sm:w-[320px] h-[240px] sm:h-[320px] rounded-full border border-primary/20 bg-background/50 backdrop-blur-sm shadow-2xl flex items-center justify-center overflow-hidden"
             >
               {/* Spinning inner dashed ring */}
               <motion.div 
@@ -128,13 +128,13 @@ export function HeroSection() {
               style={{ y: float1 }}
               {...springUp}
               transition={{ ...springUp.transition, delay: 0.5 }}
-              className="absolute top-[5%] lg:top-[10%] left-[5%] lg:-left-[10%] z-20"
+              className="absolute top-[15%] sm:top-[10%] lg:top-[10%] left-[-2%] sm:left-[-2%] lg:-left-[10%] z-20"
             >
-              <div className="bg-background p-4 sm:p-6 rounded-2xl border border-border shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 w-[180px] sm:w-[220px]">
-                <div className="font-sans text-[32px] sm:text-[42px] font-extrabold text-primary leading-none mb-1 sm:mb-2">
+              <div className="bg-background p-3 sm:p-6 rounded-2xl border border-border shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 w-[140px] sm:w-[220px]">
+                <div className="font-sans text-[26px] sm:text-[42px] font-extrabold text-primary leading-none mb-1 sm:mb-2">
                   3
                 </div>
-                <div className="text-[11px] sm:text-[13px] tracking-wide uppercase text-muted-foreground font-semibold leading-tight">
+                <div className="text-[10px] sm:text-[13px] tracking-wide uppercase text-muted-foreground font-semibold leading-tight">
                   Specialist<br />Programs
                 </div>
               </div>
@@ -145,13 +145,13 @@ export function HeroSection() {
               style={{ y: float2 }}
               {...springUp}
               transition={{ ...springUp.transition, delay: 0.7 }}
-              className="absolute top-[40%] right-[0%] lg:-right-[15%] z-30"
+              className="absolute top-[40%] sm:top-[40%] lg:top-[40%] right-[-5%] sm:right-[-2%] lg:-right-[15%] z-30"
             >
-              <div className="bg-primary text-primary-foreground p-4 sm:p-6 rounded-2xl shadow-xl hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-2 transition-all duration-300 w-[180px] sm:w-[220px]">
-                <div className="font-sans text-[32px] sm:text-[42px] font-extrabold text-primary-foreground leading-none mb-1 sm:mb-2">
+              <div className="bg-primary text-white p-3 sm:p-6 rounded-2xl shadow-xl hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-2 transition-all duration-300 w-[140px] sm:w-[220px]">
+                <div className="font-sans text-[26px] sm:text-[42px] font-extrabold text-white leading-none mb-1 sm:mb-2">
                   100%
                 </div>
-                <div className="text-[11px] sm:text-[13px] tracking-wide uppercase text-primary-foreground/80 font-semibold leading-tight">
+                <div className="text-[10px] sm:text-[13px] tracking-wide uppercase text-white/90 font-semibold leading-tight">
                   Industry<br />Aligned
                 </div>
               </div>
@@ -159,16 +159,16 @@ export function HeroSection() {
 
             {/* Stat Card 3: UK Based */}
             <motion.div 
-              style={{ y: float3 }}
+              style={{ y: float1 }}
               {...springUp}
-              transition={{ ...springUp.transition, delay: 0.9 }}
-              className="absolute bottom-[5%] lg:bottom-[10%] left-[10%] lg:left-[10%] z-20"
+              transition={{ ...springUp.transition, delay: 0.5 }}
+              className="absolute bottom-[-1%]  left-[-2%] sm:left-[-2%] lg:left-[10%] z-20"
             >
-              <div className="bg-background/80 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-border shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 w-[180px] sm:w-[220px]">
-                <div className="font-sans text-[28px] sm:text-[36px] font-extrabold text-foreground leading-none mb-1 sm:mb-2">
+              <div className="bg-background p-3 sm:p-6 rounded-2xl border border-border shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 w-[140px] sm:w-[220px]">
+                <div className="font-sans text-[26px] sm:text-[42px] font-extrabold text-primary leading-none mb-1 sm:mb-2">
                   UK
                 </div>
-                <div className="text-[11px] sm:text-[13px] tracking-wide uppercase text-muted-foreground font-semibold leading-tight">
+                <div className="text-[10px] sm:text-[13px] tracking-wide uppercase text-muted-foreground font-semibold leading-tight">
                   Based &<br />Accredited
                 </div>
               </div>

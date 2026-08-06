@@ -2,17 +2,17 @@
 @import "tailwindcss";
 
 :root {
-  --teal-primary: #0D9488;
-  --teal-secondary: #2DD4BF;
+  --blue-primary: #2563eb;
+  --blue-secondary: #60a5fa;
   --orange-accent: #EA580C;
-  --bg-light: #e1eae8;
-  --text-dark: #134E4A;
+  --bg-light: #f0f9ff;
+  --text-dark: #1e3a8a;
   --white: #ffffff;
-  --grey-50: #f7f8fa;
-  --grey-100: #eef0f5;
+  --grey-50: #f8fafc;
+  --grey-100: #f1f5f9;
   --grey-400: #94a3b8;
-  --grey-600: #64748b;
-  --text-primary: #134E4A;
+  --grey-600: #475569;
+  --text-primary: #1e3a8a;
   --text-muted: #64748b;
   
   /* Retained for backward compatibility during transition */
@@ -22,8 +22,8 @@
 
 @theme inline {
   --font-sans: var(--font-jakarta);
-  --color-primary: var(--teal-primary);
-  --color-secondary: var(--teal-secondary);
+  --color-primary: var(--blue-primary);
+  --color-secondary: var(--blue-secondary);
   --color-accent: var(--orange-accent);
   --color-background: var(--bg-light);
   --color-foreground: var(--text-dark);
@@ -31,12 +31,12 @@
   /* Legacy mappings */
   --color-navy: #050d1f;
   --color-electric: #0ea5e9;
-  --color-teal: #06b6d4;
+  --color-teal: #2563eb;
   --color-white: #ffffff;
-  --color-grey-50: #f7f8fa;
-  --color-grey-100: #eef0f5;
+  --color-grey-50: #f8fafc;
+  --color-grey-100: #f1f5f9;
   --color-grey-400: #94a3b8;
-  --color-grey-600: #64748b;
+  --color-grey-600: #475569;
   --color-text-primary: var(--text-dark);
   --color-text-muted: #64748b;
   
@@ -124,10 +124,9 @@
   box-sizing: border-box;
 }
 
-/* Force specific font and italic style everywhere */
+/* Force specific font everywhere */
 html, body, button, input, textarea, select, a, p, h1, h2, h3, h4, h5, h6, span, div {
   font-family: "ivypresto-display", "Playfair Display", serif !important;
-  font-style: italic !important;
 }
 
 html {
@@ -173,7 +172,7 @@ main {
 }
 
 .vjs-theme-city, .custom-vjs-theme {
-  --vjs-theme-city--primary: #0D9488; /* Teal */
+  --vjs-theme-city--primary: #2563eb; /* Blue */
   --vjs-theme-city--secondary: #64748b;
 }
 
@@ -296,7 +295,7 @@ main {
 }
 
 .vjs-quality-selector.vjs-quality-selector .vjs-menu-item.vjs-selected {
-  background-color: #0D9488;
+  background-color: #2563eb;
   color: white;
   font-weight: 600;
 }
@@ -325,16 +324,24 @@ main {
 }
 
 .vjs-quality-selector.vjs-quality-selector .vjs-menu-item:hover {
-  background-color: rgba(13, 148, 136, 0.3);
+  background-color: rgba(37, 99, 235, 0.3);
   cursor: pointer;
 }
 
 .vjs-quality-selector.vjs-quality-selector .vjs-menu-item.vjs-selected:hover {
-  background-color: #0D9488;
+  background-color: #2563eb;
 }
 
 .vjs-quality-selector .vjs-menu-item:focus {
-  background-color: rgba(13, 148, 136, 0.2);
+  background-color: rgba(37, 99, 235, 0.2);
 }
 
-
+/* Hide time displays on mobile to prevent control bar from being cramped */
+@media (max-width: 767px) {
+  .video-js.video-js .vjs-time-control {
+    display: none !important;
+  }
+  .video-js.video-js .vjs-remaining-time {
+    display: none !important;
+  }
+}

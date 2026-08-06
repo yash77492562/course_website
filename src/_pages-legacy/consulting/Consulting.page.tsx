@@ -7,7 +7,7 @@ import { ConsultingSection } from '@/components/features/ConsultingSection/Consu
 
 // Import data
 import footerLinksData from '@/data/footerLinks/data.json';
-import consultingData from '@/data/consulting/data.json';
+import { consultingData } from '@/data/consulting/consultingData';
 
 export function ConsultingPage() {
   return (

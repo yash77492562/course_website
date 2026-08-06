@@ -269,7 +269,7 @@ export default function StripeCheckout({
           }
 
           .checkout-loading p {
-            color: rgba(255, 255, 255, 0.7);
+            color: #475569; /* slate-600 */
             font-size: 16px;
             font-weight: 500;
           }

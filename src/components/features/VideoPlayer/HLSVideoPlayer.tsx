@@ -32,7 +32,7 @@ export function HLSVideoPlayer({
   onNext,
   onPrevious
 }: HLSVideoPlayerProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
   const [isReady, setIsReady] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -500,7 +500,7 @@ export function HLSVideoPlayer({
       const existingQualitySelector = controlBar.getChild('QualityMenuButton');
       
       if (existingManualSelector) {
-        logger.debug('⚠️ ManualQualityMenuButton already exists, removing old one');
+logger.debug('⚠️ ManualQualityMenuButton already exists, removing old one');
         controlBar.removeChild(existingManualSelector);
       }
       
@@ -516,9 +516,32 @@ export function HLSVideoPlayer({
       return;
     }
 
-    // Make sure Video.js player is only initialized once
-    if (!playerRef.current && videoRef.current) {
-      const videoElement = videoRef.current;
+    let isEffectActive = true;
+
+    const initVideoPlayer = () => {
+      if (!isEffectActive) return;
+
+      // Make sure Video.js player is only initialized once
+      if (playerRef.current || !videoContainerRef.current) return;
+
+      // Next.js might render the component in a detached DOM tree before navigation.
+      // Video.js requires the element to be in the document.body to size correctly.
+      if (!document.body.contains(videoContainerRef.current)) {
+        setTimeout(initVideoPlayer, 50);
+        return;
+      }
+
+      // Dynamically create the video element so video.js can dispose it cleanly
+      const videoElement = document.createElement('video');
+      videoElement.className = "video-js vjs-big-play-centered vjs-theme-default w-full h-full custom-vjs-theme";
+      videoElement.setAttribute('playsInline', '');
+      videoElement.setAttribute('muted', '');
+      videoElement.setAttribute('autoPlay', '');
+      videoElement.style.width = '100%';
+      videoElement.style.height = '100%';
+      videoElement.style.display = 'block';
+      
+      videoContainerRef.current.appendChild(videoElement);
 
       // Determine video source - prioritize HLS
       let videoSource = '';
@@ -557,9 +580,7 @@ export function HLSVideoPlayer({
       }
 
       logger.debug('🎥 Initializing Video.js player...');
-      logger.debug('   Video element:', videoElement);
-      logger.debug('   Video element in DOM:', document.body.contains(videoElement));
-      logger.debug('   Video element parent:', videoElement.parentElement);
+      logger.debug('   Video element in DOM before init:', document.body.contains(videoElement));
 
       const player = videojs(videoElement, {
         controls: true,
@@ -791,14 +812,12 @@ export function HLSVideoPlayer({
                   qualityLevels[i].enabled = false;
                 }
                 
-                // THEN: Enable only the selected quality
+                // THEN: Enable ONLY the selected one
                 qualityLevels[this.options_.value].enabled = true;
                 
-                logger.debug('🔄 Quality set to:', selectedHeight + 'p');
-                logger.debug('🔄 Forcing quality switch by clearing buffer...');
-                setCurrentQuality(selectedHeight + 'p');
+                logger.debug('🔄 Quality forced to:', selectedHeight + 'p (index ' + this.options_.value + ')');
                 
-                // Force immediate quality switch by triggering a seek
+                // Track quality switch via loadedplaylist
                 const tech = player.tech({ IWillNotUseThisInPlugins: true });
                 if (tech && (tech as any).vhs) {
                   // Clear the buffer to force reload with new quality
@@ -821,6 +840,7 @@ export function HLSVideoPlayer({
                     logger.warn('⚠️ Could not clear buffer:', err);
                   }
                 }
+                setCurrentQuality(selectedHeight + 'p');
               }
               
               // Update button label immediately
@@ -1068,10 +1088,13 @@ export function HLSVideoPlayer({
           }
         });
       }
-    }
+    };
+
+    initVideoPlayer();
 
     // Cleanup on unmount
     return () => {
+      isEffectActive = false;
       if (playerRef.current) {
         playerRef.current.dispose();
         playerRef.current = null;
@@ -1081,16 +1104,8 @@ export function HLSVideoPlayer({
 
   return (
     <div className={`relative ${className}`}>
-      {/* Video.js Player */}
-      <div data-vjs-player className="w-full" style={{ minHeight: '500px' }}>
-        <video
-          ref={videoRef}
-          className="video-js vjs-big-play-centered vjs-theme-default w-full h-full custom-vjs-theme"
-          playsInline
-          muted
-          autoPlay
-          style={{ width: '100%', height: '100%', display: 'block' }}
-        />
+      {/* Video.js Player Container */}
+      <div className="w-full" style={{ minHeight: '500px' }} ref={videoContainerRef}>
       </div>
 
       {/* Navigation Controls */}

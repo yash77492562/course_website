@@ -92,7 +92,7 @@ export function WhySection({ data }: WhySectionProps) {
                   variants={itemVariants}
                   className={`relative overflow-hidden rounded-[32px] p-6 sm:p-8 transition-all duration-500 group hover:-translate-y-2 hover:shadow-2xl flex flex-col justify-between ${
                     isPrimary ? 'bg-primary text-primary-foreground shadow-xl' :
-                    isSecondary ? 'bg-secondary text-white shadow-xl' :
+                    isSecondary ? 'bg-gradient-to-r from-[#505FDC] to-[#1371FF] text-white shadow-xl' :
                     'bg-background border-2 border-border/60 hover:border-primary/30 shadow-sm'
                   }`}
                 >

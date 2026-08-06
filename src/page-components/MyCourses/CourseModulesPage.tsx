@@ -47,11 +47,17 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
       setCourse(data);
       
       // TODO: Get user progress from backend to determine current module
-      // For now, set current module to the last one (most recent)
-      // This assumes user is working through the course sequentially
+      // For now, set current module to the last one that actually has lessons
+      // (to avoid setting empty draft modules as current)
       if (data.modules && data.modules.length > 0) {
-        // Set to last module index as "current" by default
-        setCurrentModuleIndex(data.modules.length - 1);
+        let lastIndex = data.modules.length - 1;
+        for (let i = data.modules.length - 1; i >= 0; i--) {
+          if (data.modules[i].lessons && data.modules[i].lessons.length > 0) {
+            lastIndex = i;
+            break;
+          }
+        }
+        setCurrentModuleIndex(lastIndex);
       }
     } catch (err) {
       logger.error('Failed to load course:', err);
@@ -86,12 +92,15 @@ export function CourseModulesPage({ courseId }: CourseModulesPageProps) {
     return null;
   }
 
-  // Split modules into past (completed), current, and remaining (all accessible)
-  // Since user has purchased, NO modules are locked - just organized by progress
-  const allModules = course.modules || [];
-  const pastModules = allModules.slice(0, currentModuleIndex).reverse(); // Reverse to show newest first (4,3,2,1)
-  const currentModule = allModules[currentModuleIndex];
-  const remainingModules = allModules.slice(currentModuleIndex + 1);
+  // Filter out any modules that have 0 lessons (like draft or accidentally created ones)
+  const allModules = (course.modules || []).filter(m => m.lessons && m.lessons.length > 0);
+  
+  // Calculate current module index based on the filtered list (default to last one)
+  const actualCurrentIndex = allModules.length > 0 ? allModules.length - 1 : 0;
+  
+  const pastModules = allModules.slice(0, actualCurrentIndex).reverse(); // Reverse to show newest first
+  const currentModule = allModules[actualCurrentIndex];
+  const remainingModules = allModules.slice(actualCurrentIndex + 1);
   // Note: remainingModules are NOT locked, just not yet started
 
   return (

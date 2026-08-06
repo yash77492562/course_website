@@ -11,7 +11,6 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -47,15 +46,9 @@ export function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Close the mobile menu whenever the route changes.
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [pathname]);
-
   const handleLogout = async () => {
     await logout();
     setIsDropdownOpen(false);
-    setIsMobileMenuOpen(false);
     router.push('/');
   };
 
@@ -70,17 +63,20 @@ export function Navbar() {
       'backdrop-blur-[18px] border-b border-[rgba(14,165,233,0.12)] transition-all duration-300',
       'bg-background/90 px-6 md:px-12 lg:px-20'
     )}>
-      <Link href="/" className="flex items-center no-underline gap-[10px]">
-        <span className="font-display font-bold text-foreground text-[17px] tracking-[0.3px]">
+      <Link href="/" className="flex flex-col items-center justify-center no-underline">
+        <span className="font-display font-bold text-foreground text-[17px] tracking-[0.3px] leading-[1.1]">
           Riva Data
+        </span>
+        <span className="font-sans font-semibold text-primary text-[9px] tracking-[0.25em] uppercase leading-none pl-[1px]">
+          Academy
         </span>
       </Link>
 
-      <ul className="hidden md:flex items-center list-none gap-[36px]">
+      <ul className="flex items-center list-none gap-2 md:gap-[36px] m-0 p-0">
         {/* Only show navigation links on homepage */}
         {isHomePage && (
           <>
-            <li>
+            <li className="hidden md:block">
               <Link
                 href="#about"
                 className="no-underline transition-colors duration-200 hover:text-foreground text-[0.875rem] font-normal text-foreground/65 tracking-[0.3px]"
@@ -88,7 +84,7 @@ export function Navbar() {
                 About
               </Link>
             </li>
-            <li>
+            <li className="hidden md:block">
               <Link
                 href="#programs"
                 className="no-underline transition-colors duration-200 hover:text-foreground text-[0.875rem] font-normal text-foreground/65 tracking-[0.3px]"
@@ -96,7 +92,7 @@ export function Navbar() {
                 Programs
               </Link>
             </li>
-            <li>
+            <li className="hidden md:block">
               <Link
                 href="#consulting"
                 className="no-underline transition-colors duration-200 hover:text-foreground text-[0.875rem] font-normal text-foreground/65 tracking-[0.3px]"
@@ -113,16 +109,16 @@ export function Navbar() {
             <div ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center gap-2 no-underline transition-all duration-200 hover:opacity-90 bg-primary px-4 py-2 rounded-md font-semibold text-[0.85rem] border-none cursor-pointer text-white"
+                className="flex items-center gap-2 no-underline transition-all duration-200 hover:opacity-80 bg-transparent md:bg-primary px-1 py-1 md:px-4 md:py-2 rounded-full md:rounded-md font-semibold text-[0.9rem] border-none cursor-pointer text-slate-800 md:text-white"
               >
                 <div
-                  className="flex items-center justify-center rounded-full bg-white text-blue-600 font-bold w-[28px] h-[28px] text-[0.75rem]"
+                  className="flex items-center justify-center rounded-full bg-blue-600 md:bg-white text-white md:text-blue-600 font-bold w-[36px] h-[36px] md:w-[28px] md:h-[28px] text-[0.85rem] md:text-[0.75rem]"
                 >
                   {getInitials(user.firstName, user.lastName)}
                 </div>
-                <span>{user.firstName || 'User'}</span>
+                <span className="hidden md:inline">{user.firstName || 'User'}</span>
                 <svg
-                  className={cn('w-4 h-4 transition-transform', isDropdownOpen && 'rotate-180')}
+                  className={cn('w-4 h-4 transition-transform hidden md:block', isDropdownOpen && 'rotate-180')}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -209,64 +205,6 @@ export function Navbar() {
           </li>
         )}
       </ul>
-
-      {/* Mobile hamburger — visible only below md, where the desktop menu is hidden */}
-      <button
-        type="button"
-        aria-label="Toggle menu"
-        aria-expanded={isMobileMenuOpen}
-        onClick={() => setIsMobileMenuOpen((v) => !v)}
-        className="md:hidden flex items-center justify-center text-foreground w-[40px] h-[40px] bg-transparent border-none cursor-pointer"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          {isMobileMenuOpen ? (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          ) : (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          )}
-        </svg>
-      </button>
-
-      {/* Mobile menu panel */}
-      {isMobileMenuOpen && (
-        <div
-          className="md:hidden absolute left-0 right-0 flex flex-col top-[68px] bg-background/98 backdrop-blur-[18px] border-b border-border px-[5vw] pt-3 pb-5 gap-1"
-        >
-          {isHomePage && (
-            <>
-              <a href="#about" onClick={() => setIsMobileMenuOpen(false)} className="text-muted-foreground hover:text-foreground py-3 text-[15px]">About</a>
-              <a href="#programs" onClick={() => setIsMobileMenuOpen(false)} className="text-muted-foreground hover:text-foreground py-3 text-[15px]">Programs</a>
-              <a href="#consulting" onClick={() => setIsMobileMenuOpen(false)} className="text-muted-foreground hover:text-foreground py-3 text-[15px]">Consulting</a>
-            </>
-          )}
-
-          {isAuthenticated && user ? (
-            <>
-              <div className="py-3 border-t border-[rgba(14,165,233,0.2)] mt-1">
-                <p className="text-foreground font-semibold text-sm">{user.firstName} {user.lastName}</p>
-                <p className="text-foreground/50 text-xs truncate">{user.email}</p>
-              </div>
-              <Link href="/courses" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-200 hover:text-foreground py-3 text-[15px]">All Courses</Link>
-              <Link href="/my-courses" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-200 hover:text-foreground py-3 text-[15px]">My Courses</Link>
-              <Link href="/purchase-history" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-200 hover:text-foreground py-3 text-[15px]">My History</Link>
-              <button
-                onClick={handleLogout}
-                className="text-red-400 hover:text-red-300 py-3 text-[15px] text-left border-t border-[rgba(14,165,233,0.2)] mt-1 bg-transparent cursor-pointer"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <Link
-              href="/login"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-white text-center rounded-md mt-2 bg-primary px-5 py-3 font-semibold text-[15px]"
-            >
-              Login
-            </Link>
-          )}
-        </div>
-      )}
     </nav>
   );
 }

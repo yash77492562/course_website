@@ -129,18 +129,18 @@ export function CourseAccessControl({
           }}
         >
           <div 
-            className="w-full max-w-[420px] backdrop-blur-xl border border-white/60 rounded-[24px] p-10 flex flex-col items-center text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] relative"
-            style={{ backgroundColor: 'lab(92 -3.12 -0.26 / 0.9)' }}
+            className="w-full max-w-[420px] backdrop-blur-xl border border-white/60 rounded-[24px] p-6 sm:p-10 flex flex-col items-center text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] relative"
+            style={{ backgroundColor: 'lab(96 0.4 -4.79 / 0.95)' }}
           >
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-6 shadow-sm">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-blue-100 rounded-full flex items-center justify-center mb-5 sm:mb-6 shadow-sm">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             </div>
             
-            <h2 className="font-display italic text-[#0f172a] text-[2rem] font-bold tracking-tight mb-3">
+            <h2 className="font-display italic text-[#0f172a] text-[1.5rem] sm:text-[2rem] font-bold tracking-tight mb-2 sm:mb-3">
               Login Required
             </h2>
             
-            <p className="text-slate-500 text-[1rem] leading-[1.6] mb-8 px-4">
+            <p className="text-slate-500 text-[0.95rem] sm:text-[1rem] leading-[1.6] mb-6 sm:mb-8 px-2 sm:px-4">
               Please login to your account to purchase this course.
             </p>
             
@@ -173,15 +173,14 @@ export function CourseAccessControl({
         >
           <div 
             className="rounded-[24px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/60 relative"
-            style={{ backgroundColor: 'lab(92 -3.12 -0.26 / 0.9)' }}
+            style={{ backgroundColor: 'lab(96 0.4 -4.79 / 0.95)' }}
           >
-            {/* Modal Header */}
             <div 
-              className="sticky top-0 flex items-center justify-between rounded-t-[24px] z-10 border-b border-slate-100 backdrop-blur-md px-8 py-6"
-              style={{ backgroundColor: 'lab(92 -3.12 -0.26 / 0.9)' }}
+              className="sticky top-0 flex flex-row items-start justify-between rounded-t-[24px] z-10 border-b border-slate-100 backdrop-blur-md px-5 py-5 sm:px-8 sm:py-6"
+              style={{ backgroundColor: 'lab(96 0.4 -4.79 / 0.95)' }}
             >
-              <div>
-                <h2 className="font-display italic text-[#0f172a] text-[1.75rem] font-bold tracking-tight mb-1">
+              <div className="pr-4">
+                <h2 className="font-display italic text-[#0f172a] text-[1.4rem] sm:text-[1.75rem] font-bold tracking-tight mb-1 leading-[1.2]">
                   Complete Your Purchase
                 </h2>
                 <p className="text-slate-500 text-[0.95rem] font-medium m-0">
@@ -200,7 +199,7 @@ export function CourseAccessControl({
             </div>
 
             {/* Modal Body */}
-            <div className="p-8">
+            <div className="p-5 sm:p-8">
               <StripeCheckout
                 courseId={courseId}
                 userId={user.id}

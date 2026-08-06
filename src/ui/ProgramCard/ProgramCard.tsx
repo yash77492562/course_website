@@ -26,7 +26,7 @@ export function ProgramCard({ program }: ProgramCardProps) {
       
       {/* Content */}
       <div className="flex-1 flex flex-col relative z-10">
-        <h3 className="font-sans text-[24px] font-extrabold text-white leading-tight mb-3 group-hover:text-secondary transition-colors duration-300 drop-shadow-sm">
+        <h3 className="font-sans text-[24px] font-extrabold text-white leading-tight mb-3 transition-colors duration-300 drop-shadow-sm">
           {program.title}
         </h3>
         

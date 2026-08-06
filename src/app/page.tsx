@@ -11,7 +11,7 @@ import { CTASection } from '@/components/features/CTASection/CTASection';
 // Import data
 import footerLinksData from '@/data/footerLinks/data.json';
 import whyData from '@/data/why/data.json';
-import consultingData from '@/data/consulting/data.json';
+import { consultingData } from '@/data/consulting/consultingData';
 
 export default function HomeRoute() {
   return (

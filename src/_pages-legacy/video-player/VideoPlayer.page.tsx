@@ -352,12 +352,11 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
   const hasFullNavigation = !!(lessonData.module?.course?.modules && lessonData.module.course.modules.length > 0);
 
   // Render sidebar for navigation
-  const renderSidebar = () => (
-    // Hidden on phones so the 320px lesson list doesn't crush the video; shows from md up.
-    <div className="hidden md:block w-[320px] bg-transparent border-r border-slate-200/60 overflow-y-auto shrink-0 z-10">
-      <div className="p-6">
-        <h2 className="text-[#0f172a] text-lg font-bold mb-6 font-display italic tracking-tight">
-          {lessonData.module.course.title}
+  const renderSidebar = (isMobile = false) => (
+    <div className={`${isMobile ? 'block md:hidden w-full border-t border-slate-200/60 bg-white/30' : 'hidden md:block w-[320px] bg-transparent border-r border-slate-200/60 overflow-y-auto shrink-0 z-10'}`}>
+      <div className={isMobile ? "p-4" : "p-6"}>
+        <h2 className="text-[#0f172a] text-lg font-bold mb-4 md:mb-6 font-display tracking-tight">
+          {isMobile ? 'Course Content' : lessonData.module.course.title}
         </h2>
         
         <div className="space-y-3">
@@ -413,9 +412,12 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
 
   // Render navigation header
   const renderHeader = () => (
-    <div className="bg-[#e1eae8]/95 backdrop-blur-md border-b border-slate-200/60 px-8 py-5 flex items-center justify-between z-10 sticky top-0 shadow-sm">
-      <h1 className="text-[#0f172a] text-xl font-bold font-display italic tracking-tight truncate pr-4">{lessonData.title}</h1>
-      <div className="flex items-center gap-3 shrink-0">
+    <div 
+      className="backdrop-blur-md border-b border-slate-200/60 px-4 md:px-8 py-4 md:py-5 flex items-center justify-between z-10 sticky top-0 shadow-sm"
+      style={{ backgroundColor: 'lab(96 0.4 -4.79 / 0.95)' }}
+    >
+      <h1 className="text-[#0f172a] text-lg md:text-xl font-bold font-display tracking-tight truncate pr-4">{lessonData.title}</h1>
+      <div className="hidden md:flex items-center gap-3 shrink-0">
         <button
           onClick={handlePrevious}
           disabled={!hasPrevious()}
@@ -431,6 +433,26 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
           Next &rarr;
         </button>
       </div>
+    </div>
+  );
+
+  // Render mobile navigation controls
+  const renderMobileNavControls = () => (
+    <div className="md:hidden flex items-center justify-between gap-3 px-4 py-4 bg-white/40 border-t border-slate-200/60">
+      <button
+        onClick={handlePrevious}
+        disabled={!hasPrevious()}
+        className={`flex-1 px-4 py-3 rounded-xl font-semibold text-[0.95rem] transition-all duration-300 flex items-center justify-center gap-2 ${hasPrevious() ? 'bg-white hover:bg-slate-50 text-slate-700 shadow-sm border border-slate-200' : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-transparent'}`}
+      >
+        &larr; Previous
+      </button>
+      <button
+        onClick={handleNext}
+        disabled={!hasNext()}
+        className={`flex-1 px-4 py-3 rounded-xl font-semibold text-[0.95rem] transition-all duration-300 flex items-center justify-center gap-2 ${hasNext() ? 'bg-primary hover:bg-primary/90 text-white shadow-[0_4px_14px_rgba(13,148,136,0.25)]' : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-transparent'}`}
+      >
+        Next &rarr;
+      </button>
     </div>
   );
 
@@ -463,6 +485,8 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
                   courseId={lessonData.module.course.id}
                   onComplete={handleQuizComplete}
                 />
+                {renderMobileNavControls()}
+                {renderSidebar(true)}
               </div>
             </div>
           </div>
@@ -474,8 +498,11 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
       <>
         <Navbar />
         <div className="flex flex-col h-[calc(100vh-68px)] mt-[68px]" style={{ background: 'var(--color-background)' }}>
-          <div className="bg-white/50 backdrop-blur-md border-b border-white/60 px-8 py-5">
-            <h1 className="text-[#0f172a] text-xl font-bold font-display italic tracking-tight">{lessonData.title}</h1>
+          <div 
+            className="backdrop-blur-md border-b border-white/60 px-8 py-5"
+            style={{ backgroundColor: 'lab(96 0.4 -4.79 / 0.95)' }}
+          >
+            <h1 className="text-[#0f172a] text-xl font-bold font-display tracking-tight">{lessonData.title}</h1>
           </div>
           <div className="flex-1 bg-transparent overflow-y-auto">
             <QuizViewer
@@ -512,12 +539,16 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
             {renderSidebar()}
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
               {renderHeader()}
-              <div className="flex-1 bg-transparent overflow-hidden">
-                <PDFViewerSimple
-                  pdfUrl={lessonData.pdfUrl}
-                  password={lessonData.pdfPassword}
-                  title={lessonData.title}
-                />
+              <div className="flex-1 bg-transparent overflow-y-auto flex flex-col">
+                <div className="flex-1 min-h-[50vh]">
+                  <PDFViewerSimple
+                    pdfUrl={lessonData.pdfUrl}
+                    password={lessonData.pdfPassword}
+                    title={lessonData.title}
+                  />
+                </div>
+                {renderMobileNavControls()}
+                {renderSidebar(true)}
               </div>
             </div>
           </div>
@@ -529,8 +560,11 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
       <>
         <Navbar />
         <div className="flex flex-col h-[calc(100vh-68px)] mt-[68px]" style={{ background: 'var(--color-background)' }}>
-          <div className="bg-white/50 backdrop-blur-md border-b border-white/60 px-8 py-5">
-            <h1 className="text-[#0f172a] text-xl font-bold font-display italic tracking-tight">{lessonData.title}</h1>
+          <div 
+            className="backdrop-blur-md border-b border-white/60 px-8 py-5"
+            style={{ backgroundColor: 'lab(96 0.4 -4.79 / 0.95)' }}
+          >
+            <h1 className="text-[#0f172a] text-xl font-bold font-display tracking-tight">{lessonData.title}</h1>
           </div>
           <div className="flex-1 bg-transparent overflow-hidden">
             <PDFViewerSimple
@@ -580,13 +614,13 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
           <div className="flex-1 flex flex-col min-w-0 overflow-y-auto relative">
             {renderHeader()}
             <div className="flex-1 flex flex-col">
-              <div className="flex-1 flex items-center justify-center p-6 lg:p-10">
+              <div className="flex-1 flex items-center justify-center p-0 md:p-6 lg:p-10">
                 <div className="w-full max-w-[1400px]">
                   {(!checkingPurchase && !hasPurchased && !isFirstLesson(lessonId)) ? (
-                    <div className="flex flex-col items-center justify-center py-24 bg-white/40 backdrop-blur-md rounded-2xl border border-white/60 shadow-lg">
+                    <div className="flex flex-col items-center justify-center py-24 bg-white/40 backdrop-blur-md rounded-none md:rounded-2xl border-y md:border border-white/60 shadow-lg">
                       <div className="text-5xl mb-6">🔒</div>
                       <h3 className="text-2xl font-bold text-[#0f172a] mb-3 font-display">Lesson Locked</h3>
-                      <p className="text-slate-600 mb-8 text-center max-w-md text-lg">
+                      <p className="text-slate-600 mb-8 text-center max-w-md text-lg px-4">
                         This lesson is locked. Please purchase the course to access all lessons and materials.
                       </p>
                       <button 
@@ -597,8 +631,9 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
                       </button>
                     </div>
                   ) : (
-                    <div className="rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] ring-1 ring-black/5 bg-black">
+                    <div className="rounded-none md:rounded-2xl overflow-hidden shadow-none md:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] ring-0 md:ring-1 ring-black/5 bg-black">
                       <VideoPlayerWrapper
+                        key={lessonData.id}
                         videoType={lessonData.videoType || 'UPLOAD'}
                         hlsMasterPlaylist={lessonData.hlsMasterPlaylist}
                         hlsQualities={lessonData.hlsQualities}
@@ -613,12 +648,17 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
                   )}
                 </div>
               </div>
+              
+              {renderMobileNavControls()}
+              
               {lessonData.description && (
-                <div className="bg-transparent border-t border-slate-200/60 px-8 py-8 mt-auto z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
+                <div className="bg-transparent border-t border-slate-200/60 px-5 md:px-8 py-6 md:py-8 z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
                   <h3 className="text-[#0f172a] font-bold text-lg mb-3 font-display">About this lesson</h3>
                   <p className="text-slate-600 text-[15px] leading-relaxed max-w-4xl">{lessonData.description}</p>
                 </div>
               )}
+              
+              {renderSidebar(true)}
             </div>
           </div>
         </div>
@@ -630,17 +670,20 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
     <>
       <Navbar />
       <div className="flex flex-col h-[calc(100vh-68px)] mt-[68px]" style={{ background: 'var(--color-background)' }}>
-        <div className="bg-white/95 backdrop-blur-xl border-b border-slate-200/60 px-8 py-5 z-10 sticky top-0 shadow-sm">
-          <h1 className="text-[#0f172a] text-xl font-bold font-display italic tracking-tight">{lessonData.title}</h1>
+        <div 
+          className="backdrop-blur-xl border-b border-slate-200/60 px-8 py-5 z-10 sticky top-0 shadow-sm"
+          style={{ backgroundColor: 'lab(96 0.4 -4.79 / 0.95)' }}
+        >
+          <h1 className="text-[#0f172a] text-xl font-bold font-display tracking-tight">{lessonData.title}</h1>
         </div>
         <div className="flex-1 flex flex-col overflow-y-auto">
-          <div className="flex-1 flex items-center justify-center p-6 lg:p-10">
+          <div className="flex-1 flex items-center justify-center p-0 md:p-6 lg:p-10">
             <div className="w-full max-w-[1400px]">
               {(!checkingPurchase && !hasPurchased && !isFirstLesson(lessonId)) ? (
-                <div className="flex flex-col items-center justify-center py-24 bg-white/40 backdrop-blur-md rounded-2xl border border-white/60 shadow-lg">
+                <div className="flex flex-col items-center justify-center py-24 bg-white/40 backdrop-blur-md rounded-none md:rounded-2xl border-y md:border border-white/60 shadow-lg">
                   <div className="text-5xl mb-6">🔒</div>
                   <h3 className="text-2xl font-bold text-[#0f172a] mb-3 font-display">Lesson Locked</h3>
-                  <p className="text-slate-600 mb-8 text-center max-w-md text-lg">
+                  <p className="text-slate-600 mb-8 text-center max-w-md text-lg px-4">
                     This lesson is locked. Please purchase the course to access all lessons and materials.
                   </p>
                   <button 
@@ -651,8 +694,9 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
                   </button>
                 </div>
               ) : (
-                <div className="rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] ring-1 ring-black/5 bg-black">
+                <div className="rounded-none md:rounded-2xl overflow-hidden shadow-none md:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] ring-0 md:ring-1 ring-black/5 bg-black">
                   <VideoPlayerWrapper
+                    key={lessonData.id}
                     videoType={lessonData.videoType || 'UPLOAD'}
                     hlsMasterPlaylist={lessonData.hlsMasterPlaylist}
                     hlsQualities={lessonData.hlsQualities}

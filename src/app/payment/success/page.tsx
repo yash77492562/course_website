@@ -172,7 +172,7 @@ function PaymentSuccessContent() {
           <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
             <button 
               onClick={() => router.push('/my-courses')}
-              className="bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-[1rem] px-8 py-3.5 transition-all duration-300 shadow-[0_4px_20px_rgba(13,148,136,0.25)] hover:shadow-[0_8px_30px_rgba(13,148,136,0.35)] hover:-translate-y-[2px]"
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-[1rem] px-8 py-3.5 transition-all duration-300 shadow-[0_4px_20px_rgba(37,99,235,0.25)] hover:shadow-[0_8px_30px_rgba(37,99,235,0.35)] hover:-translate-y-[2px]"
             >
               Check My Courses
             </button>
@@ -193,47 +193,47 @@ function PaymentSuccessContent() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-transparent relative overflow-hidden">
       {animationStyles}
       <div 
-        className="w-full max-w-[600px] backdrop-blur-xl border border-white/60 rounded-[24px] p-12 flex flex-col items-center text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] animate-pop-in"
-        style={{ backgroundColor: 'lab(92 -3.12 -0.26 / 0.9)' }}
+        className="w-full max-w-[600px] backdrop-blur-xl border border-white/60 rounded-[24px] p-6 sm:p-12 flex flex-col items-center text-center shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] animate-pop-in"
+        style={{ backgroundColor: 'lab(96 0.4 -4.79 / 0.95)' }}
       >
-        <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mb-6 shadow-sm animate-checkmark">
-          <svg className="w-12 h-12 text-[#059669]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+        <div className="w-20 h-20 sm:w-24 sm:h-24 bg-emerald-100 rounded-full flex items-center justify-center mb-5 sm:mb-6 shadow-sm animate-checkmark">
+          <svg className="w-10 h-10 sm:w-12 sm:h-12 text-[#059669]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
         </div>
         
-        <h1 className="font-display italic text-[#0f172a] text-[2.5rem] font-bold tracking-tight mb-4">
+        <h1 className="font-display italic text-[#0f172a] text-[2rem] sm:text-[2.5rem] font-bold tracking-tight mb-2 sm:mb-4 leading-[1.1]">
           Payment Successful!
         </h1>
-        <p className="text-slate-500 text-[1.1rem] leading-[1.6] mb-10 max-w-sm">
+        <p className="text-slate-500 text-[1rem] sm:text-[1.1rem] leading-[1.6] mb-8 sm:mb-10 max-w-sm px-2">
           Thank you for your purchase. Your course access has been permanently activated.
         </p>
         
         {(orderId || sessionId) && (
-          <div className="w-full bg-white/60 backdrop-blur-sm border border-emerald-100 p-5 rounded-[16px] mb-10 flex flex-col items-center gap-4">
+          <div className="w-full bg-white/60 backdrop-blur-sm border border-emerald-100 p-4 sm:p-5 rounded-[16px] mb-8 sm:mb-10 flex flex-col items-center gap-3 sm:gap-4">
             {orderId && (
-              <div className="flex flex-col items-center">
-                <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-primary mb-1">Order ID</span>
-                <span className="text-[0.8rem] text-slate-500 font-mono break-all text-center">{orderId}</span>
+              <div className="flex flex-col items-center w-full px-2">
+                <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-blue-600 mb-1">Order ID</span>
+                <span className="text-[0.75rem] sm:text-[0.8rem] text-slate-500 font-mono break-all text-center w-full">{orderId}</span>
               </div>
             )}
             {sessionId && (
-              <div className="flex flex-col items-center">
-                <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-primary mb-1">Payment ID</span>
-                <span className="text-[0.8rem] text-slate-500 font-mono break-all text-center">{sessionId}</span>
+              <div className="flex flex-col items-center w-full px-2">
+                <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-blue-600 mb-1">Payment ID</span>
+                <span className="text-[0.75rem] sm:text-[0.8rem] text-slate-500 font-mono break-all text-center w-full">{sessionId}</span>
               </div>
             )}
           </div>
         )}
         
-        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full justify-center">
           <button 
             onClick={() => router.push('/my-courses')}
-            className="bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-[1.05rem] px-8 py-4 transition-all duration-300 shadow-[0_4px_20px_rgba(13,148,136,0.25)] hover:shadow-[0_8px_30px_rgba(13,148,136,0.35)] hover:-translate-y-[2px]"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-[1rem] sm:text-[1.05rem] px-8 py-3.5 sm:py-4 transition-all duration-300 shadow-[0_4px_20px_rgba(37,99,235,0.25)] hover:shadow-[0_8px_30px_rgba(37,99,235,0.35)] hover:-translate-y-[2px]"
           >
             View My Courses
           </button>
           <button 
             onClick={() => router.push('/')}
-            className="bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 rounded-xl font-semibold text-[1.05rem] px-8 py-4 transition-all duration-300 hover:-translate-y-[2px] shadow-sm hover:border-slate-300"
+            className="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 rounded-xl font-semibold text-[1rem] sm:text-[1.05rem] px-8 py-3.5 sm:py-4 transition-all duration-300 hover:-translate-y-[2px] shadow-sm hover:border-slate-300"
           >
             Go Home
           </button>

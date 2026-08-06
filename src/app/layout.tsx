@@ -45,7 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="w-full h-full">
+    <html lang="en" className="w-full h-full overflow-x-hidden" data-scroll-behavior="smooth">
       <head>
         <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2" />
@@ -53,7 +53,7 @@ export default function RootLayout({
         <link rel="manifest" href="/site.webmanifest?v=2" />
       </head>
       <body 
-        className={`${jakarta.variable} antialiased w-full min-h-screen font-sans`}
+        className={`${jakarta.variable} antialiased w-full min-h-screen font-sans overflow-x-hidden max-w-[100vw] relative`}
         suppressHydrationWarning={true}
       >
         <QueryProvider>

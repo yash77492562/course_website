@@ -58,7 +58,7 @@ export function ConsultingSection({ services }: ConsultingSectionProps) {
                 className="flex flex-col gap-6"
               >
                 <div className="flex items-center gap-4 mb-2">
-                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-4xl">
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-primary/5 p-2">
                     {activeService.icon}
                   </div>
                   <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-sans leading-tight">
@@ -76,12 +76,12 @@ export function ConsultingSection({ services }: ConsultingSectionProps) {
           </div>
 
           {/* Right Column: Clock-like Rotating Circle */}
-          <div className="relative flex justify-center items-center h-[450px]">
+          <div className="relative flex justify-center items-center h-[340px] sm:h-[450px]">
             {/* The Outer Circle */}
-            <div className="relative w-[380px] h-[380px] rounded-full border border-primary/20 bg-white/20 backdrop-blur-2xl shadow-[0_20px_60px_-15px_rgba(13,148,136,0.15)] flex items-center justify-center overflow-hidden">
+            <div className="relative w-[280px] h-[280px] sm:w-[380px] sm:h-[380px] rounded-full border border-primary/20 bg-white/20 backdrop-blur-2xl shadow-[0_20px_60px_-15px_rgba(13,148,136,0.15)] flex items-center justify-center overflow-hidden shrink-0">
               
               {/* Spinning decorative 'clock' border */}
-              <div className="absolute inset-0 rounded-full border-2 border-dashed border-primary/40 animate-[spin_20s_linear_infinite]" />
+              <div className="absolute inset-0 sm:inset-0 rounded-full border-2 border-dashed border-primary/40 animate-[spin_20s_linear_infinite]" />
               
               {/* Animated Inner Content */}
               <AnimatePresence mode="wait">
@@ -91,12 +91,12 @@ export function ConsultingSection({ services }: ConsultingSectionProps) {
                   animate={{ opacity: 1, scale: 1, rotate: 0 }}
                   exit={{ opacity: 0, scale: 1.1, rotate: 15 }}
                   transition={{ duration: 0.5, type: 'spring', bounce: 0.4 }}
-                  className="flex flex-col items-center text-center p-8 z-10 w-full"
+                  className="flex flex-col items-center text-center p-4 sm:p-8 z-10 w-full"
                 >
-                  <div className="flex items-center justify-center text-7xl mb-6">
+                  <div className="flex items-center justify-center w-20 h-20 sm:w-28 sm:h-28 mb-3 sm:mb-6">
                     {activeService.icon}
                   </div>
-                  <h4 className="text-3xl font-bold text-slate-900 leading-tight">
+                  <h4 className="text-xl sm:text-3xl font-bold text-slate-900 leading-tight px-2 sm:px-0">
                     {activeService.title}
                   </h4>
                 </motion.div>

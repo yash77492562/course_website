@@ -33,217 +33,89 @@ export function Footer({ footerData }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer
-      style={{
-        background: 'transparent',
-        padding: '56px 5vw 36px',
-        borderTop: '1px solid rgba(15,23,42,0.1)',
-        overflow: 'hidden'
-      }}
-    >
+    <footer className="w-full bg-transparent pt-14 pb-8 px-6 md:px-12 lg:px-20 border-t border-slate-900/10 overflow-hidden">
       <motion.div
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
+        className="w-full max-w-[1600px] mx-auto"
       >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            paddingBottom: '40px',
-            borderBottom: '1px solid rgba(15,23,42,0.1)',
-            marginBottom: '32px',
-            gap: '40px',
-            flexWrap: 'wrap'
-          }}
-        >
-          <motion.div variants={itemVariants} style={{ maxWidth: '320px' }}>
+        <div className="flex flex-col lg:flex-row justify-between items-start pb-10 border-b border-slate-900/10 mb-8 gap-12 lg:gap-8 w-full">
+          
+          {/* Brand Column */}
+          <motion.div variants={itemVariants} className="w-full lg:max-w-[320px]">
             <Link 
               href="/" 
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '10px',
-                marginBottom: '12px',
-                textDecoration: 'none'
-              }}
+              className="inline-flex flex-col items-center gap-0 mb-4 no-underline"
             >
-              <span
-                style={{
-                  fontFamily: 'Syne, sans-serif',
-                  fontWeight: 700,
-                  fontSize: '22px',
-                  color: '#0f172a',
-                  letterSpacing: '0.3px'
-                }}
-              >
+              <span className="font-sans font-bold text-[22px] text-slate-900 tracking-wide leading-[1.1]">
                 Riva Data
               </span>
+              <span className="font-sans font-semibold text-primary text-[11px] tracking-[0.25em] uppercase leading-none pl-[2px]">
+                Academy
+              </span>
             </Link>
-            <p
-              style={{
-                fontSize: '0.9rem',
-                color: 'rgba(15,23,42,0.6)',
-                maxWidth: '280px',
-                lineHeight: '1.6',
-                marginBottom: '16px'
-              }}
-            >
+            <p className="text-[0.95rem] text-slate-900/60 leading-relaxed mb-6 w-full max-w-sm">
               Reskilling professionals. Empowering organisations. Shaping the future of data in the UK and beyond.
             </p>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                background: 'rgba(15,23,42,0.05)',
-                border: '1px solid rgba(15,23,42,0.1)',
-                borderRadius: '100px',
-                padding: '4px 12px',
-                fontSize: '0.75rem',
-                color: 'rgba(15,23,42,0.6)'
-              }}
-            >
+            <div className="inline-flex items-center gap-2 bg-slate-900/5 border border-slate-900/10 rounded-full px-4 py-1.5 text-xs text-slate-900/60 font-medium">
               🇬🇧 United Kingdom
             </div>
           </motion.div>
 
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '40px'
-            }}
-          >
+          {/* Links Columns */}
+          <div className="w-full lg:w-auto grid grid-cols-2 sm:grid-cols-3 gap-8 sm:gap-12 lg:gap-16">
             {footerData.columns.map((column, index) => (
-              <motion.div key={index} variants={itemVariants}>
-                <h5
-                  style={{
-                    fontFamily: 'Syne, sans-serif',
-                    fontSize: '0.85rem',
-                    fontWeight: 700,
-                    letterSpacing: '1.2px',
-                    textTransform: 'uppercase',
-                    color: '#0f172a',
-                    marginBottom: '16px'
-                  }}
-                >
+              <motion.div 
+                key={index} 
+                variants={itemVariants} 
+                className={`flex flex-col ${column.title === 'Services' ? 'hidden sm:flex' : ''}`}
+              >
+                <h5 className="font-sans text-[0.85rem] font-bold tracking-[1.2px] uppercase text-slate-900 mb-5">
                   {column.title}
                 </h5>
-                {column.links.map((link, linkIndex) => (
-                  <Link
-                    key={linkIndex}
-                    href={link.href}
-                    style={{
-                      display: 'block',
-                      textDecoration: 'none',
-                      fontSize: '0.9rem',
-                      color: 'rgba(15,23,42,0.6)',
-                      marginBottom: '10px',
-                      transition: 'color 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = 'var(--color-primary)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = 'rgba(15,23,42,0.6)';
-                    }}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                <div className="flex flex-col gap-3">
+                  {column.links.map((link, linkIndex) => (
+                    <Link
+                      key={linkIndex}
+                      href={link.href}
+                      className="text-[0.95rem] text-slate-900/60 hover:text-primary transition-colors no-underline"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
 
+        {/* Bottom Bar */}
         <motion.div
           variants={itemVariants}
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '16px'
-          }}
+          className="flex flex-col-reverse sm:flex-row justify-between items-center sm:items-end flex-wrap gap-6 w-full"
         >
-          <p
-            style={{
-              fontSize: '0.85rem',
-              color: 'rgba(15,23,42,0.5)'
-            }}
-          >
+          <p className="text-[0.85rem] text-slate-900/50 text-center sm:text-left w-full sm:w-auto">
             © {currentYear} Riva Data Ltd. All rights reserved. Registered in England & Wales.
           </p>
           
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px'
-            }}
-          >
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-end">
             <Link
               href="https://www.linkedin.com/company/riva-data/"
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '8px',
-                background: 'rgba(15,23,42,0.05)',
-                border: '1px solid rgba(15,23,42,0.1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'rgba(15,23,42,0.6)',
-                textDecoration: 'none',
-                transition: 'all 0.2s'
-              }}
+              className="w-10 h-10 rounded-xl bg-slate-900/5 border border-slate-900/10 flex items-center justify-center text-slate-900/60 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all"
               aria-label="LinkedIn"
               target="_blank"
               rel="noopener noreferrer"
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(13,148,136,0.1)';
-                e.currentTarget.style.borderColor = 'var(--color-primary)';
-                e.currentTarget.style.color = 'var(--color-primary)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(15,23,42,0.05)';
-                e.currentTarget.style.borderColor = 'rgba(15,23,42,0.1)';
-                e.currentTarget.style.color = 'rgba(15,23,42,0.6)';
-              }}
             >
-              <LinkedInIcon size={16} />
+              <LinkedInIcon size={18} />
             </Link>
             <Link
               href="#"
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '8px',
-                background: 'rgba(15,23,42,0.05)',
-                border: '1px solid rgba(15,23,42,0.1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'rgba(15,23,42,0.6)',
-                textDecoration: 'none',
-                transition: 'all 0.2s'
-              }}
+              className="w-10 h-10 rounded-xl bg-slate-900/5 border border-slate-900/10 flex items-center justify-center text-slate-900/60 hover:bg-primary/10 hover:border-primary hover:text-primary transition-all"
               aria-label="Email"
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(13,148,136,0.1)';
-                e.currentTarget.style.borderColor = 'var(--color-primary)';
-                e.currentTarget.style.color = 'var(--color-primary)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(15,23,42,0.05)';
-                e.currentTarget.style.borderColor = 'rgba(15,23,42,0.1)';
-                e.currentTarget.style.color = 'rgba(15,23,42,0.6)';
-              }}
             >
-              <EmailIcon size={16} />
+              <EmailIcon size={18} />
             </Link>
           </div>
         </motion.div>

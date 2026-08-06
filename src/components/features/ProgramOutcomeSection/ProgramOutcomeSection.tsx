@@ -6,6 +6,7 @@ import { useCourseAccess } from '@/hooks/course/useCourseAccess';
 
 interface ProgramOutcomeSectionProps {
   courseId?: string; // Add courseId to check purchase status
+  hasPurchasedProp?: boolean;
   outcomes: string[];
   modules: Array<{
     id?: string;
@@ -29,9 +30,10 @@ const DEFAULT_OUTCOMES = [
   "Build a portfolio with real-world projects"
 ];
 
-export function ProgramOutcomeSection({ courseId, outcomes, modules }: ProgramOutcomeSectionProps) {
+export function ProgramOutcomeSection({ courseId, outcomes, modules, hasPurchasedProp }: ProgramOutcomeSectionProps) {
   const router = useRouter();
-  const { hasAccess: hasPurchased } = useCourseAccess(courseId || null);
+  const { hasAccess } = useCourseAccess(courseId || null);
+  const hasPurchased = hasPurchasedProp !== undefined ? hasPurchasedProp : hasAccess;
   const [openModules, setOpenModules] = useState<number[]>([0]); // First module open by default
 
   const toggleModule = (index: number) => {
@@ -150,7 +152,7 @@ export function ProgramOutcomeSection({ courseId, outcomes, modules }: ProgramOu
   });
 
   return (
-    <section className="py-[100px] px-[5vw] bg-transparent">
+    <section className="py-[40px] md:py-[100px] px-[5vw] bg-transparent">
       <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] gap-12 md:gap-[80px]">
         
         {/* Outcomes Side */}
@@ -176,6 +178,17 @@ export function ProgramOutcomeSection({ courseId, outcomes, modules }: ProgramOu
           </h2>
           <div className="w-full">
             {modulesHtml}
+            {modules && modules.length > 4 && hasPurchased && (
+              <div className="mt-8 flex justify-center">
+                <button 
+                  onClick={() => router.push(`/my-courses/${courseId}`)}
+                  className="inline-flex justify-center items-center gap-2 bg-white text-[#0f172a] py-[12px] px-[32px] rounded-full border border-slate-200 font-bold text-[0.95rem] transition-all duration-300 hover:border-primary hover:text-primary shadow-sm hover:shadow-md hover:-translate-y-0.5 w-full sm:w-auto"
+                >
+                  View all modules
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

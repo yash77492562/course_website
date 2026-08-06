@@ -58,7 +58,7 @@ export function CareerSupportSection({ faqs }: CareerSupportSectionProps) {
   ));
 
   return (
-    <section className="py-[100px] px-[5vw] bg-transparent">
+    <section className="py-[40px] md:py-[100px] px-[5vw] bg-transparent">
       <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-[80px]">
         
         <div className="reveal">
