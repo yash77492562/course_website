@@ -70,6 +70,7 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
         const response = await fetch(url, {
           method: 'POST',
           credentials: 'include',
+          cache: 'no-store',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -106,8 +107,12 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
           logger.debug('📖 Last attempt answers:', data.data.lastAttemptAnswers);
           setReadOnlyMode(true);
           setReadOnlyMessage(data.data.message || 'You have used all attempts. Viewing in read-only mode.');
-          setLastAttemptAnswers(data.data.lastAttemptAnswers || {}); // Store user's previous answers
-          setTimerActive(false); // No timer in read-only mode
+          
+          const previousAnswers = data.data.lastAttemptAnswers || {};
+          setLastAttemptAnswers(previousAnswers); 
+          setSelectedAnswers(previousAnswers); // Populate selected answers so score calculates correctly
+          setTimerActive(false); 
+          setShowResults(true); // Show results screen immediately
         } else {
           logger.debug('✏️ Quiz opened in INTERACTIVE mode');
           
@@ -203,6 +208,7 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
       const response = await fetch(`${BACKEND_API}/quiz/submit`, {
         method: 'POST',
         credentials: 'include',
+        cache: 'no-store',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -252,16 +258,16 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
   // Show loading state while initializing
   if (isInitializing) {
     return (
-      <div className="min-h-full bg-gray-100 py-8 px-6 flex items-center justify-center">
-        <div className="max-w-2xl w-full bg-white rounded-xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] py-12 px-10 text-center">
+      <div className="min-h-full py-8 px-6 flex items-center justify-center">
+        <div className="max-w-2xl w-full bg-white border border-primary/10 rounded-[32px] shadow-[0_8px_40px_-12px_rgba(37,99,235,0.15)] relative overflow-hidden py-16 px-10 text-center">
           <div className="text-5xl mb-6 animate-spin">
             ⏳
           </div>
-          <h3 className="text-2xl font-semibold text-gray-900 mb-3">
-            Starting Quiz...
+          <h3 className="text-3xl font-extrabold text-slate-900 mb-4 tracking-tight">
+            Preparing your Quiz...
           </h3>
-          <p className="text-gray-500 text-base">
-            Please wait while we prepare your quiz attempt
+          <p className="text-slate-600 text-[17px]">
+            Loading questions and checking attempts
           </p>
         </div>
       </div>
@@ -271,20 +277,20 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
   // Show error state if initialization failed
   if (initError) {
     return (
-      <div className="min-h-full bg-gray-100 py-8 px-6 flex items-center justify-center">
-        <div className="max-w-2xl w-full bg-white rounded-xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] py-12 px-10 text-center">
+      <div className="min-h-full py-8 px-6 flex items-center justify-center">
+        <div className="max-w-2xl w-full bg-white border border-primary/10 rounded-[32px] shadow-[0_8px_40px_-12px_rgba(37,99,235,0.15)] relative overflow-hidden py-16 px-10 text-center">
           <div className="text-5xl mb-6">
             ❌
           </div>
           <h3 className="text-2xl font-semibold text-red-800 mb-3">
             Failed to Start Quiz
           </h3>
-          <p className="text-gray-500 text-base mb-6">
+          <p className="text-slate-600 text-[17px] mb-8">
             {initError}
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="py-3 px-6 bg-blue-600 text-foreground font-semibold rounded-lg border-none cursor-pointer transition-colors duration-200 hover:bg-blue-700"
+            className="py-3 px-8 bg-primary hover:bg-primary/90 text-white shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)] hover:-translate-y-0.5 font-medium rounded-full transition-all duration-300 shadow-sm hover:shadow-md"
           >
             Try Again
           </button>
@@ -327,6 +333,7 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
       const response = await fetch(`${BACKEND_API}/quiz/submit`, {
         method: 'POST',
         credentials: 'include',
+        cache: 'no-store',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -382,30 +389,37 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
     const passed = quizData.passingScore ? score >= quizData.passingScore : true;
 
     return (
-      <div className="min-h-full bg-gray-100 py-8 px-6">
-        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] p-10">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+      <div className="min-h-full py-8 px-6">
+        <div className="max-w-4xl mx-auto bg-white border border-primary/10 rounded-[32px] shadow-[0_8px_40px_-12px_rgba(37,99,235,0.15)] p-8 md:p-14 relative overflow-hidden">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
               Quiz Results
             </h2>
-            <div className={`text-6xl font-bold mb-4 ${passed ? 'text-emerald-600' : 'text-red-600'}`}>
+            <div className={`text-7xl md:text-8xl font-bold mb-6 tracking-tighter ${passed ? 'text-emerald-600' : 'text-red-500'}`}>
               {score}%
             </div>
-            <p className="text-xl text-gray-700 mb-2">
+            <p className="text-xl font-medium text-slate-600 mb-4">
               You got {correctCount} out of {totalQuestions} questions correct
             </p>
             {quizData.passingScore && (
-              <p className="text-gray-500">
-                Passing score: {quizData.passingScore}%
+              <p className="text-slate-400">
+                Passing score required: {quizData.passingScore}%
               </p>
             )}
+            
             {passed ? (
-              <div className="mt-4 p-4 bg-emerald-100 border border-emerald-300 rounded-lg">
-                <p className="text-emerald-800 font-semibold">🎉 Congratulations! You passed!</p>
+              <div className="mt-8 inline-block px-6 py-4 bg-emerald-50 border border-emerald-200 rounded-2xl">
+                <p className="text-emerald-800 font-medium m-0 flex items-center gap-2">
+                  <span className="text-xl">🎉</span> Congratulations! You passed!
+                </p>
               </div>
             ) : (
-              <div className="mt-4 p-4 bg-red-100 border border-red-300 rounded-lg">
-                <p className="text-red-800 font-semibold">Keep trying! You can retake the quiz.</p>
+              <div className="mt-8 inline-block px-6 py-4 bg-red-50 border border-red-200 rounded-2xl">
+                <p className="text-red-800 font-medium m-0">
+                  {quizData.maxAttempts > 0 && currentAttempt >= quizData.maxAttempts 
+                    ? 'You did not pass and have reached the maximum number of attempts.'
+                    : 'Keep trying! You can retake the quiz.'}
+                </p>
               </div>
             )}
           </div>
@@ -420,9 +434,9 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
               const isCorrect = selectedOptionId === question.correctAnswer;
 
               return (
-                <div key={question.id} className="border border-gray-200 rounded-lg p-6 mb-6">
+                <div key={question.id} className="border border-slate-200 rounded-lg p-6 mb-6">
                   <div className="flex gap-3">
-                    <span className="shrink-0 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center font-semibold text-gray-700">
+                    <span className="shrink-0 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center font-semibold text-slate-700">
                       {index + 1}
                     </span>
                     <div className="flex-1">
@@ -464,8 +478,8 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
                           if (!shouldShow) return null;
                           
                           let bgClass = 'bg-gray-50';
-                          let borderClass = 'border-gray-200';
-                          let textClass = 'text-gray-700';
+                          let borderClass = 'border-slate-200';
+                          let textClass = 'text-slate-700';
                           let label = '';
                           
                           if (!isAnswered && isCorrectOption) {
@@ -506,7 +520,7 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
                       {/* Always show explanation */}
                       {question.explanation && (
                         <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
-                          <p className="text-sm font-semibold text-gray-700 mb-1">
+                          <p className="text-sm font-semibold text-slate-700 mb-1">
                             💡 Explanation:
                           </p>
                           <p className="text-sm text-gray-600">{question.explanation}</p>
@@ -519,18 +533,18 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
             })}
           </div>
 
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center gap-4 mt-12">
             {(quizData.maxAttempts === 0 || currentAttempt < quizData.maxAttempts) && (
               <button
                 onClick={handleRetake}
-                className="py-3 px-6 bg-blue-600 text-foreground font-semibold rounded-lg border-none cursor-pointer transition-colors duration-200 hover:bg-blue-700"
+                className="py-4 px-10 bg-primary text-white text-[17px] font-medium rounded-full transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:bg-primary/90"
               >
                 Retake Quiz {quizData.maxAttempts > 0 && `(${currentAttempt}/${quizData.maxAttempts})`}
               </button>
             )}
             {quizData.maxAttempts > 0 && currentAttempt >= quizData.maxAttempts && (
               <div className="text-center p-4 bg-gray-100 rounded-lg">
-                <p className="text-gray-700 font-medium">
+                <p className="text-slate-700 font-medium">
                   Maximum attempts reached ({quizData.maxAttempts})
                 </p>
               </div>
@@ -545,35 +559,35 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
   const hasAnswered = !!selectedAnswer;
 
   return (
-    <div className="min-h-full bg-gray-100 py-8 px-6">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] p-10">
+    <div className="min-h-full py-8 px-6">
+      <div className="max-w-4xl mx-auto bg-white border border-primary/10 rounded-[32px] shadow-[0_8px_40px_-12px_rgba(37,99,235,0.15)] p-8 md:p-14 relative overflow-hidden">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-1">{title}</h2>
+              <h2 className="text-3xl font-extrabold text-slate-900 mb-2 tracking-tight">{title}</h2>
               {quizData.maxAttempts > 0 && (
-                <p className="text-sm text-gray-500 font-medium">
+                <p className="text-[15px] text-slate-500 font-semibold tracking-wide uppercase">
                   Attempt {currentAttempt}/{quizData.maxAttempts}
                 </p>
               )}
               {quizData.maxAttempts === 0 && (
-                <p className="text-sm text-gray-500 font-medium">
+                <p className="text-[15px] text-slate-500 font-semibold tracking-wide uppercase">
                   Attempt {currentAttempt} (Unlimited attempts)
                 </p>
               )}
             </div>
             {!readOnlyMode && (
-              <div className={`text-lg font-mono font-bold py-2 px-4 rounded-lg ${timeRemaining < 300 ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}>
+              <div className={`text-[17px] font-mono font-bold border border-primary/20 shadow-sm py-2 px-4 rounded-lg ${timeRemaining < 300 ? 'bg-red-100 text-red-800' : 'bg-primary/10 text-primary'}`}>
                 ⏱️ {formatTime(timeRemaining)}
               </div>
             )}
           </div>
           <div className="flex items-center gap-4 text-sm text-gray-500">
             <span>Question {currentQuestionIndex + 1} of {totalQuestions}</span>
-            <div className="flex-1 bg-gray-200 rounded-full h-2">
+            <div className="flex-1 bg-slate-100 rounded-full h-2">
               <div
-                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                className="bg-primary h-2 shadow-[0_0_10px_rgba(37,99,235,0.5)] rounded-full transition-all duration-300"
                 style={{ width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%` }}
               />
             </div>
@@ -616,10 +630,10 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
         {/* Question */}
         <div className="mb-8">
           <div className="flex gap-3 mb-6">
-            <span className="shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-700">
+            <span className="shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center font-bold text-primary">
               {currentQuestionIndex + 1}
             </span>
-            <p className="text-xl font-medium text-gray-900 pt-1">
+            <p className="text-2xl font-bold text-slate-900 pt-1.5 leading-snug">
               {currentQuestion.question}
             </p>
           </div>
@@ -632,10 +646,10 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
               const userAnswer = lastAttemptAnswers[currentQuestion.id];
               const userSelectedThis = userAnswer === option.id;
               
-              let baseClass = "w-full p-4 text-left border-2 rounded-lg mb-3 opacity-100 transition-all duration-200 ";
+              let baseClass = "w-full p-5 text-left border-2 rounded-2xl mb-4 opacity-100 transition-all duration-300 group ";
               let extraClass = "";
               let labelText = '';
-              let labelClass = 'text-gray-700';
+              let labelClass = 'text-slate-700';
 
               if (readOnlyMode) {
                 baseClass += "cursor-not-allowed ";
@@ -659,11 +673,11 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
                   return null;
                 }
               } else {
-                baseClass += submitted ? "cursor-not-allowed " : "cursor-pointer hover:bg-blue-50 hover:border-blue-300 ";
+                baseClass += submitted ? "cursor-not-allowed " : "cursor-pointer hover:bg-primary/[0.02] hover:border-primary/40 ";
                 if (isSelected) {
-                  extraClass = "bg-blue-50 border-blue-600";
+                  extraClass = "bg-primary/[0.04] border-primary shadow-sm";
                 } else {
-                  extraClass = "bg-white border-gray-200";
+                  extraClass = "bg-white border-slate-200";
                 }
               }
               
@@ -676,14 +690,14 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
                 >
                   <div className="flex items-center gap-3">
                     {!readOnlyMode && (
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-blue-600 bg-blue-600' : 'border-gray-300 bg-transparent'}`}>
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-primary bg-primary shadow-sm' : 'border-slate-300 bg-transparent group-hover:border-primary/50'}`}>
                         {isSelected && (
-                          <div className="w-2 h-2 bg-white rounded-full" />
+                          <div className="w-2.5 h-2.5 bg-white rounded-full" />
                         )}
                       </div>
                     )}
                     <div className="flex-1">
-                      <span className={`font-medium ${readOnlyMode ? labelClass : (isSelected ? 'text-blue-900' : 'text-gray-700')}`}>
+                      <span className={`font-medium ${readOnlyMode ? labelClass : (isSelected ? 'text-primary font-bold' : 'text-slate-700')}`}>
                         {option.text}
                       </span>
                       {readOnlyMode && labelText && (
@@ -709,7 +723,7 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
             {/* Show explanation in read-only mode */}
             {readOnlyMode && currentQuestion.explanation && (
               <div className="mt-4 p-4 bg-gray-100 border border-gray-300 rounded-lg">
-                <p className="text-sm font-semibold text-gray-700 mb-2">
+                <p className="text-sm font-semibold text-slate-700 mb-2">
                   💡 Explanation:
                 </p>
                 <p className="text-sm text-gray-600 m-0">
@@ -721,11 +735,11 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
         </div>
 
         {/* Navigation */}
-        <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+        <div className="flex items-center justify-between pt-6 border-t border-slate-200">
           <button
             onClick={handlePrevious}
             disabled={currentQuestionIndex === 0}
-            className={`py-2 px-6 rounded-lg font-medium transition-colors duration-200 border-none ${currentQuestionIndex === 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700 cursor-pointer hover:bg-gray-300'}`}
+            className={`py-3 px-8 rounded-xl font-semibold tracking-wide transition-colors duration-200 border-none ${currentQuestionIndex === 0 ? 'bg-slate-50 text-slate-400 border border-slate-100 cursor-not-allowed' : 'bg-slate-100 text-slate-700 cursor-pointer hover:bg-gray-300'}`}
           >
             ← Previous
           </button>
@@ -741,7 +755,7 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
               } else if (isAnswered) {
                 btnClass += "bg-emerald-100 text-emerald-800 hover:bg-emerald-200";
               } else {
-                btnClass += "bg-gray-100 text-gray-500 hover:bg-gray-200";
+                btnClass += "bg-gray-100 text-gray-500 hover:bg-slate-100";
               }
               
               return (
@@ -758,14 +772,14 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
 
           {isLastQuestion ? (
             readOnlyMode ? (
-              <div className="py-2 px-6 rounded-lg font-medium bg-gray-100 text-gray-400 text-center">
+              <div className="py-3 px-8 rounded-xl font-semibold tracking-wide bg-slate-50 text-slate-400 border border-slate-100 text-center">
                 View Only
               </div>
             ) : (
               <button
                 onClick={handleSubmit}
                 disabled={Object.keys(selectedAnswers).length !== totalQuestions}
-                className={`py-2 px-6 rounded-lg font-medium border-none transition-colors duration-200 ${Object.keys(selectedAnswers).length === totalQuestions ? 'bg-green-600 text-foreground cursor-pointer hover:bg-green-700' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+                className={`py-3 px-8 rounded-xl font-semibold tracking-wide border-none transition-colors duration-200 ${Object.keys(selectedAnswers).length === totalQuestions ? 'bg-emerald-600 text-white cursor-pointer hover:bg-emerald-700 shadow-[0_4px_14px_rgba(5,150,105,0.25)] hover:shadow-[0_6px_20px_rgba(5,150,105,0.35)] hover:-translate-y-0.5' : 'bg-slate-50 text-slate-400 border border-slate-100 cursor-not-allowed'}`}
               >
                 Submit Quiz
               </button>
@@ -774,7 +788,7 @@ export function QuizViewer({ quizData, title, lessonId, courseId, onComplete }: 
             <button
               onClick={handleNext}
               disabled={!hasAnswered}
-              className={`py-2 px-6 rounded-lg font-medium border-none transition-colors duration-200 ${hasAnswered ? 'bg-blue-600 text-foreground cursor-pointer hover:bg-blue-700' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+              className={`py-3 px-8 rounded-xl font-semibold tracking-wide border-none transition-colors duration-200 ${hasAnswered ? 'bg-primary text-white cursor-pointer hover:bg-primary/90 shadow-[0_4px_14px_rgba(37,99,235,0.25)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35)] hover:-translate-y-0.5' : 'bg-slate-50 text-slate-400 border border-slate-100 cursor-not-allowed'}`}
             >
               Next →
             </button>

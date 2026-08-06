@@ -113,7 +113,9 @@ export default function VideoPlayerPage({ lessonId }: VideoPlayerPageProps) {
         // Fetch via fetchWithAuth so the access token (if any) reaches the
         // backend — it decides whether this lesson is unlocked for the viewer.
         const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
-        const response = await fetchWithAuth(`${apiUrl}/lessons/${lessonId}`);
+        const response = await fetchWithAuth(`${apiUrl}/lessons/${lessonId}`, {
+          cache: 'no-store'
+        });
         const result = await response.json();
         
         logger.debug('API Response:', result);

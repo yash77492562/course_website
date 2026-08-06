@@ -163,8 +163,8 @@ export default function PaymentSuccess() {
 
             <div className="order-details">
               <div className="detail-row">
-                <span className="label">Order ID:</span>
-                <span className="value">{order.id}</span>
+                <span className="label">Stripe ID:</span>
+                <span className="value">{order.paymentIntentId || order.id}</span>
               </div>
               <div className="detail-row">
                 <span className="label">Amount Paid:</span>
@@ -214,8 +214,8 @@ export default function PaymentSuccess() {
 
             <div className="order-details">
               <div className="detail-row">
-                <span className="label">Order ID:</span>
-                <span className="value">{order.id}</span>
+                <span className="label">Stripe ID:</span>
+                <span className="value">{order.paymentIntentId || order.id}</span>
               </div>
               <div className="detail-row">
                 <span className="label">Status:</span>

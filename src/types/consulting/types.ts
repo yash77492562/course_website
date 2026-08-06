@@ -1,5 +1,7 @@
+import { ReactNode } from 'react';
+
 export interface ConsultingService {
-  icon: string;
+  icon: ReactNode;
   title: string;
   body: string;
 }

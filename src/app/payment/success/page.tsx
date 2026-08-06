@@ -161,8 +161,8 @@ function PaymentSuccessContent() {
                 </div>
               )}
               {sessionId && (
-                <div className="flex flex-col items-center">
-                  <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-rose-500 mb-1">Payment ID</span>
+                <div className="flex flex-col items-center mt-2">
+                  <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-rose-500 mb-1">Stripe ID</span>
                   <span className="text-[0.8rem] text-slate-500 font-mono break-all text-center">{sessionId}</span>
                 </div>
               )}
@@ -216,8 +216,8 @@ function PaymentSuccessContent() {
               </div>
             )}
             {sessionId && (
-              <div className="flex flex-col items-center w-full px-2">
-                <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-blue-600 mb-1">Payment ID</span>
+              <div className="flex flex-col items-center w-full px-2 mt-2">
+                <span className="text-[0.7rem] font-bold tracking-[0.15em] uppercase text-blue-600 mb-1">Stripe ID</span>
                 <span className="text-[0.75rem] sm:text-[0.8rem] text-slate-500 font-mono break-all text-center w-full">{sessionId}</span>
               </div>
             )}
