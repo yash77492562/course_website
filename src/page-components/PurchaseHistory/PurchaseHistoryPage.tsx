@@ -31,6 +31,7 @@ export function PurchaseHistoryPage() {
   const router = useRouter();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,6 +65,9 @@ export function PurchaseHistoryPage() {
       const data = result.data || result;
       
       setPayments(data.transactions || []);
+      if (data.user) {
+        setUser(data.user);
+      }
     } catch (err) {
       logger.error('Failed to load purchase history:', err);
       setError('Failed to load your purchase history');
@@ -231,7 +235,7 @@ export function PurchaseHistoryPage() {
                     gap: '20px'
                   }}>
                     {payments.map((payment) => (
-                      <PurchaseHistoryCard key={payment.paymentId} payment={payment} />
+                      <PurchaseHistoryCard key={payment.paymentId} payment={payment} user={user} />
                     ))}
                   </div>
                 )}

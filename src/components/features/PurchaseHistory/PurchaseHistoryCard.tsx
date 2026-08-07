@@ -1,7 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { logger } from '@/lib/utils/logger';
+import { generateInvoicePDF } from '@/lib/utils/invoiceGenerator';
+import { InvoiceTemplate } from './InvoiceTemplate';
+
 interface Payment {
   paymentId: string;
   orderId: string;
@@ -22,10 +25,12 @@ interface Payment {
 
 interface PurchaseHistoryCardProps {
   payment: Payment;
+  user?: { name: string; email: string } | null;
 }
 
-export function PurchaseHistoryCard({ payment }: PurchaseHistoryCardProps) {
+export function PurchaseHistoryCard({ payment, user }: PurchaseHistoryCardProps) {
   const [copied, setCopied] = useState(false);
+  const invoiceRef = useRef<HTMLDivElement>(null);
 
   const handleCopyId = () => {
     const stripeId = payment.paymentIntentId || payment.chargeId || payment.paymentId;
@@ -78,11 +83,12 @@ export function PurchaseHistoryCard({ payment }: PurchaseHistoryCardProps) {
     }
   };
 
-  const handleDownloadInvoice = () => {
-    if (payment.invoiceUrl) {
-      logger.debug('📄 Opening invoice URL:', payment.invoiceUrl);
-      // Stripe receipt URLs work as-is
-      window.open(payment.invoiceUrl, '_blank');
+  const handleDownloadInvoice = async () => {
+    logger.debug('📄 Generating PDF Invoice from HTML template...');
+    if (invoiceRef.current) {
+      await generateInvoicePDF(payment, invoiceRef.current);
+    } else {
+      logger.error('Invoice template ref not found');
     }
   };
 
@@ -150,7 +156,7 @@ export function PurchaseHistoryCard({ payment }: PurchaseHistoryCardProps) {
 
       {/* Download Invoice Button */}
       <div className="mt-auto">
-        {payment.status.toUpperCase() === 'SUCCEEDED' && payment.invoiceUrl ? (
+        {payment.status.toUpperCase() === 'SUCCEEDED' ? (
           <button
             onClick={handleDownloadInvoice}
             className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-primary hover:bg-primary/90 shadow-sm text-white border-none rounded-lg cursor-pointer text-[13px] font-bold transition-all duration-200 shadow-[0_2px_8px_rgba(14,165,233,0.3)] hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(14,165,233,0.4)]"
@@ -165,6 +171,11 @@ export function PurchaseHistoryCard({ payment }: PurchaseHistoryCardProps) {
             No Invoice
           </div>
         )}
+      </div>
+      
+      {/* Invisible HTML Template for PDF Generation */}
+      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
+        <InvoiceTemplate ref={invoiceRef} payment={payment} user={user} />
       </div>
     </div>
   );
