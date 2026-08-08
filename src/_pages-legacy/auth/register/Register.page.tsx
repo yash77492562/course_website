@@ -75,7 +75,7 @@ export default function RegisterPage() {
                     className="flex items-center gap-3"
                     style={{ animation: `fadeInLeft 0.6s ease-out ${index * 0.1}s both` }}
                   >
-                    <div className="w-6 h-6 rounded-full bg-primary hover:bg-primary/90 shadow-sm flex items-center justify-center text-[12px] font-bold text-foreground">
+                    <div className="w-6 h-6 rounded-full bg-primary hover:bg-primary/90 shadow-sm flex items-center justify-center text-[12px] font-bold text-white">
                       {item.icon}
                     </div>
                     <span className="text-foreground/85 text-[15px]">

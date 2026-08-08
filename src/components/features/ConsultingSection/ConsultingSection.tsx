@@ -12,12 +12,12 @@ interface ConsultingSectionProps {
 export function ConsultingSection({ services }: ConsultingSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // Infinite 5-second rotation
+  // Infinite 2-second rotation
   useEffect(() => {
     if (!services || services.length === 0) return;
     const interval = setInterval(() => {
       setActiveIndex((current) => (current + 1) % services.length);
-    }, 10000);
+    }, 8000);
     return () => clearInterval(interval);
   }, [services]);
 
@@ -107,6 +107,20 @@ export function ConsultingSection({ services }: ConsultingSectionProps) {
               <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-secondary/15 rounded-full blur-[30px] pointer-events-none" />
             </div>
           </div>
+        </div>
+
+        {/* Dot Navigation */}
+        <div className="flex justify-center mt-12 gap-3">
+          {services.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveIndex(index)}
+              className={`h-2.5 rounded-full transition-all duration-300 ${
+                activeIndex === index ? 'w-8 bg-primary' : 'w-2.5 bg-slate-300 hover:bg-primary/50'
+              }`}
+              aria-label={`Go to service ${index + 1}`}
+            />
+          ))}
         </div>
 
         <motion.div

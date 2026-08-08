@@ -80,7 +80,7 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
       <button
         type="submit"
         disabled={isLoading}
-        className={`w-full h-[52px] shadow-sm rounded-lg text-foreground text-[16px] font-semibold transition-all duration-200 mt-2 ${
+        className={`w-full h-[52px] shadow-sm rounded-lg text-white text-[16px] font-semibold transition-all duration-200 mt-2 ${
           isLoading
             ? 'bg-primary/50 cursor-not-allowed'
             : 'bg-primary cursor-pointer hover:bg-primary/90 hover:-translate-y-0.5 active:scale-[0.98]'

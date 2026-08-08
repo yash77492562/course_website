@@ -78,7 +78,7 @@ export default function LoginPage() {
                     className="flex items-center gap-3 animate-fadeInLeft"
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
-                    <div className="w-6 h-6 rounded-full bg-primary hover:bg-primary/90 shadow-sm flex items-center justify-center text-[12px] font-bold text-foreground">
+                    <div className="w-6 h-6 rounded-full bg-primary hover:bg-primary/90 shadow-sm flex items-center justify-center text-[12px] font-bold text-white">
                       {item.icon}
                     </div>
                     <span className="text-foreground/85 text-[15px]">
