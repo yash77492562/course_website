@@ -2,9 +2,9 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches-ignore:
+      - 'developmetn'
+      - 'staging'
   
   # Allow manual trigger
   workflow_dispatch:
