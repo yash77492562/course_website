@@ -11,18 +11,18 @@
     {
       "title": "Services",
       "links": [
-        { "label": "Data Pipelines", "href": "/consulting#pipelines" },
-        { "label": "BI & Reporting", "href": "/consulting#reporting" },
-        { "label": "AI & Analytics", "href": "/consulting#ai" },
-        { "label": "Cloud Architecture", "href": "/consulting#cloud" }
+        { "label": "Data Pipelines", "href": "#" },
+        { "label": "BI & Reporting", "href": "#" },
+        { "label": "AI & Analytics", "href": "#" },
+        { "label": "Cloud Architecture", "href": "#" }
       ]
     },
     {
       "title": "Company",
       "links": [
-        { "label": "About", "href": "/about" },
-        { "label": "Contact", "href": "/contact" },
-        { "label": "Careers", "href": "/careers" }
+        { "label": "About Us", "href": "/about" },
+        { "label": "Careers", "href": "/careers" },
+        { "label": "Contact Us", "href": "/contact_us" }
       ]
     }
   ]
